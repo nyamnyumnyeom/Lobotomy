@@ -34,6 +34,8 @@ ALB_Character::ALB_Character()
 
     FootstepDistanceThreshold = 170.0f;
     DistanceTraveled = 0.0f;
+
+    NoiseLoudness = 0.7f;
 }
 
 void ALB_Character::BeginPlay()
@@ -62,6 +64,7 @@ void ALB_Character::Tick(float DeltaTime)
             if (SoundToPlay)
             {
                 UGameplayStatics::PlaySoundAtLocation(this, SoundToPlay, GetActorLocation());
+                MakeNoise(NoiseLoudness, this, GetActorLocation());
             }
         }
     }
@@ -124,6 +127,7 @@ void ALB_Character::StartSprint()
     if (GetCharacterMovement())
     {
         GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+        NoiseLoudness = 1.5f;
     }
 }
 
@@ -132,5 +136,6 @@ void ALB_Character::StopSprint()
     if (GetCharacterMovement())
     {
         GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+        NoiseLoudness = 0.8f;
     }
 }

@@ -48,6 +48,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     float FootstepDistanceThreshold;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
+    float NoiseLoudness;
 private:
     float DistanceTraveled;
 };
