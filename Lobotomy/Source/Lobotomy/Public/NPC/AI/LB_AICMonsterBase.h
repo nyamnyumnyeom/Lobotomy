@@ -39,7 +39,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float SetIdleTime = 5.0f;
 
+	// Blackboard의 Target값 할당 딜레이 적용여부. True일 경우 즉시 할당.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	bool bIsRuntimeSpawn = false;
+
 protected:
+	FTimerHandle SetBBTargetTimerHandle;
+
 	FTimerHandle LostSightTimerHandle;
 	FTimerHandle ChaseTimerHandle;
 	FTimerHandle PerceptionTimerHandle;
@@ -76,4 +82,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopBehaviorTree();
+
+protected:
+	void SetBB_Target();
 };

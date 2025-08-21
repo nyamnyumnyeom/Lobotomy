@@ -45,14 +45,13 @@ void ALB_AICMonsterBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (BB)
+	if (bIsRuntimeSpawn)
 	{
-		APawn* TargetActor = UGameplayStatics::GetPlayerPawn(this, 0);
-		if (TargetActor)
-		{
-			BB->SetValueAsObject("Target", TargetActor);
-			SetFocus(TargetActor);
-		}
+		SetBB_Target();
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimer(SetBBTargetTimerHandle, this, &ALB_AICMonsterBase::SetBB_Target, 1.5f, false);
 	}
 }
 
@@ -206,5 +205,18 @@ void ALB_AICMonsterBase::StopBehaviorTree()
 	if (BTC)
 	{
 		BTC->StopTree(EBTStopMode::Forced);
+	}
+}
+
+void ALB_AICMonsterBase::SetBB_Target()
+{
+	if (BB)
+	{
+		APawn* TargetActor = UGameplayStatics::GetPlayerPawn(this, 0);
+		if (TargetActor)
+		{
+			BB->SetValueAsObject("Target", TargetActor);
+			//SetFocus(TargetActor);
+		}
 	}
 }
