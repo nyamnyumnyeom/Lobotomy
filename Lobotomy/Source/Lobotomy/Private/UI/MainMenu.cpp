@@ -24,12 +24,6 @@ void UMainMenu::NativeConstruct()
 	{
 		ExitButton->OnClicked.AddDynamic(this, &UMainMenu::OnExitClicked);
 	}
-
-	if (MediaPlayer && MediaSource)
-	{
-		MediaPlayer->OpenSource(MediaSource);
-		MediaPlayer->Play();
-	}
 }
 
 void UMainMenu::OnStartClicked()

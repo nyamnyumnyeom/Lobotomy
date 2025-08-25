@@ -34,12 +34,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MainMenu")
 	FName StartLevelName = "ExampleMap";
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MainMenu|Video")
-	UMediaPlayer* MediaPlayer;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MainMenu|Video")
-	UMediaSource* MediaSource;
-
 private:
 	UFUNCTION()
 	void OnStartClicked();
