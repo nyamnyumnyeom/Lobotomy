@@ -8,6 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/LB_PlayerController.h"
+#include "Camera/CameraShakeBase.h"
+#include "GameFramework/PlayerController.h"
 
 ALB_Character::ALB_Character()
 {
@@ -36,6 +38,11 @@ ALB_Character::ALB_Character()
     DistanceTraveled = 0.0f;
 
     NoiseLoudness = 0.7f;
+
+    bIsWalking = false;
+    bIsRunning = false;
+    bWasWalking = false;
+    bWasRunning = false;
 }
 
 void ALB_Character::BeginPlay()
@@ -64,8 +71,39 @@ void ALB_Character::Tick(float DeltaTime)
             if (SoundToPlay)
             {
                 UGameplayStatics::PlaySoundAtLocation(this, SoundToPlay, GetActorLocation());
+
                 MakeNoise(NoiseLoudness, this, GetActorLocation());
             }
+        }
+    }
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    if (!PC) return;
+
+    if (HorizontalSpeed > 0.f && HorizontalSpeed <= WalkSpeed)
+    {
+        if (!bWasWalking)
+        {
+            StartWalking();
+            bWasWalking = true;
+            bWasRunning = false;
+        }
+    }
+    else if (HorizontalSpeed > WalkSpeed)
+    {
+        if (!bWasRunning)
+        {
+            StartRunning();
+            bWasWalking = false;
+            bWasRunning = true;
+        }
+    }
+    else
+    {
+        if (bWasWalking || bWasRunning)
+        {
+            StopMoving();
+            bWasWalking = false;
+            bWasRunning = false;
         }
     }
 }
@@ -137,5 +175,40 @@ void ALB_Character::StopSprint()
     {
         GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
         NoiseLoudness = 0.8f;
+    }
+}
+
+
+void ALB_Character::StartWalking()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (PC->PlayerCameraManager && WalkShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(WalkShakeClass, 1.0f);
+        }
+    }
+}
+
+void ALB_Character::StartRunning()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (PC->PlayerCameraManager && RunShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(RunShakeClass, 1.0f);
+        }
+    }
+}
+
+
+void ALB_Character::StopMoving()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (PC->PlayerCameraManager)
+        {
+            PC->PlayerCameraManager->StopAllCameraShakes(true);
+        }
     }
 }
