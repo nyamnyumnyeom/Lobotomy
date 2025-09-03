@@ -50,6 +50,24 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     float NoiseLoudness;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
+    TSubclassOf<UCameraShakeBase> WalkShakeClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
+    TSubclassOf<UCameraShakeBase> RunShakeClass;
+
+    void StartWalking();
+
+    void StartRunning();
+
+    void StopMoving();
+
 private:
+    bool bIsWalking;
+    bool bIsRunning;
+
+    bool bWasWalking;
+    bool bWasRunning;
     float DistanceTraveled;
 };
