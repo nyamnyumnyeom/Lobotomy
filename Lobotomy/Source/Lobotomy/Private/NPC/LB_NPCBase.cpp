@@ -5,7 +5,7 @@
 
 ALB_NPCBase::ALB_NPCBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Tags.Add(FName("NPC"));
 }

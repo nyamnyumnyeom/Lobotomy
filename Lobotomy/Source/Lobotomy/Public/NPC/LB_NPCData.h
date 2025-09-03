@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "LB_NPCData.generated.h"
 
- // ---------- ----- For Monster ----- ----------
+ // @@----------@ @-----@ For Monster @-----@ @----------@
 UENUM(BlueprintType)
 enum class EMonsterState : uint8
 {
@@ -14,9 +14,19 @@ enum class EMonsterState : uint8
 	Chase UMETA(DisplayName = "Chase"),
 	Disappeared UMETA(DisplayName = "Disappeared"),
 };
+// @----------@ @----------@ @----------@ @----------@ @----------@
+
+ // ---------- ----- For Manequin ----- ----------
+UENUM(BlueprintType)
+enum class EManequinPoseState : uint8
+{
+	Can UMETA(DisplayName = "Idle"),
+};
 // ---------- ---------- ---------- ---------- ----------
 
- // ---------- ----- For Patient ----- ----------
+// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+// @@----------@ @-----@ For Patient @-----@ @----------@
 UENUM(BlueprintType)
 enum class EPatientState : uint8
 {
@@ -24,4 +34,4 @@ enum class EPatientState : uint8
 	Strafe UMETA(DisplayName = "Strafe"),
 	Action UMETA(DisplayName = "Action"),
 };
-// ---------- ---------- ---------- ---------- ----------
+// @----------@ @----------@ @----------@ @----------@ @----------@
