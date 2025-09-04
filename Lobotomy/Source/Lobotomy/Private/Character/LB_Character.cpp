@@ -10,6 +10,8 @@
 #include "Character/LB_PlayerController.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/PlayerController.h"
+#include "Blueprint/UserWidget.h"
+#include "InteractComponent.h"
 
 ALB_Character::ALB_Character()
 {
@@ -43,6 +45,10 @@ ALB_Character::ALB_Character()
     bIsRunning = false;
     bWasWalking = false;
     bWasRunning = false;
+
+    InteractionTraceDistance = 300.0f;
+    InteractionSphereRadius = 30.0f;
+    CurrentInteractActor = nullptr;
 }
 
 void ALB_Character::BeginPlay()
@@ -55,7 +61,6 @@ void ALB_Character::BeginPlay()
 void ALB_Character::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
     const FVector Velocity = GetCharacterMovement()->Velocity;
     const float HorizontalSpeed = FVector(Velocity.X, Velocity.Y, 0).Size();
     const float DistanceThisFrame = HorizontalSpeed * DeltaTime;
@@ -105,6 +110,45 @@ void ALB_Character::Tick(float DeltaTime)
             bWasWalking = false;
             bWasRunning = false;
         }
+    }
+
+    FVector Start = FirstPersonCamera->GetComponentLocation();
+    FVector End = Start + (FirstPersonCamera->GetForwardVector() * InteractionTraceDistance);
+    FHitResult HitResult;
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(this);
+
+    bool bHit = GetWorld()->SweepSingleByChannel(
+        HitResult,
+        Start,
+        End,
+        FQuat::Identity,
+        ECC_Visibility,
+        FCollisionShape::MakeSphere(InteractionSphereRadius),
+        Params
+    );
+
+    AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
+
+    if (HitActor != CurrentInteractActor)
+    {
+
+        if (CurrentInteractActor)
+        {
+            if (UInteractComponent* OldInteractComp = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
+            {
+                OldInteractComp->HideWidget();
+            }
+        }
+
+        if (HitActor)
+        {
+            if (UInteractComponent* NewInteractComp = HitActor->FindComponentByClass<UInteractComponent>())
+            {
+                NewInteractComp->ShowWidget();
+            }
+        }
+        CurrentInteractActor = HitActor;
     }
 }
 
