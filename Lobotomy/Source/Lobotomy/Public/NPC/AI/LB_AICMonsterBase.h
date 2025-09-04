@@ -21,15 +21,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
 	class UAISenseConfig_Sight* SightConfig;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
-	class UAISenseConfig_Hearing* HearingConfig;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
+	class UAISenseConfig_Hearing* HearingConfig;*/
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float SightDistance = 1000.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	float HearingDistance = 1200.0f;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float HearingDistance = 1200.0f;*/
 
 	// Perception의 Sight를 벗어난 뒤 해당 초만큼 지나면 플레이어 감지를 잃고, Investigation 상태로 변경 후 마지막 감지 위치로 이동.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
@@ -67,9 +67,6 @@ public:
 	void SetState_Investigation_Hear(FVector Location);
 
 	UFUNCTION(BlueprintCallable)
-	void SetState_Investigation_Sight();
-
-	UFUNCTION(BlueprintCallable)
 	void SetState_Chase();
 
 public:
@@ -85,4 +82,5 @@ public:
 
 protected:
 	void SetBB_Target();
+
 };
