@@ -9,6 +9,7 @@ class USpringArmComponent;
 class UInputAction;
 struct FInputActionValue;
 class USoundBase;
+class UInteractComponent;
 
 UCLASS()
 class LOBOTOMY_API ALB_Character : public ACharacter
@@ -62,6 +63,17 @@ public:
     void StartRunning();
 
     void StopMoving();
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+    float InteractionTraceDistance;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+    float InteractionSphereRadius;
+
+    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Interaction")
+    TObjectPtr<AActor> CurrentInteractActor;
+
 
 private:
     bool bIsWalking;
