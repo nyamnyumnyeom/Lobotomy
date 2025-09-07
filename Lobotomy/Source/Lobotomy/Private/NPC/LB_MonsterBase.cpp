@@ -5,7 +5,7 @@
 
 ALB_MonsterBase::ALB_MonsterBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Tags.Add(FName("Monster"));
 }

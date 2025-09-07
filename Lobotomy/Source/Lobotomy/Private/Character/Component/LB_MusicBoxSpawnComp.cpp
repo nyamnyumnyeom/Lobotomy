@@ -1,0 +1,67 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Character/Component/LB_MusicBoxSpawnComp.h"
+#include "NPC/LB_TargetPoint_MusicBox.h"
+
+ULB_MusicBoxSpawnComp::ULB_MusicBoxSpawnComp()
+{
+	PrimaryComponentTick.bCanEverTick = false;
+
+}
+
+void ULB_MusicBoxSpawnComp::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
+{
+	AActor* MyOwnerPawn = GetOwner();
+	if (!MyOwnerPawn) return;
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	FVector Start = MyOwnerPawn->GetActorLocation();
+	float Radius = SphereTraceRadius;
+
+	TArray<FHitResult> HitResults;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
+
+	bool bHit = World->SweepMultiByChannel(
+		HitResults,
+		Start,
+		Start,
+		FQuat::Identity,
+		ECC_WorldDynamic,
+		Sphere
+	);
+
+	if (bHit)
+	{
+		ALB_TargetPoint_MusicBox* NearestPoint = nullptr;
+		float MinDist = FLT_MAX;
+
+		for (const FHitResult& Hit : HitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+			if (HitActor && HitActor->ActorHasTag("MusicBoxPoint"))
+			{
+				float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
+				if (Dist < MinDist)
+				{
+					MinDist = Dist;
+					NearestPoint = Cast<ALB_TargetPoint_MusicBox>(HitActor);
+				}
+			}
+		}
+
+		if (NearestPoint)
+		{
+			NearestPoint->MusicBoxSystemActivate();
+		}
+	}
+}
+

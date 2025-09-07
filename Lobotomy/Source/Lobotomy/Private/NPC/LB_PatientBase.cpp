@@ -5,7 +5,7 @@
 
 ALB_PatientBase::ALB_PatientBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Tags.Add(FName("Patient"));
 }

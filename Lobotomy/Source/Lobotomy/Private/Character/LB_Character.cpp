@@ -8,6 +8,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/LB_PlayerController.h"
+#include "Camera/CameraShakeBase.h"
+#include "GameFramework/PlayerController.h"
+#include "Blueprint/UserWidget.h"
+#include "InteractComponent.h"
 
 ALB_Character::ALB_Character()
 {
@@ -36,6 +40,15 @@ ALB_Character::ALB_Character()
     DistanceTraveled = 0.0f;
 
     NoiseLoudness = 0.7f;
+
+    bIsWalking = false;
+    bIsRunning = false;
+    bWasWalking = false;
+    bWasRunning = false;
+
+    InteractionTraceDistance = 300.0f;
+    InteractionSphereRadius = 30.0f;
+    CurrentInteractActor = nullptr;
 }
 
 void ALB_Character::BeginPlay()
@@ -48,7 +61,6 @@ void ALB_Character::BeginPlay()
 void ALB_Character::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
     const FVector Velocity = GetCharacterMovement()->Velocity;
     const float HorizontalSpeed = FVector(Velocity.X, Velocity.Y, 0).Size();
     const float DistanceThisFrame = HorizontalSpeed * DeltaTime;
@@ -64,9 +76,79 @@ void ALB_Character::Tick(float DeltaTime)
             if (SoundToPlay)
             {
                 UGameplayStatics::PlaySoundAtLocation(this, SoundToPlay, GetActorLocation());
+
                 MakeNoise(NoiseLoudness, this, GetActorLocation());
             }
         }
+    }
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    if (!PC) return;
+
+    if (HorizontalSpeed > 0.f && HorizontalSpeed <= WalkSpeed)
+    {
+        if (!bWasWalking)
+        {
+            StartWalking();
+            bWasWalking = true;
+            bWasRunning = false;
+        }
+    }
+    else if (HorizontalSpeed > WalkSpeed)
+    {
+        if (!bWasRunning)
+        {
+            StartRunning();
+            bWasWalking = false;
+            bWasRunning = true;
+        }
+    }
+    else
+    {
+        if (bWasWalking || bWasRunning)
+        {
+            StopMoving();
+            bWasWalking = false;
+            bWasRunning = false;
+        }
+    }
+
+    FVector Start = FirstPersonCamera->GetComponentLocation();
+    FVector End = Start + (FirstPersonCamera->GetForwardVector() * InteractionTraceDistance);
+    FHitResult HitResult;
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(this);
+
+    bool bHit = GetWorld()->SweepSingleByChannel(
+        HitResult,
+        Start,
+        End,
+        FQuat::Identity,
+        ECC_Visibility,
+        FCollisionShape::MakeSphere(InteractionSphereRadius),
+        Params
+    );
+
+    AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
+
+    if (HitActor != CurrentInteractActor)
+    {
+
+        if (CurrentInteractActor)
+        {
+            if (UInteractComponent* OldInteractComp = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
+            {
+                OldInteractComp->HideWidget();
+            }
+        }
+
+        if (HitActor)
+        {
+            if (UInteractComponent* NewInteractComp = HitActor->FindComponentByClass<UInteractComponent>())
+            {
+                NewInteractComp->ShowWidget();
+            }
+        }
+        CurrentInteractActor = HitActor;
     }
 }
 
@@ -137,5 +219,40 @@ void ALB_Character::StopSprint()
     {
         GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
         NoiseLoudness = 0.8f;
+    }
+}
+
+
+void ALB_Character::StartWalking()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (PC->PlayerCameraManager && WalkShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(WalkShakeClass, 1.0f);
+        }
+    }
+}
+
+void ALB_Character::StartRunning()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (PC->PlayerCameraManager && RunShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(RunShakeClass, 1.0f);
+        }
+    }
+}
+
+
+void ALB_Character::StopMoving()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (PC->PlayerCameraManager)
+        {
+            PC->PlayerCameraManager->StopAllCameraShakes(true);
+        }
     }
 }

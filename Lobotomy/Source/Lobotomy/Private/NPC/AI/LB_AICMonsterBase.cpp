@@ -4,7 +4,7 @@
 #include "NPC/AI/LB_AICMonsterBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISenseConfig_Sight.h"
-#include "Perception/AISenseConfig_Hearing.h"
+//#include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -27,15 +27,15 @@ ALB_AICMonsterBase::ALB_AICMonsterBase()
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
-	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
+	/*HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
 	HearingConfig->HearingRange = HearingDistance;
 	HearingConfig->SetMaxAge(5.0f);
 	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
 	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
-	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;*/
 
 	AIPerception->ConfigureSense(*SightConfig);
-	AIPerception->ConfigureSense(*HearingConfig);
+	//AIPerception->ConfigureSense(*HearingConfig);
 	AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
 
 	AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ALB_AICMonsterBase::OnPerceptionUpdated);
@@ -45,14 +45,17 @@ void ALB_AICMonsterBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (bIsRuntimeSpawn)
+	/*if (bIsRuntimeSpawn)
 	{
 		SetBB_Target();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(SetBBTargetTimerHandle, this, &ALB_AICMonsterBase::SetBB_Target, 1.5f, false);
-	}
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(SetBBTargetTimerHandle, this, &ALB_AICMonsterBase::SetBB_Target, 1.0f, false);
+		}
+	}*/
 }
 
 void ALB_AICMonsterBase::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -65,10 +68,11 @@ void ALB_AICMonsterBase::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus
 		{
 			GetWorld()->GetTimerManager().ClearTimer(LostSightTimerHandle);
 
-			SetState_Investigation_Sight();
+			SetBB_Target();
+			SetState_Chase();
 		}
 
-		if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
+		/*if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
 		{
 			FVector SoundLocation = Stimulus.StimulusLocation;
 			FVector MyLocation = GetPawn()->GetActorLocation();
@@ -115,12 +119,12 @@ void ALB_AICMonsterBase::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus
 					}
 				}
 			}
-		}
+		}*/
 
 	}
 	else
 	{
-		if (Stimulus.Type == UAISense::GetSenseID(UAISense_Sight::StaticClass()))
+		/*if (Stimulus.Type == UAISense::GetSenseID(UAISense_Sight::StaticClass()))
 		{
 			GetWorld()->GetTimerManager().SetTimer(LostSightTimerHandle, this, &ALB_AICMonsterBase::OnLostSightTimeout, LostSightTime, false);
 
@@ -128,7 +132,7 @@ void ALB_AICMonsterBase::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus
 
 			BB->SetValueAsVector("LastSeenLocation", Stimulus.StimulusLocation);
 			BB->SetValueAsBool("IsSeePlayer", false);
-		}
+		}*/
 	}
 }
 
@@ -149,18 +153,6 @@ void ALB_AICMonsterBase::SetState_Investigation_Hear(FVector Location)
 	}
 
 	BB->SetValueAsVector("LastSeenLocation", Location);
-}
-
-void ALB_AICMonsterBase::SetState_Investigation_Sight()
-{
-	if (!BB) return;
-
-	if (static_cast<EMonsterState>(BB->GetValueAsEnum("CurrentState")) == EMonsterState::Idle)
-	{
-		BB->SetValueAsEnum("CurrentState", static_cast<uint8>(EMonsterState::Investigation));
-	}
-
-	BB->SetValueAsBool("IsSeePlayer", true);
 }
 
 void ALB_AICMonsterBase::SetState_Chase()
@@ -186,7 +178,7 @@ void ALB_AICMonsterBase::SetPerceptionSwitch(bool Value)
 		if (AIPerception)
 		{
 			AIPerception->SetSenseEnabled(UAISense_Sight::StaticClass(), true);
-			AIPerception->SetSenseEnabled(UAISense_Sight::StaticClass(), true);
+			//AIPerception->SetSenseEnabled(UAISense_Sight::StaticClass(), true);
 		}
 	}
 	else
@@ -194,7 +186,7 @@ void ALB_AICMonsterBase::SetPerceptionSwitch(bool Value)
 		if (AIPerception)
 		{
 			AIPerception->SetSenseEnabled(UAISense_Sight::StaticClass(), false);
-			AIPerception->SetSenseEnabled(UAISense_Hearing::StaticClass(), false);
+			//AIPerception->SetSenseEnabled(UAISense_Hearing::StaticClass(), false);
 		}
 	}
 }
@@ -212,7 +204,7 @@ void ALB_AICMonsterBase::SetBB_Target()
 {
 	if (BB)
 	{
-		APawn* TargetActor = UGameplayStatics::GetPlayerPawn(this, 0);
+		APawn* TargetActor = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 		if (TargetActor)
 		{
 			BB->SetValueAsObject("Target", TargetActor);

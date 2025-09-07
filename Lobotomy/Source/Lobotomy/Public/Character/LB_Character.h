@@ -9,6 +9,7 @@ class USpringArmComponent;
 class UInputAction;
 struct FInputActionValue;
 class USoundBase;
+class UInteractComponent;
 
 UCLASS()
 class LOBOTOMY_API ALB_Character : public ACharacter
@@ -50,6 +51,35 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     float NoiseLoudness;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
+    TSubclassOf<UCameraShakeBase> WalkShakeClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
+    TSubclassOf<UCameraShakeBase> RunShakeClass;
+
+    void StartWalking();
+
+    void StartRunning();
+
+    void StopMoving();
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+    float InteractionTraceDistance;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+    float InteractionSphereRadius;
+
+    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Interaction")
+    TObjectPtr<AActor> CurrentInteractActor;
+
+
 private:
+    bool bIsWalking;
+    bool bIsRunning;
+
+    bool bWasWalking;
+    bool bWasRunning;
     float DistanceTraveled;
 };
