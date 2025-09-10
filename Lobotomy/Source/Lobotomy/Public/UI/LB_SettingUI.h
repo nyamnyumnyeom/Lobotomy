@@ -16,6 +16,7 @@ class LOBOTOMY_API ULB_SettingUI : public UUserWidget
 
 public:
     virtual void NativeConstruct() override;
+    virtual void SynchronizeProperties() override;
 
     UPROPERTY(meta = (BindWidget)) USlider* SliderVolume;
     UPROPERTY(meta = (BindWidget)) USlider* SliderSensitivity;

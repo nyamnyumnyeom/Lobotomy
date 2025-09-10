@@ -9,15 +9,24 @@
 void ULB_SettingUI::NativeConstruct()
 {
     Super::NativeConstruct();
+    UE_LOG(LogTemp, Warning, TEXT("ULB_SettingUI::NativeConstruct on!"));
+
+    if (!ComboAA) {
+        UE_LOG(LogTemp, Error, TEXT("ComboAA is nullptr"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("ComboAA valid"));
+
+    if (!ComboResolution) {
+        UE_LOG(LogTemp, Error, TEXT("ComboResolution is nullptr"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("ComboResolution valid"));
 
     ULB_Setting* S = ULB_Setting::Get();
     if (!S) return;
 
-    // ------------------
-    // 슬라이더 초기값 설정
     if (SliderVolume)      SliderVolume->SetValue(S->MasterVolume);
     if (SliderSensitivity) SliderSensitivity->SetValue(S->MouseSensitivity);
-    if (SliderBrightness)  SliderBrightness->SetValue(S->Brightness - 0.5f); // 0~1로 맞춤
+    if (SliderBrightness)  SliderBrightness->SetValue(S->Brightness - 0.5f);
 
     SliderVolume->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnVolumeChanged);
     SliderSensitivity->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnSensitivityChanged);
@@ -33,6 +42,7 @@ void ULB_SettingUI::NativeConstruct()
             Combo->AddOption("High");
             Combo->AddOption("Epic");
             Combo->AddOption("Cinematic");
+            Combo->RefreshOptions();
         };
 
     FillQuality(ComboAA);
@@ -45,6 +55,7 @@ void ULB_SettingUI::NativeConstruct()
     ComboWindowMode->AddOption("Fullscreen");
     ComboWindowMode->AddOption("Windowed");
     ComboWindowMode->AddOption("WindowedFullscreen");
+    ComboWindowMode->RefreshOptions();
 
     ComboResolution->ClearOptions();
     ComboResolution->AddOption("360p");
@@ -52,6 +63,7 @@ void ULB_SettingUI::NativeConstruct()
     ComboResolution->AddOption("1080p");
     ComboResolution->AddOption("1440p");
     ComboResolution->AddOption("2160p");
+    ComboResolution->RefreshOptions();
 
     if (ComboAA)       ComboAA->SetSelectedIndex(S->GetAntiAliasingQuality());
     if (ComboPost)     ComboPost->SetSelectedIndex(S->GetPostProcessingQuality());
@@ -88,6 +100,8 @@ void ULB_SettingUI::NativeConstruct()
     ComboTexture->OnSelectionChanged.AddDynamic(this, &ULB_SettingUI::OnTextureChanged);
     ComboWindowMode->OnSelectionChanged.AddDynamic(this, &ULB_SettingUI::OnWindowModeChanged);
     ComboResolution->OnSelectionChanged.AddDynamic(this, &ULB_SettingUI::OnResolutionChanged);
+
+    SynchronizeProperties();
 }
 
 
@@ -137,4 +151,32 @@ int32 ULB_SettingUI::ParseQuality(const FString& Item) const
     if (Item.Contains("Epic"))      return 3;
     if (Item.Contains("Cinematic")) return 4;
     return 2;
+}
+
+void ULB_SettingUI::SynchronizeProperties()
+{
+    Super::SynchronizeProperties();
+
+    auto FillQuality = [](UComboBoxString* Combo)
+        {
+            if (!Combo) return;
+            Combo->ClearOptions();
+            Combo->AddOption("Low");
+            Combo->AddOption("Medium");
+            Combo->AddOption("High");
+            Combo->AddOption("Epic");
+            Combo->AddOption("Cinematic");
+            Combo->RefreshOptions();
+        };
+
+    FillQuality(ComboAA);
+    ComboAA->RefreshOptions();
+    FillQuality(ComboPost);
+    ComboPost->RefreshOptions();
+    FillQuality(ComboShadow);
+    ComboShadow->RefreshOptions();
+    FillQuality(ComboTexture);
+    ComboTexture->RefreshOptions();
+
+    UE_LOG(LogTemp, Error, TEXT("SynchronizeProperties on!!!!!!"));
 }
