@@ -15,11 +15,11 @@ class LOBOTOMY_API ALB_Monster_Manequin : public ALB_MonsterBase
 	GENERATED_BODY()
 	
 public: 
-	// 조우시 재생시킬 사운드
+	// 조우시 재생시킬 사운드.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	 USoundCue* SoundCue_Meet;
 
-	 // 순간이동시 재생시킬 사운드
+	 // 순간이동시 재생시킬 사운드.
 	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	 USoundCue* SoundCue_Disappear;
 

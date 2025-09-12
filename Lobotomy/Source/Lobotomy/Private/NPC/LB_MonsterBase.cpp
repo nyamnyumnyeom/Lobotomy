@@ -9,3 +9,13 @@ ALB_MonsterBase::ALB_MonsterBase()
 
 	Tags.Add(FName("Monster"));
 }
+
+bool ALB_MonsterBase::CheakShouldDestroy_Implementation()
+{
+	return false;
+}
+
+void ALB_MonsterBase::DisappearLogic()
+{
+
+}

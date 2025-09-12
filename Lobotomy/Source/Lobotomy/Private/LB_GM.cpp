@@ -12,3 +12,19 @@ void ALB_GM::BeginPlay()
 {
     Super::BeginPlay();
 }
+
+void ALB_GM::AddKnockCount()
+{
+	KnockCount++;
+
+	if (KnockCount >= PatienceLimit)
+	{
+		ShouldChainSawManSpawn = FMath::RandBool();
+	}
+}
+
+void ALB_GM::ResetKnockCount()
+{
+	KnockCount = 0;
+	ShouldChainSawManSpawn = false;
+}

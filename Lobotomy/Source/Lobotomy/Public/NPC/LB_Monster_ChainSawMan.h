@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,8 +15,31 @@ class LOBOTOMY_API ALB_Monster_ChainSawMan : public ALB_MonsterBase
 	GENERATED_BODY()
 	
 public:
+	// 스폰 후 유지 가능한 최소 시간.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float SpawnDuration = 60.0f;
+
+protected:
+	// 스폰 유지 시간이 초과되었는가?
+	bool bIsSpawnDurationOver = false;
+
+protected:
+	FTimerHandle SpawnDurationTimerHandle;
+
+public:
 	ALB_Monster_ChainSawMan();
 
 protected:
+	virtual void BeginPlay() override;
 
+public:
+	virtual bool CheakShouldDestroy_Implementation() override;
+
+public:
+	virtual void DisappearLogic() override;
+
+protected:
+	void SetSpawnWhetherToGM(bool Value);
+
+	void TimeupSpawnDuration();
 };
