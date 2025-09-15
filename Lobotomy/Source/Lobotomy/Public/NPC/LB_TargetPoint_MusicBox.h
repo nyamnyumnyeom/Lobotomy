@@ -19,7 +19,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawn")
 	UBillboardComponent* ChainSawManBillboard;
 
-	// 전기톱 살인마 스폰 위치
+	// 전기톱 살인마 스폰 위치 (화살표)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawn")
 	UArrowComponent* ChainSawManSpawnPoint;
 

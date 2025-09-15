@@ -1,0 +1,58 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Engine/TargetPoint.h"
+#include "LB_TargetPoint_HAS.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class LOBOTOMY_API ALB_TargetPoint_HAS : public ATargetPoint
+{
+	GENERATED_BODY()
+
+public:
+	// 방 안에서 스폰시 위치
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawn")
+	UBillboardComponent* InsideBillboard;
+
+	// 방 안에서 스폰시 위치 (화살표)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawn")
+	UArrowComponent* InsideSpawnPoint;
+
+	// 숨바꼭질 장인 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> HideAndSeekerClass;
+
+	// 전기톱 살인마 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> ChainSawManClass;
+
+protected:
+	FTimerHandle HASTimerHandle;
+	FTimerHandle HASDestroyTimerHandle;
+
+protected:
+	UPROPERTY()
+	class ALB_MonsterHideAndSeeker* SpawnedHideAndSeeker;
+
+	UPROPERTY()
+	class ALB_Monster_ChainSawMan* SpawnedChainSawMan;
+
+public:
+	ALB_TargetPoint_HAS();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void HASSystemActivate(bool bIsOutDoor);
+
+protected:
+	void SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsOutDoor);
+
+};

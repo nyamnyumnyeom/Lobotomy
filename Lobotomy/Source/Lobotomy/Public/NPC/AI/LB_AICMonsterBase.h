@@ -80,7 +80,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopBehaviorTree();
 
-protected:
+public:
 	void SetBB_Target();
 
 };
