@@ -1,17 +1,19 @@
 #include "InteractComponent.h"
-#include "Components/WidgetComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
-#include "Blueprint/UserWidget.h"
 
 UInteractComponent::UInteractComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
-	InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
-	InteractionWidget->SetDrawSize(FVector2D(200.f, 100.f));
-	InteractionWidget->SetVisibility(false);
+
+	InteractionText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("InteractionText"));
+	InteractionText->SetHorizontalAlignment(EHTA_Center);
+	InteractionText->SetVerticalAlignment(EVRTA_TextCenter);
+	InteractionText->SetTextRenderColor(FColor::White);
+	InteractionText->SetWorldSize(30.f);
+	InteractionText->SetVisibility(false);
 }
 
 void UInteractComponent::BeginPlay()
@@ -22,16 +24,17 @@ void UInteractComponent::BeginPlay()
 	{
 		if (USceneComponent* Root = Owner->GetRootComponent())
 		{
-			InteractionWidget->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-			InteractionWidget->SetRelativeLocation(WidgetStaticOffset);
+			InteractionText->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+			InteractionText->SetRelativeLocation(WidgetStaticOffset);
 		}
 	}
 
-	if (InteractionWidget && DefaultWidgetClass)
+	// 초기 텍스트 설정
+	if (InteractionText)
 	{
-		InteractionWidget->SetWidgetClass(DefaultWidgetClass);
+		InteractionText->SetText(DisplayText);
+		InteractionText->SetVisibility(false);
 	}
-	InteractionWidget->SetVisibility(false);
 }
 
 void UInteractComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -45,9 +48,9 @@ void UInteractComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UInteractComponent::ShowWidget()
 {
-	if (InteractionWidget)
+	if (InteractionText)
 	{
-		InteractionWidget->SetVisibility(true);
+		InteractionText->SetVisibility(true);
 
 		if (GetWorld())
 		{
@@ -64,9 +67,9 @@ void UInteractComponent::ShowWidget()
 
 void UInteractComponent::HideWidget()
 {
-	if (InteractionWidget)
+	if (InteractionText)
 	{
-		InteractionWidget->SetVisibility(false);
+		InteractionText->SetVisibility(false);
 		if (GetWorld())
 		{
 			GetWorld()->GetTimerManager().ClearTimer(LookAtTimerHandle);
@@ -76,7 +79,7 @@ void UInteractComponent::HideWidget()
 
 void UInteractComponent::UpdateWidgetTransform()
 {
-	if (!InteractionWidget || !InteractionWidget->IsVisible()) return;
+	if (!InteractionText || !InteractionText->IsVisible()) return;
 
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	AActor* Owner = GetOwner();
@@ -88,9 +91,20 @@ void UInteractComponent::UpdateWidgetTransform()
 	FVector DirectionToPlayer = (PlayerLocation - OwnerLocation).GetSafeNormal();
 
 	FVector NewRelativeLocation = (DirectionToPlayer * WidgetDistance) + WidgetStaticOffset;
-	InteractionWidget->SetRelativeLocation(NewRelativeLocation);
+	InteractionText->SetRelativeLocation(NewRelativeLocation);
 
-	FVector ToPlayerFromWidget = PlayerLocation - InteractionWidget->GetComponentLocation();
-	FRotator LookAtRot = ToPlayerFromWidget.Rotation();
-	InteractionWidget->SetWorldRotation(LookAtRot);
+	FVector ToPlayerFromText = PlayerLocation - InteractionText->GetComponentLocation();
+	FRotator LookAtRot = ToPlayerFromText.Rotation();
+	InteractionText->SetWorldRotation(LookAtRot);
+}
+
+void UInteractComponent::Interact(AActor* InteractingActor)
+{
+	if (!InteractingActor) return;
+
+	UE_LOG(LogTemp, Error, TEXT("%s 상호작용됨 - %s"),
+		*InteractingActor->GetName(), *GetOwner()->GetName());
+
+	// 여기서 실제 게임 로직 추가 가능
+	// 예: 아이템 획득, 문 열기, 버튼 작동 등
 }

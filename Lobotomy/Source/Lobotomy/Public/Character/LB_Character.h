@@ -10,6 +10,7 @@ class UInputAction;
 struct FInputActionValue;
 class USoundBase;
 class UInteractComponent;
+class UAudioComponent;
 
 UCLASS()
 class LOBOTOMY_API ALB_Character : public ACharacter
@@ -40,6 +41,7 @@ public:
 
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
+    void Interact(const FInputActionValue& Value);
     void StartSprint();
     void StopSprint();
 
@@ -82,4 +84,39 @@ private:
     bool bWasWalking;
     bool bWasRunning;
     float DistanceTraveled;
+
+//심장소리로직
+public:
+    void StartHeartbeat();
+    void StopHeartbeat();
+    void SetHeartbeatTarget(AActor* NewTarget);
+
+protected:
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    USoundBase* HeartbeatSound;
+
+    UPROPERTY()
+    TObjectPtr<UAudioComponent> HeartbeatAudioComponent;
+
+    UPROPERTY()
+    TObjectPtr<AActor> HeartbeatTarget;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinDistance = 10.f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxDistance = 250.f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinVolume = 0.2f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxVolume = 1.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinPitch = 0.5f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxPitch = 2.0f;
 };
