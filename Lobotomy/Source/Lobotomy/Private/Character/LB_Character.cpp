@@ -12,6 +12,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "InteractComponent.h"
+#include "Components/AudioComponent.h"
 
 ALB_Character::ALB_Character()
 {
@@ -150,6 +151,17 @@ void ALB_Character::Tick(float DeltaTime)
         }
         CurrentInteractActor = HitActor;
     }
+
+    if (HeartbeatAudioComponent.Get() && HeartbeatTarget)
+    {
+        float Distance = FVector::Distance(GetActorLocation(), HeartbeatTarget->GetActorLocation());
+
+        float Alpha = 1.f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.f, 1.f);
+        float CurveAlpha = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
+        float NewVolume = FMath::Lerp(MinVolume, MaxVolume, CurveAlpha);
+
+        HeartbeatAudioComponent.Get()->SetVolumeMultiplier(NewVolume);
+    }
 }
 
 void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -174,6 +186,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->SprintAction, ETriggerEvent::Started, this, &ALB_Character::StartSprint);
                 EnhancedInput->BindAction(PlayerController->SprintAction, ETriggerEvent::Completed, this, &ALB_Character::StopSprint);
+            }
+            if (PlayerController->InteractAction)
+            {
+                EnhancedInput->BindAction(PlayerController->InteractAction, ETriggerEvent::Triggered, this, &ALB_Character::Interact);
             }
         }
     }
@@ -202,6 +218,19 @@ void ALB_Character::Look(const FInputActionValue& Value)
     FVector2D LookAxisVector = Value.Get<FVector2D>();
     AddControllerYawInput(LookAxisVector.X);   // 좌우 회전
     AddControllerPitchInput(LookAxisVector.Y); // 위아래 회전
+}
+
+void ALB_Character::Interact(const FInputActionValue& Value)
+{
+    if (CurrentInteractActor)
+    {
+        if (UInteractComponent* InterComp = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InteractComponent found on %s"), *CurrentInteractActor->GetName());
+            InterComp->Interact(this);
+        }
+
+    }
 }
 
 void ALB_Character::StartSprint()
@@ -255,4 +284,34 @@ void ALB_Character::StopMoving()
             PC->PlayerCameraManager->StopAllCameraShakes(true);
         }
     }
+}
+
+void ALB_Character::StartHeartbeat()
+{
+    if (HeartbeatSound && !HeartbeatAudioComponent)
+    {
+        HeartbeatAudioComponent = UGameplayStatics::SpawnSound2D(
+            this,
+            HeartbeatSound,
+            MinVolume,
+            1.f,
+            0.f,
+            nullptr,
+            true
+        );
+    }
+}
+
+void ALB_Character::StopHeartbeat()
+{
+    if (HeartbeatAudioComponent.Get())
+    {
+        HeartbeatAudioComponent.Get()->Stop();
+        HeartbeatAudioComponent = nullptr;
+    }
+}
+
+void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
+{
+    HeartbeatTarget = NewTarget;
 }

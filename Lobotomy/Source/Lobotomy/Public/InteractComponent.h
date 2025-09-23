@@ -5,6 +5,7 @@
 #include "InteractComponent.generated.h"
 
 class UWidgetComponent;
+class UTextRenderComponent;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LOBOTOMY_API UInteractComponent : public UActorComponent
@@ -17,15 +18,18 @@ public:
 	void ShowWidget();
 	void HideWidget();
 
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void Interact(AActor* InteractingActor);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction|Components")
-	TObjectPtr<UWidgetComponent> InteractionWidget;
+	TObjectPtr<UTextRenderComponent> InteractionText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
-	TSubclassOf<UUserWidget> DefaultWidgetClass;
+	FText DisplayText = FText::FromString(TEXT("Press E"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
 	float WidgetDistance = 100.f;
