@@ -4,6 +4,8 @@
 #include "GameFramework/GameMode.h"
 #include "LB_GM.generated.h"
 
+class ALB_Monster_ChainSawMan;
+
 UCLASS()
 class LOBOTOMY_API ALB_GM : public AGameMode
 {
@@ -11,6 +13,9 @@ class LOBOTOMY_API ALB_GM : public AGameMode
 	
 	// ---------- 몬스터 스폰 상태 ----------
 protected:
+	// 스폰중인 전기톱 살인마 레퍼런스
+	TWeakObjectPtr<ALB_Monster_ChainSawMan> ChainSawManRef;
+
 	// 숨바꼭질 장인이 스폰되어 있는가?
 	bool bIsHidAndSeekerSpawned = false;
 
@@ -53,11 +58,20 @@ public:
 	// 전기톱 살인마 스폰 여부 설정
 	FORCEINLINE void SetIsChainSawManSpawned(bool Value) { bIsChainSawManSpawned = Value; }
 
+	// 전기톱 살인마 레퍼런스 등록
+	FORCEINLINE void SetChainSawManRef(TWeakObjectPtr<ALB_Monster_ChainSawMan> CSM) { ChainSawManRef = CSM; }
+
+	// 전기톱 살인마 위치 재설정
+	void SetChainSawManTransform(FTransform NewTransform);
+
 
 	// 전기톱 살인마가 개빡친 상황인가?
 	FORCEINLINE bool GetShouldChainSawManSpawn() const { return ShouldChainSawManSpawn; }
 
 	// 전기톱 살인마가 스폰되어 있는가?
 	FORCEINLINE bool GetIsChainSawManSpawned() const { return bIsChainSawManSpawned; }
+
+	// 전기톱 살인마가 플레이어와 내비메시 길찾기 경로상 얼만큼 떨어져 있는가?
+	float GetChainSawManToPlayerDistance();
 	// ---------- -------------------- ----------
 };

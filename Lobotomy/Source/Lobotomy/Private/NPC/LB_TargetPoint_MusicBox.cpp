@@ -7,6 +7,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BillboardComponent.h"
 #include "GameFramework/Character.h"
+#include "LB_GM.h"
 
 ALB_TargetPoint_MusicBox::ALB_TargetPoint_MusicBox()
 {
@@ -71,10 +72,21 @@ void ALB_TargetPoint_MusicBox::MusicBoxTimeup()
 {
 	if (ChainSawManClass && ChainSawManSpawnPoint)
     {
-        FVector SpawnLocation = ChainSawManSpawnPoint->GetComponentLocation();
-        FRotator SpawnRotation = ChainSawManSpawnPoint->GetComponentRotation();
+		ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (GM)
+		{
+			if (!GM->GetIsChainSawManSpawned())
+			{
+				FVector SpawnLocation = ChainSawManSpawnPoint->GetComponentLocation();
+				FRotator SpawnRotation = ChainSawManSpawnPoint->GetComponentRotation();
 
-        GetWorld()->SpawnActor<AActor>(ChainSawManClass, SpawnLocation, SpawnRotation);
+				GetWorld()->SpawnActor<AActor>(ChainSawManClass, SpawnLocation, SpawnRotation);
+			}
+			else
+			{
+
+			}
+		}
     }
 }
 

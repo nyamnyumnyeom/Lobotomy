@@ -15,12 +15,7 @@ void ALB_Monster_ChainSawMan::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetSpawnWhetherToGM(true);
-
-	if (GetWorld())
-	{
-		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_ChainSawMan::TimeupSpawnDuration, SpawnDuration, false);
-	}
+	SpawnLogic();
 }
 
 bool ALB_Monster_ChainSawMan::CheakShouldDestroy_Implementation()
@@ -42,6 +37,17 @@ bool ALB_Monster_ChainSawMan::CheakShouldDestroy_Implementation()
 	}
 
 	return false;
+}
+
+void ALB_Monster_ChainSawMan::SpawnLogic()
+{
+	SetSpawnWhetherToGM(true);
+
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(SpawnDurationTimerHandle);
+		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_ChainSawMan::TimeupSpawnDuration, SpawnDuration, false);
+	}
 }
 
 void ALB_Monster_ChainSawMan::DisappearLogic()
