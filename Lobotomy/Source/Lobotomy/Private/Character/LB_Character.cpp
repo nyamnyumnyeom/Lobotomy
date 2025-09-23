@@ -152,15 +152,19 @@ void ALB_Character::Tick(float DeltaTime)
         CurrentInteractActor = HitActor;
     }
 
-    if (HeartbeatAudioComponent.Get() && HeartbeatTarget)
+    if (HeartbeatAudioComponent && HeartbeatTarget)
     {
         float Distance = FVector::Distance(GetActorLocation(), HeartbeatTarget->GetActorLocation());
 
+        // 볼륨 계산 (기존)
         float Alpha = 1.f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.f, 1.f);
         float CurveAlpha = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
         float NewVolume = FMath::Lerp(MinVolume, MaxVolume, CurveAlpha);
+        HeartbeatAudioComponent->SetVolumeMultiplier(NewVolume);
 
-        HeartbeatAudioComponent.Get()->SetVolumeMultiplier(NewVolume);
+        // 박동 속도 계산
+        float NewPitch = FMath::Lerp(MinPitch, MaxPitch, CurveAlpha);
+        HeartbeatAudioComponent->SetPitchMultiplier(NewPitch);
     }
 }
 

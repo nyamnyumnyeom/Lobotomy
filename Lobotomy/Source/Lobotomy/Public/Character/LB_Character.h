@@ -103,14 +103,20 @@ protected:
     TObjectPtr<AActor> HeartbeatTarget;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MinDistance = 20.f;
+    float MinDistance = 10.f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxDistance = 200.f;
+    float MaxDistance = 250.f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     float MinVolume = 0.2f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     float MaxVolume = 1.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinPitch = 0.5f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxPitch = 2.0f;
 };
