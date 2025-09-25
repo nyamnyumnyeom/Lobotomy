@@ -33,5 +33,10 @@ void ALB_MusicBox::MusicOff()
 	{
 		OwnerTargetPoint->StopMusicBoxTimer();
 	}
+
+	if (MusicSound && AudioComp)
+	{
+		AudioComp->Stop();
+	}
 }
 

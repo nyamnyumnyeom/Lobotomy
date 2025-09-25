@@ -102,6 +102,8 @@ void UInteractComponent::Interact(AActor* InteractingActor)
 {
 	if (!InteractingActor) return;
 
+	InteractFunction(InteractingActor);
+
 	UE_LOG(LogTemp, Error, TEXT("%s »óÈ£ÀÛ¿ëµÊ - %s"),
 		*InteractingActor->GetName(), *GetOwner()->GetName());
 

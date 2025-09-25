@@ -90,6 +90,9 @@ public:
 
 	bool IsPlayerLookingAtMe(float Threshold = 0.0f);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PoseChange(int32 Index);
+
 	// Resist
 public:
 	void Resist_PlayerCharacter_C();

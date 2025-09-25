@@ -7,7 +7,7 @@
 class UWidgetComponent;
 class UTextRenderComponent;
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LOBOTOMY_API UInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -20,6 +20,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void Interact(AActor* InteractingActor);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void InteractFunction(AActor* InteractingActor);
 
 protected:
 	virtual void BeginPlay() override;
