@@ -13,6 +13,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InteractComponent.h"
 #include "Components/AudioComponent.h"
+#include "DrawDebugHelpers.h"
 
 ALB_Character::ALB_Character()
 {
@@ -48,7 +49,7 @@ ALB_Character::ALB_Character()
     bWasRunning = false;
 
     InteractionTraceDistance = 300.0f;
-    InteractionSphereRadius = 30.0f;
+    InteractionSphereRadius = 45.0f;
     CurrentInteractActor = nullptr;
 }
 
@@ -129,6 +130,22 @@ void ALB_Character::Tick(float DeltaTime)
         Params
     );
 
+    // Debug// 디버그 라인 & 스피어 표시
+    FColor LineColor = bHit ? FColor::Green : FColor::Red;
+    DrawDebugLine(GetWorld(), Start, End, LineColor, false, 0.f, 0, 1.f);
+    DrawDebugSphere(GetWorld(), End, InteractionSphereRadius, 12, LineColor, false, 0.f);
+
+    if (bHit)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SphereTrace Hit: %s at location %s"),
+            *HitResult.GetActor()->GetName(),
+            *HitResult.ImpactPoint.ToString());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SphereTrace No Hit"));
+    }
+// Debug
     AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
 
     if (HitActor != CurrentInteractActor)

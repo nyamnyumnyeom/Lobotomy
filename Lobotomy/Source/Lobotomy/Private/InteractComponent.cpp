@@ -86,16 +86,49 @@ void UInteractComponent::UpdateWidgetTransform()
 	if (!PC || !PC->GetPawn() || !Owner) return;
 
 	FVector PlayerLocation = PC->GetPawn()->GetActorLocation();
-	FVector OwnerLocation = Owner->GetActorLocation();
 
-	FVector DirectionToPlayer = (PlayerLocation - OwnerLocation).GetSafeNormal();
+	FVector Origin, Extent;
+	Owner->GetActorBounds(true, Origin, Extent);
 
-	FVector NewRelativeLocation = (DirectionToPlayer * WidgetDistance) + WidgetStaticOffset;
-	InteractionText->SetRelativeLocation(NewRelativeLocation);
+	FVector BaseLocation = Origin + FVector(0.f, 0.f, Extent.Z);
+	FVector DirectionToPlayer = (PlayerLocation - BaseLocation).GetSafeNormal();
+
+	FVector NewWorldLocation = BaseLocation + (DirectionToPlayer * WidgetDistance) + WidgetStaticOffset;
+	InteractionText->SetWorldLocation(NewWorldLocation);
 
 	FVector ToPlayerFromText = PlayerLocation - InteractionText->GetComponentLocation();
 	FRotator LookAtRot = ToPlayerFromText.Rotation();
 	InteractionText->SetWorldRotation(LookAtRot);
+
+	UpdateWidgetSize();
+
+			/*FVector BoundsOrigin, BoundsExtent;
+			SizeComp->GetOwner()->GetActorBounds(false, BoundsOrigin, BoundsExtent);
+			float MaxExtent = BoundsExtent.GetMax();
+			InteractionText->SetWorldSize(MaxExtent * 0.2f);*/
+}
+
+void UInteractComponent::UpdateWidgetSize()
+{
+	if (!InteractionText) return;
+
+	if (AActor* Owner = GetOwner())
+	{
+		TArray<USceneComponent*> Components;
+		Owner->GetComponents<USceneComponent>(Components);
+
+		for (USceneComponent* Comp : Components)
+		{
+			if (Comp && Comp->GetName() == TEXT("Size"))
+			{
+				float ScaleFactor = Comp->GetComponentScale().GetMax();
+
+				InteractionText->SetWorldSize(DefaultSize * ScaleFactor * SizeScaleFactor);
+				return;
+			}
+		}
+	}
+	InteractionText->SetWorldSize(DefaultSize);
 }
 
 void UInteractComponent::Interact(AActor* InteractingActor)

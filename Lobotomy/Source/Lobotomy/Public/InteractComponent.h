@@ -43,8 +43,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
 	float UpdateInterval = 0.05f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
+	float DefaultSize = 30.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
+	float SizeScaleFactor = 1.0f;
 private:
 	FTimerHandle LookAtTimerHandle;
 
 	void UpdateWidgetTransform();
+
+	void UpdateWidgetSize();
 };
