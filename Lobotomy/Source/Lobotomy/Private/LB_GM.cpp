@@ -93,3 +93,24 @@ float ALB_GM::GetChainSawManToPlayerDistance()
 
 	return -1.0f;
 }
+
+void ALB_GM::UpdateDate()
+{
+	CurrentDay++;
+}
+
+void ALB_GM::ClearDate()
+{
+	CurrentDay = 1;
+}
+
+void ALB_GM::ChangeToNight()
+{
+	bIsNight = true;
+}
+
+void ALB_GM::ChangeToDay()
+{
+	bIsNight = false;
+	UpdateDate();
+}
