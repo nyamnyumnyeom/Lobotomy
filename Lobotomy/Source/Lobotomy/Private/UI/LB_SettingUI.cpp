@@ -177,6 +177,4 @@ void ULB_SettingUI::SynchronizeProperties()
     ComboShadow->RefreshOptions();
     FillQuality(ComboTexture);
     ComboTexture->RefreshOptions();
-
-    UE_LOG(LogTemp, Error, TEXT("SynchronizeProperties on!!!!!!"));
 }

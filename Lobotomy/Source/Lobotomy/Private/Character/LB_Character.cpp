@@ -212,6 +212,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->InteractAction, ETriggerEvent::Triggered, this, &ALB_Character::Interact);
             }
+            if (PlayerController->EscapeAction)
+            {
+                EnhancedInput->BindAction(PlayerController->EscapeAction, ETriggerEvent::Started, this, &ALB_Character::HandleEscape);
+            }
         }
     }
 }
@@ -335,4 +339,9 @@ void ALB_Character::StopHeartbeat()
 void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
 {
     HeartbeatTarget = NewTarget;
+}
+
+void ALB_Character::HandleEscape(const FInputActionValue& Value)
+{
+    OnEscapeToggle();
 }

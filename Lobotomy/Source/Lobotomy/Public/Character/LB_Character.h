@@ -45,6 +45,12 @@ public:
     void StartSprint();
     void StopSprint();
 
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void OnEscapeToggle();
+
+    UFUNCTION()
+    void HandleEscape(const FInputActionValue& Value);
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     TArray<TObjectPtr<USoundBase>> FootstepSounds;
 
