@@ -81,6 +81,8 @@ public:
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Interaction")
     TObjectPtr<AActor> CurrentInteractActor;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+    float Sensitive = 1.f;
 
 
 private:

@@ -243,8 +243,8 @@ void ALB_Character::Look(const FInputActionValue& Value)
 {
     FVector2D Delta = Value.Get<FVector2D>();
 
-    AddControllerYawInput(Delta.X);
-    AddControllerPitchInput(Delta.Y);
+    AddControllerYawInput(Delta.X*Sensitive);
+    AddControllerPitchInput(Delta.Y* Sensitive);
 }
 
 

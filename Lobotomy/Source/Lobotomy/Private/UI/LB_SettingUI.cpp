@@ -105,7 +105,7 @@ void ULB_SettingUI::NativeConstruct()
 
 
 void ULB_SettingUI::OnVolumeChanged(float Value) { ULB_Setting::Get()->MasterVolume = Value; }
-void ULB_SettingUI::OnSensitivityChanged(float Value) { ULB_Setting::Get()->MouseSensitivity = Value * 5.f; }
+void ULB_SettingUI::OnSensitivityChanged(float Value) { ULB_Setting::Get()->MouseSensitivity = Value; }
 void ULB_SettingUI::OnBrightnessChanged(float Value) { ULB_Setting::Get()->Brightness = 0.5f + Value; }
 
 void ULB_SettingUI::OnResolutionChanged(FString Item, ESelectInfo::Type)

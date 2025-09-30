@@ -6,6 +6,7 @@
 #include "NavigationPath.h"
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
+#include "LB_Setting.h"
 
 ALB_GM::ALB_GM()
 {
@@ -16,6 +17,18 @@ ALB_GM::ALB_GM()
 void ALB_GM::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void ALB_GM::UpdateSet()
+{
+	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())
+	{
+		if (ULB_Setting* LBSetting = Cast<ULB_Setting>(Settings))
+		{
+			LBSetting->LoadSettings(false);
+			LBSetting->ApplySettings(false);
+		}
+	}
 }
 
 void ALB_GM::AddKnockCount()

@@ -34,9 +34,11 @@ protected:
 public:
 	ALB_GM();
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateSet();
+
 protected:
 	virtual void BeginPlay() override;
-
 
 	// ---------- 숨바꼭질 장인 관련 함수 ----------
 public:
