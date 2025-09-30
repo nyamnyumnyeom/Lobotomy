@@ -14,6 +14,7 @@
 #include "InteractComponent.h"
 #include "Components/AudioComponent.h"
 #include "DrawDebugHelpers.h"
+#include "LB_Setting.h"
 
 ALB_Character::ALB_Character()
 {
@@ -212,6 +213,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->InteractAction, ETriggerEvent::Triggered, this, &ALB_Character::Interact);
             }
+            if (PlayerController->EscapeAction)
+            {
+                EnhancedInput->BindAction(PlayerController->EscapeAction, ETriggerEvent::Started, this, &ALB_Character::HandleEscape);
+            }
         }
     }
 }
@@ -235,10 +240,15 @@ void ALB_Character::Move(const FInputActionValue& Value)
 }
 
 void ALB_Character::Look(const FInputActionValue& Value)
-{
-    FVector2D LookAxisVector = Value.Get<FVector2D>();
-    AddControllerYawInput(LookAxisVector.X);   // 좌우 회전
-    AddControllerPitchInput(LookAxisVector.Y); // 위아래 회전
+    {
+        FVector2D Delta = Value.Get<FVector2D>();
+        if (ULB_Setting* Settings = ULB_Setting::Get())
+        {
+            Delta *= Settings->MouseSensitivity; // 민감도 적용
+        }
+
+        AddControllerYawInput(Delta.X);
+        AddControllerPitchInput(Delta.Y);
 }
 
 void ALB_Character::Interact(const FInputActionValue& Value)
@@ -335,4 +345,9 @@ void ALB_Character::StopHeartbeat()
 void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
 {
     HeartbeatTarget = NewTarget;
+}
+
+void ALB_Character::HandleEscape(const FInputActionValue& Value)
+{
+    OnEscapeToggle();
 }

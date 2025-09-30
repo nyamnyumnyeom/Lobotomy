@@ -1,5 +1,7 @@
 #include "Character/LB_PlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "LB_Setting.h"
+#include "UI/LB_SettingUI.h"
 
 ALB_PlayerController::ALB_PlayerController()
 :InputMappingContext(nullptr),
@@ -24,4 +26,24 @@ void ALB_PlayerController::BeginPlay()
 			}
 		}
 	}
+}
+
+void ALB_PlayerController::UpdateMouseSensitivity()
+{
+    if (!LookAction) return;
+
+    if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+    {
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
+            LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+        {
+            float Sensitivity = 1.f;
+            if (ULB_Setting* Settings = ULB_Setting::Get())
+            {
+                Sensitivity = Settings->MouseSensitivity;
+            }
+
+            Subsystem->SetInputScale(LookAction, Sensitivity);
+        }
+    }
 }

@@ -1,7 +1,6 @@
 #include "UI/LB_SettingUI.h"
 #include "LB_Setting.h"
-
-
+#include "Character/LB_PlayerController.h"
 #include "Components/Slider.h"
 #include "Components/ComboBoxString.h"
 #include "Components/Button.h"
@@ -136,6 +135,10 @@ void ULB_SettingUI::OnApplyClicked()
 {
     ULB_Setting::Get()->SaveSettings();
     ULB_Setting::Get()->ApplySettings(false);
+    if (ALB_PlayerController* PC = Cast<ALB_PlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+    {
+        PC->UpdateMouseSensitivity();
+    }
 }
 
 void ULB_SettingUI::OnResetClicked()
@@ -177,6 +180,4 @@ void ULB_SettingUI::SynchronizeProperties()
     ComboShadow->RefreshOptions();
     FillQuality(ComboTexture);
     ComboTexture->RefreshOptions();
-
-    UE_LOG(LogTemp, Error, TEXT("SynchronizeProperties on!!!!!!"));
 }

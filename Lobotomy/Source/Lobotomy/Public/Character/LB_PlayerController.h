@@ -25,7 +25,10 @@ public:
 	UInputAction* SprintAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* InteractAction;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* EscapeAction;
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void UpdateMouseSensitivity();
 
 protected:
 	virtual void BeginPlay() override;
