@@ -135,10 +135,6 @@ void ULB_SettingUI::OnApplyClicked()
 {
     ULB_Setting::Get()->SaveSettings();
     ULB_Setting::Get()->ApplySettings(false);
-    if (ALB_PlayerController* PC = Cast<ALB_PlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
-    {
-        PC->UpdateMouseSensitivity();
-    }
 }
 
 void ULB_SettingUI::OnResetClicked()

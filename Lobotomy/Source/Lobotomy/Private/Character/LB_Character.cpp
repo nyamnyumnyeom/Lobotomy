@@ -240,16 +240,13 @@ void ALB_Character::Move(const FInputActionValue& Value)
 }
 
 void ALB_Character::Look(const FInputActionValue& Value)
-    {
-        FVector2D Delta = Value.Get<FVector2D>();
-        if (ULB_Setting* Settings = ULB_Setting::Get())
-        {
-            Delta *= Settings->MouseSensitivity; // 민감도 적용
-        }
+{
+    FVector2D Delta = Value.Get<FVector2D>();
 
-        AddControllerYawInput(Delta.X);
-        AddControllerPitchInput(Delta.Y);
+    AddControllerYawInput(Delta.X);
+    AddControllerPitchInput(Delta.Y);
 }
+
 
 void ALB_Character::Interact(const FInputActionValue& Value)
 {
