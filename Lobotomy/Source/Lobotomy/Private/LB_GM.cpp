@@ -7,6 +7,7 @@
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
 #include "LB_Setting.h"
+#include "UI/LB_SettingUI.h"
 
 ALB_GM::ALB_GM()
 {
@@ -17,6 +18,7 @@ ALB_GM::ALB_GM()
 void ALB_GM::BeginPlay()
 {
     Super::BeginPlay();
+	ULB_Setting* S = ULB_Setting::Get();
 }
 
 void ALB_GM::UpdateSet()
@@ -25,8 +27,9 @@ void ALB_GM::UpdateSet()
 	{
 		if (ULB_Setting* LBSetting = Cast<ULB_Setting>(Settings))
 		{
-			LBSetting->LoadSettings(false);
-			LBSetting->ApplySettings(false);
+			LBSetting->LoadSettings(true);
+			LBSetting->ApplySettings(true);
+			LBSetting->ApplyCustomSettings();
 		}
 	}
 }

@@ -85,6 +85,7 @@ public:
     float Sensitive = 1.f;
 
 
+
 private:
     bool bIsWalking;
     bool bIsRunning;
@@ -127,4 +128,7 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     float MaxPitch = 2.0f;
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Flashlight")
+    void ToggleFlashlight_BP();
 };

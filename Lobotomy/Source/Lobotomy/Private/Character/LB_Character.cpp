@@ -217,6 +217,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->EscapeAction, ETriggerEvent::Started, this, &ALB_Character::HandleEscape);
             }
+            if (PlayerController->FlashlightAction)
+            {
+                EnhancedInput->BindAction(PlayerController->FlashlightAction, ETriggerEvent::Started, this, &ALB_Character::ToggleFlashlight_BP);
+            }
         }
     }
 }
@@ -243,10 +247,13 @@ void ALB_Character::Look(const FInputActionValue& Value)
 {
     FVector2D Delta = Value.Get<FVector2D>();
 
+    if (ULB_Setting* s = ULB_Setting::Get())
+    {
+        Sensitive = s->MouseSensitivite;
+    }
     AddControllerYawInput(Delta.X*Sensitive);
     AddControllerPitchInput(Delta.Y* Sensitive);
 }
-
 
 void ALB_Character::Interact(const FInputActionValue& Value)
 {
