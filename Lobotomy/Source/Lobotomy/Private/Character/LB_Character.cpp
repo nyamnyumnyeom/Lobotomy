@@ -52,6 +52,10 @@ ALB_Character::ALB_Character()
     InteractionTraceDistance = 300.0f;
     InteractionSphereRadius = 45.0f;
     CurrentInteractActor = nullptr;
+
+    BatteryLevel = 1.0f;
+
+    bIsHUDVisible = false;
 }
 
 void ALB_Character::BeginPlay()
@@ -355,3 +359,51 @@ void ALB_Character::HandleEscape(const FInputActionValue& Value)
 {
     OnEscapeToggle();
 }
+
+void ALB_Character::ShowHUDUI()
+{
+    if (HUDUIInstance)
+    {
+        HUDUIInstance->SetVisibility(ESlateVisibility::Visible);
+        bIsHUDVisible = true;
+    }
+}
+
+void ALB_Character::HideHUDUI()
+{
+    if (HUDUIInstance)
+    {
+        HUDUIInstance->SetVisibility(ESlateVisibility::Hidden);
+        bIsHUDVisible = false;
+
+    }
+}
+
+void ALB_Character::PickupItem(FName ItemName)
+{
+    if (CurrentItem != NAME_None)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Cannot pick up %s: already holding %s"), *ItemName.ToString(), *CurrentItem.ToString());
+        ShowNoPickup();
+        return;
+    }
+
+    CurrentItem = ItemName;
+    UE_LOG(LogTemp, Warning, TEXT("Picked up item: %s"), *ItemName.ToString());
+
+    if (ItemName == "Battery")
+    {
+        AddBattery(0.2f);
+    }
+
+    OnInventoryUpdated(CurrentItem);
+}
+
+void ALB_Character::AddBattery(float Amount)
+{
+    BatteryLevel = FMath::Clamp(BatteryLevel + Amount, 0.0f, 1.0f);
+    UE_LOG(LogTemp, Warning, TEXT("Battery Level: %f"), BatteryLevel);
+
+    OnInventoryUpdated(CurrentItem);
+}
+
