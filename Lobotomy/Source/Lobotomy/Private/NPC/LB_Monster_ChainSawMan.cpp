@@ -4,11 +4,22 @@
 #include "NPC/LB_Monster_ChainSawMan.h"
 #include "Kismet/GameplayStatics.h"
 #include "LB_GM.h"
+#include "Components/SphereComponent.h"
+#include "NPC/AI/LB_AICMonster_ChainSawMan.h"
 
 ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->SetupAttachment(RootComponent);
+
+	SphereCollision->InitSphereRadius(180.0f);
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ALB_Monster_ChainSawMan::OnOverlapBegin);
 }
 
 void ALB_Monster_ChainSawMan::BeginPlay()
@@ -16,6 +27,25 @@ void ALB_Monster_ChainSawMan::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnLogic();
+}
+
+void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		if (OtherActor->ActorHasTag(FName("Player")))
+		{
+			ALB_AICMonster_ChainSawMan* AIC = Cast<ALB_AICMonster_ChainSawMan>(GetController());
+			if (AIC)
+			{
+				OnWeaponUp();
+
+				CachedPlayerCharacter = OtherActor;
+				AIC->SetState_Attack();
+
+			}
+		}
+	}
 }
 
 bool ALB_Monster_ChainSawMan::CheakShouldDestroy_Implementation()
@@ -47,6 +77,20 @@ void ALB_Monster_ChainSawMan::SpawnLogic()
 	{
 		GetWorldTimerManager().ClearTimer(SpawnDurationTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_ChainSawMan::TimeupSpawnDuration, SpawnDuration, false);
+	}
+}
+
+void ALB_Monster_ChainSawMan::SetActorRotationToPlayer()
+{
+	if (CachedPlayerCharacter)
+	{
+		FVector TargetLocation = CachedPlayerCharacter->GetActorLocation();
+		FVector MyLocation = GetActorLocation();
+
+		TargetLocation.Z = MyLocation.Z;
+
+		FRotator LookAtRot = (TargetLocation - MyLocation).Rotation();
+		SetActorRotation(LookAtRot);
 	}
 }
 

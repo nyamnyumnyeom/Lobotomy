@@ -69,6 +69,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetState_Chase();
 
+	UFUNCTION(BlueprintCallable)
+	void SetState_Attack();
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void OnLostSightTimeout();
