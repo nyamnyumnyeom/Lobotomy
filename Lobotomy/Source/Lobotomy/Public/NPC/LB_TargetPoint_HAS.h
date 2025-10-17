@@ -31,6 +31,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	TSubclassOf<AActor> ChainSawManClass;
 
+	// 전기톱 살인마를 스폰해야 하는 타이밍에 이미 레벨에 있다면, 내비경로 기준 얼만큼 떨어져 있어야 위치를 변경시킬지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float RespawnDistance = 1000.0f;
+
 protected:
 	FTimerHandle HASTimerHandle;
 	FTimerHandle HASDestroyTimerHandle;

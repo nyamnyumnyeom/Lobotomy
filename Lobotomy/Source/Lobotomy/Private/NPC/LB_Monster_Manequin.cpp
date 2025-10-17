@@ -146,8 +146,10 @@ void ALB_Monster_Manequin::SetRandomPose()
 	if (!bCanPoseChangeTimer) return;
 
 	bCanPoseChangeTimer = false;
-
+	
 	Pose_Index = FMath::RandRange(0, NumOfPose);
+
+	PoseChange(Pose_Index);
 
 	if (GetWorld())
 	{

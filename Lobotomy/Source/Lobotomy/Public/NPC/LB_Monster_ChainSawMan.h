@@ -36,6 +36,8 @@ public:
 	virtual bool CheakShouldDestroy_Implementation() override;
 
 public:
+	void SpawnLogic();
+
 	virtual void DisappearLogic() override;
 
 protected:

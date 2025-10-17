@@ -5,8 +5,9 @@
 #include "InteractComponent.generated.h"
 
 class UWidgetComponent;
+class UTextRenderComponent;
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LOBOTOMY_API UInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -17,15 +18,21 @@ public:
 	void ShowWidget();
 	void HideWidget();
 
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void Interact(AActor* InteractingActor);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void InteractFunction(AActor* InteractingActor);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction|Components")
-	TObjectPtr<UWidgetComponent> InteractionWidget;
+	TObjectPtr<UTextRenderComponent> InteractionText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
-	TSubclassOf<UUserWidget> DefaultWidgetClass;
+	FText DisplayText = FText::FromString(TEXT("Press E"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
 	float WidgetDistance = 100.f;
@@ -36,8 +43,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
 	float UpdateInterval = 0.05f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
+	float DefaultSize = 30.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
+	float SizeScaleFactor = 1.0f;
 private:
 	FTimerHandle LookAtTimerHandle;
 
 	void UpdateWidgetTransform();
+
+	void UpdateWidgetSize();
 };

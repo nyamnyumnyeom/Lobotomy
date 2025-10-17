@@ -12,6 +12,9 @@
 #include "GameFramework/PlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "InteractComponent.h"
+#include "Components/AudioComponent.h"
+#include "DrawDebugHelpers.h"
+#include "LB_Setting.h"
 
 ALB_Character::ALB_Character()
 {
@@ -47,8 +50,12 @@ ALB_Character::ALB_Character()
     bWasRunning = false;
 
     InteractionTraceDistance = 300.0f;
-    InteractionSphereRadius = 30.0f;
+    InteractionSphereRadius = 45.0f;
     CurrentInteractActor = nullptr;
+
+    BatteryLevel = 1.0f;
+
+    bIsHUDVisible = false;
 }
 
 void ALB_Character::BeginPlay()
@@ -128,6 +135,22 @@ void ALB_Character::Tick(float DeltaTime)
         Params
     );
 
+    // Debug// 디버그 라인 & 스피어 표시
+    FColor LineColor = bHit ? FColor::Green : FColor::Red;
+    DrawDebugLine(GetWorld(), Start, End, LineColor, false, 0.f, 0, 1.f);
+    DrawDebugSphere(GetWorld(), End, InteractionSphereRadius, 12, LineColor, false, 0.f);
+
+    if (bHit)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SphereTrace Hit: %s at location %s"),
+            *HitResult.GetActor()->GetName(),
+            *HitResult.ImpactPoint.ToString());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SphereTrace No Hit"));
+    }
+// Debug
     AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
 
     if (HitActor != CurrentInteractActor)
@@ -149,6 +172,21 @@ void ALB_Character::Tick(float DeltaTime)
             }
         }
         CurrentInteractActor = HitActor;
+    }
+
+    if (HeartbeatAudioComponent && HeartbeatTarget)
+    {
+        float Distance = FVector::Distance(GetActorLocation(), HeartbeatTarget->GetActorLocation());
+
+        // 볼륨 계산 (기존)
+        float Alpha = 1.f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.f, 1.f);
+        float CurveAlpha = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
+        float NewVolume = FMath::Lerp(MinVolume, MaxVolume, CurveAlpha);
+        HeartbeatAudioComponent->SetVolumeMultiplier(NewVolume);
+
+        // 박동 속도 계산
+        float NewPitch = FMath::Lerp(MinPitch, MaxPitch, CurveAlpha);
+        HeartbeatAudioComponent->SetPitchMultiplier(NewPitch);
     }
 }
 
@@ -175,6 +213,18 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
                 EnhancedInput->BindAction(PlayerController->SprintAction, ETriggerEvent::Started, this, &ALB_Character::StartSprint);
                 EnhancedInput->BindAction(PlayerController->SprintAction, ETriggerEvent::Completed, this, &ALB_Character::StopSprint);
             }
+            if (PlayerController->InteractAction)
+            {
+                EnhancedInput->BindAction(PlayerController->InteractAction, ETriggerEvent::Triggered, this, &ALB_Character::Interact);
+            }
+            if (PlayerController->EscapeAction)
+            {
+                EnhancedInput->BindAction(PlayerController->EscapeAction, ETriggerEvent::Started, this, &ALB_Character::HandleEscape);
+            }
+            if (PlayerController->FlashlightAction)
+            {
+                EnhancedInput->BindAction(PlayerController->FlashlightAction, ETriggerEvent::Started, this, &ALB_Character::ToggleFlashlight_BP);
+            }
         }
     }
 }
@@ -199,9 +249,27 @@ void ALB_Character::Move(const FInputActionValue& Value)
 
 void ALB_Character::Look(const FInputActionValue& Value)
 {
-    FVector2D LookAxisVector = Value.Get<FVector2D>();
-    AddControllerYawInput(LookAxisVector.X);   // 좌우 회전
-    AddControllerPitchInput(LookAxisVector.Y); // 위아래 회전
+    FVector2D Delta = Value.Get<FVector2D>();
+
+    if (ULB_Setting* s = ULB_Setting::Get())
+    {
+        Sensitive = s->MouseSensitivite;
+    }
+    AddControllerYawInput(Delta.X*Sensitive);
+    AddControllerPitchInput(Delta.Y* Sensitive);
+}
+
+void ALB_Character::Interact(const FInputActionValue& Value)
+{
+    if (CurrentInteractActor)
+    {
+        if (UInteractComponent* InterComp = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InteractComponent found on %s"), *CurrentInteractActor->GetName());
+            InterComp->Interact(this);
+        }
+
+    }
 }
 
 void ALB_Character::StartSprint()
@@ -256,3 +324,86 @@ void ALB_Character::StopMoving()
         }
     }
 }
+
+void ALB_Character::StartHeartbeat()
+{
+    if (HeartbeatSound && !HeartbeatAudioComponent)
+    {
+        HeartbeatAudioComponent = UGameplayStatics::SpawnSound2D(
+            this,
+            HeartbeatSound,
+            MinVolume,
+            1.f,
+            0.f,
+            nullptr,
+            true
+        );
+    }
+}
+
+void ALB_Character::StopHeartbeat()
+{
+    if (HeartbeatAudioComponent.Get())
+    {
+        HeartbeatAudioComponent.Get()->Stop();
+        HeartbeatAudioComponent = nullptr;
+    }
+}
+
+void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
+{
+    HeartbeatTarget = NewTarget;
+}
+
+void ALB_Character::HandleEscape(const FInputActionValue& Value)
+{
+    OnEscapeToggle();
+}
+
+void ALB_Character::ShowHUDUI()
+{
+    if (HUDUIInstance)
+    {
+        HUDUIInstance->SetVisibility(ESlateVisibility::Visible);
+        bIsHUDVisible = true;
+    }
+}
+
+void ALB_Character::HideHUDUI()
+{
+    if (HUDUIInstance)
+    {
+        HUDUIInstance->SetVisibility(ESlateVisibility::Hidden);
+        bIsHUDVisible = false;
+
+    }
+}
+
+void ALB_Character::PickupItem(FName ItemName)
+{
+    if (CurrentItem != NAME_None)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Cannot pick up %s: already holding %s"), *ItemName.ToString(), *CurrentItem.ToString());
+        ShowNoPickup();
+        return;
+    }
+
+    CurrentItem = ItemName;
+    UE_LOG(LogTemp, Warning, TEXT("Picked up item: %s"), *ItemName.ToString());
+
+    if (ItemName == "Battery")
+    {
+        AddBattery(0.2f);
+    }
+
+    OnInventoryUpdated(CurrentItem);
+}
+
+void ALB_Character::AddBattery(float Amount)
+{
+    BatteryLevel = FMath::Clamp(BatteryLevel + Amount, 0.0f, 1.0f);
+    UE_LOG(LogTemp, Warning, TEXT("Battery Level: %f"), BatteryLevel);
+
+    OnInventoryUpdated(CurrentItem);
+}
+

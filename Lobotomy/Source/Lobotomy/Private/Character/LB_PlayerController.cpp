@@ -1,5 +1,8 @@
 #include "Character/LB_PlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "LB_Setting.h"
+#include "UI/LB_SettingUI.h"
 
 ALB_PlayerController::ALB_PlayerController()
 :InputMappingContext(nullptr),
@@ -24,4 +27,9 @@ void ALB_PlayerController::BeginPlay()
 			}
 		}
 	}
+}
+
+void ALB_PlayerController::SetMouseSensitivite(float NewSensitivie)
+{
+	CurrentSensitivite = NewSensitivie;
 }

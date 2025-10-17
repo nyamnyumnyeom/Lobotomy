@@ -10,6 +10,8 @@ class UInputAction;
 struct FInputActionValue;
 class USoundBase;
 class UInteractComponent;
+class UAudioComponent;
+class UInGameHUD;
 
 UCLASS()
 class LOBOTOMY_API ALB_Character : public ACharacter
@@ -40,8 +42,15 @@ public:
 
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
+    void Interact(const FInputActionValue& Value);
     void StartSprint();
     void StopSprint();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void OnEscapeToggle();
+
+    UFUNCTION()
+    void HandleEscape(const FInputActionValue& Value);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     TArray<TObjectPtr<USoundBase>> FootstepSounds;
@@ -73,6 +82,9 @@ public:
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Interaction")
     TObjectPtr<AActor> CurrentInteractActor;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+    float Sensitive = 1.f;
+
 
 
 private:
@@ -82,4 +94,81 @@ private:
     bool bWasWalking;
     bool bWasRunning;
     float DistanceTraveled;
+
+//심장소리로직
+public:
+    void StartHeartbeat();
+    void StopHeartbeat();
+    void SetHeartbeatTarget(AActor* NewTarget);
+
+protected:
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    USoundBase* HeartbeatSound;
+
+    UPROPERTY()
+    TObjectPtr<UAudioComponent> HeartbeatAudioComponent;
+
+    UPROPERTY()
+    TObjectPtr<AActor> HeartbeatTarget;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinDistance = 10.f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxDistance = 250.f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinVolume = 0.2f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxVolume = 1.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MinPitch = 0.5f;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    float MaxPitch = 2.0f;
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Flashlight")
+    void ToggleFlashlight_BP();
+
+public:
+
+    UPROPERTY(EditAnywhere, Category = "Flashlight")
+    bool IsFlashcanon;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battery")
+    float BatteryLevel;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> HUDUIClass;
+
+    UPROPERTY(BlueprintReadOnly, Category = "UI")
+    UUserWidget* HUDUIInstance;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void ShowHUDUI();
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void HideHUDUI();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+    FName CurrentItem;
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    void PickupItem(FName ItemName);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void OnInventoryUpdated(FName NewItem);
+
+    UFUNCTION(BlueprintCallable, Category = "Battery")
+    void AddBattery(float Amount);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void ShowNoPickup();
+
+private:
+    bool bIsHUDVisible;
+
 };

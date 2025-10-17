@@ -35,9 +35,28 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsOutDoor)
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GM)
 	{
-		if (GM->GetShouldChainSawManSpawn() && !GM->GetIsChainSawManSpawned())
+		if (GM->GetShouldChainSawManSpawn())
 		{
-			SpawnLogic(ChainSawManClass, bIsOutDoor);
+			if (GM->GetIsChainSawManSpawned())
+			{
+				if (GM->GetChainSawManToPlayerDistance() > RespawnDistance)
+				{
+					FVector SpawnLocation = GetActorLocation();
+					FRotator SpawnRotation = GetActorRotation();
+					if (!bIsOutDoor)
+					{
+						SpawnLocation = InsideBillboard->GetComponentLocation();
+						SpawnRotation = InsideBillboard->GetComponentRotation();
+					}
+
+					FTransform SpawnTrans = FTransform(SpawnRotation, SpawnLocation, FVector(1.0f, 1.0f, 1.0f));
+					GM->SetChainSawManTransform(SpawnTrans);
+				}
+			}
+			else
+			{
+				SpawnLogic(ChainSawManClass, bIsOutDoor);
+			}	
 
 			GM->ResetKnockCount();
 		}
@@ -55,12 +74,12 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsOut
 	if (!SpawnClass) return;
 
 	FVector SpawnLocation = GetActorLocation();
+	FRotator SpawnRotation = GetActorRotation();
 	if (!bIsOutDoor)
 	{
 		SpawnLocation = InsideBillboard->GetComponentLocation();
+		SpawnRotation = InsideBillboard->GetComponentRotation();
 	}
-
-	FRotator SpawnRotation = GetActorRotation();
 
 	FVector Start = SpawnLocation;
 	FVector End = Start - FVector(0, 0, 300.0f);
