@@ -14,7 +14,7 @@ class LOBOTOMY_API ULB_Setting : public UGameUserSettings
 public:
     /** Custom settings */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-    float MouseSensitivity = 1.0f; // 0.1 ~ 5.0
+    float MouseSensitivite = 1.0f; // 0.1 ~ 5.0
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
     float MasterVolume = 1.0f;     // 0.0 ~ 1.0

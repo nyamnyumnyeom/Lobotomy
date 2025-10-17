@@ -24,7 +24,7 @@ void ULB_SettingUI::NativeConstruct()
     if (!S) return;
 
     if (SliderVolume)      SliderVolume->SetValue(S->MasterVolume);
-    if (SliderSensitivity) SliderSensitivity->SetValue(S->MouseSensitivity);
+    if (SliderSensitivity) SliderSensitivity->SetValue(S->MouseSensitivite);
     if (SliderBrightness)  SliderBrightness->SetValue(S->Brightness - 0.5f);
 
     SliderVolume->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnVolumeChanged);
@@ -105,7 +105,7 @@ void ULB_SettingUI::NativeConstruct()
 
 
 void ULB_SettingUI::OnVolumeChanged(float Value) { ULB_Setting::Get()->MasterVolume = Value; }
-void ULB_SettingUI::OnSensitivityChanged(float Value) { ULB_Setting::Get()->MouseSensitivity = Value * 5.f; }
+void ULB_SettingUI::OnSensitivityChanged(float Value) { ULB_Setting::Get()->MouseSensitivite = Value; }
 void ULB_SettingUI::OnBrightnessChanged(float Value) { ULB_Setting::Get()->Brightness = 0.5f + Value; }
 
 void ULB_SettingUI::OnResolutionChanged(FString Item, ESelectInfo::Type)

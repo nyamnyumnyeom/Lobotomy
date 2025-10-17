@@ -52,6 +52,10 @@ ALB_Character::ALB_Character()
     InteractionTraceDistance = 300.0f;
     InteractionSphereRadius = 45.0f;
     CurrentInteractActor = nullptr;
+
+    BatteryLevel = 1.0f;
+
+    bIsHUDVisible = false;
 }
 
 void ALB_Character::BeginPlay()
@@ -217,6 +221,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->EscapeAction, ETriggerEvent::Started, this, &ALB_Character::HandleEscape);
             }
+            if (PlayerController->FlashlightAction)
+            {
+                EnhancedInput->BindAction(PlayerController->FlashlightAction, ETriggerEvent::Started, this, &ALB_Character::ToggleFlashlight_BP);
+            }
         }
     }
 }
@@ -243,10 +251,13 @@ void ALB_Character::Look(const FInputActionValue& Value)
 {
     FVector2D Delta = Value.Get<FVector2D>();
 
-    AddControllerYawInput(Delta.X);
-    AddControllerPitchInput(Delta.Y);
+    if (ULB_Setting* s = ULB_Setting::Get())
+    {
+        Sensitive = s->MouseSensitivite;
+    }
+    AddControllerYawInput(Delta.X*Sensitive);
+    AddControllerPitchInput(Delta.Y* Sensitive);
 }
-
 
 void ALB_Character::Interact(const FInputActionValue& Value)
 {
@@ -348,3 +359,51 @@ void ALB_Character::HandleEscape(const FInputActionValue& Value)
 {
     OnEscapeToggle();
 }
+
+void ALB_Character::ShowHUDUI()
+{
+    if (HUDUIInstance)
+    {
+        HUDUIInstance->SetVisibility(ESlateVisibility::Visible);
+        bIsHUDVisible = true;
+    }
+}
+
+void ALB_Character::HideHUDUI()
+{
+    if (HUDUIInstance)
+    {
+        HUDUIInstance->SetVisibility(ESlateVisibility::Hidden);
+        bIsHUDVisible = false;
+
+    }
+}
+
+void ALB_Character::PickupItem(FName ItemName)
+{
+    if (CurrentItem != NAME_None)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Cannot pick up %s: already holding %s"), *ItemName.ToString(), *CurrentItem.ToString());
+        ShowNoPickup();
+        return;
+    }
+
+    CurrentItem = ItemName;
+    UE_LOG(LogTemp, Warning, TEXT("Picked up item: %s"), *ItemName.ToString());
+
+    if (ItemName == "Battery")
+    {
+        AddBattery(0.2f);
+    }
+
+    OnInventoryUpdated(CurrentItem);
+}
+
+void ALB_Character::AddBattery(float Amount)
+{
+    BatteryLevel = FMath::Clamp(BatteryLevel + Amount, 0.0f, 1.0f);
+    UE_LOG(LogTemp, Warning, TEXT("Battery Level: %f"), BatteryLevel);
+
+    OnInventoryUpdated(CurrentItem);
+}
+

@@ -28,3 +28,8 @@ void ALB_PlayerController::BeginPlay()
 		}
 	}
 }
+
+void ALB_PlayerController::SetMouseSensitivite(float NewSensitivie)
+{
+	CurrentSensitivite = NewSensitivie;
+}

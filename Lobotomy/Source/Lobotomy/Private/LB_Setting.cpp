@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Sound/SoundClass.h"
 #include "Misc/ConfigCacheIni.h"
+#include "Character/LB_PlayerController.h"
 
 void ULB_Setting::ApplyCustomSettings()
 {
@@ -23,7 +24,16 @@ void ULB_Setting::ApplyCustomSettings()
 
     // -------------------
     // 3. 마우스 감도
-    // (ALB_PlayerController에서 Apply할 때 LookAction에 곱해주는 방식 사용)
+    if (UWorld* World = GetWorld())
+    {
+        if (APlayerController* PC = World->GetFirstPlayerController())
+        {
+            if (ALB_PlayerController* LPC = Cast<ALB_PlayerController>(PC))
+            {
+                LPC->SetMouseSensitivite(MouseSensitivite);
+            }
+        }
+    }
 
     // -------------------
     // 4. 그래픽 품질 적용
@@ -77,11 +87,10 @@ void ULB_Setting::ApplySettings(bool bCheckForCommandLineOverrides)
 
 void ULB_Setting::LoadSettings(bool bForceReload)
 {
-    Super::LoadSettings(bForceReload);
 
     // -------------------
     // 기존 커스텀 값 불러오기
-    GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivity, GGameUserSettingsIni);
+    GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivite, GGameUserSettingsIni);
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("Brightness"), Brightness, GGameUserSettingsIni);
 
@@ -111,15 +120,15 @@ void ULB_Setting::LoadSettings(bool bForceReload)
     int32 ModeInt = 1;
     GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("FullscreenMode"), ModeInt, GGameUserSettingsIni);
     SetFullscreenMode(static_cast<EWindowMode::Type>(ModeInt));
+
+    Super::LoadSettings(bForceReload);
 }
 
 void ULB_Setting::SaveSettings()
 {
-    Super::SaveSettings();
-
     // -------------------
     // 커스텀 값 저장
-    GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivity, GGameUserSettingsIni);
+    GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivite, GGameUserSettingsIni);
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("Brightness"), Brightness, GGameUserSettingsIni);
 
@@ -136,11 +145,13 @@ void ULB_Setting::SaveSettings()
     GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("FullscreenMode"), static_cast<int32>(GetFullscreenMode()), GGameUserSettingsIni);
 
     GConfig->Flush(false, GGameUserSettingsIni);
+
+    Super::SaveSettings();
 }
 
 void ULB_Setting::ResetToDefaults()
 {
-    MouseSensitivity = 1.0f;
+    MouseSensitivite = 1.0f;
     MasterVolume = 1.0f;
     Brightness = 1.0f;
 
