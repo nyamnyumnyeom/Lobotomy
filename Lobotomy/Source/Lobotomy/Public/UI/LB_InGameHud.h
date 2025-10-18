@@ -25,11 +25,11 @@ public:
     void UpdateInventory();*/
 
 protected:
-    UPROPERTY(meta = (BindWidget)) UImage* Battery01;
-    UPROPERTY(meta = (BindWidget)) UImage* Battery02;
-    UPROPERTY(meta = (BindWidget)) UImage* Battery03;
-    UPROPERTY(meta = (BindWidget)) UImage* Battery04;
-    UPROPERTY(meta = (BindWidget)) UImage* Battery05;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery01;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery02;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery03;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery04;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery05;
 
     UPROPERTY(meta = (BindWidget)) UImage* InvItem;
 
