@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -95,7 +95,7 @@ private:
     bool bWasRunning;
     float DistanceTraveled;
 
-//����Ҹ�����
+//심장소리로직
 public:
     void StartHeartbeat();
     void StopHeartbeat();
@@ -170,5 +170,16 @@ public:
 
 private:
     bool bIsHUDVisible;
+
+	// ---------- 플레이어 게임 오버 ----------
+public:
+	// 플레이어 사망시의 카메라 시퀀스 재생 (TargetLocation : 바라볼 액터의 위치)
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayCameraDeathSequence(FVector TargetLocation);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateDeathUI();
+
+	// ---------- -------------------- ----------
 
 };
