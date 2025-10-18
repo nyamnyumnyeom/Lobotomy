@@ -387,14 +387,16 @@ void ALB_Character::PickupItem(FName ItemName)
         ShowNoPickup();
         return;
     }
+    if (ItemName == "Battery")
+    {
+        AddBattery(0.2f);
+        UE_LOG(LogTemp, Warning, TEXT("Battery get!!"), *ItemName.ToString());
+        return;
+    }
 
     CurrentItem = ItemName;
     UE_LOG(LogTemp, Warning, TEXT("Picked up item: %s"), *ItemName.ToString());
 
-    if (ItemName == "Battery")
-    {
-        AddBattery(0.2f);
-    }
 
     OnInventoryUpdated(CurrentItem);
 }
