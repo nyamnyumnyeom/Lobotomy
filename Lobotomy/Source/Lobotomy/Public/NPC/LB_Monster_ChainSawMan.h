@@ -27,8 +27,14 @@ protected:
 	// 스폰 유지 시간이 초과되었는가?
 	bool bIsSpawnDurationOver = false;
 
+	bool bIsChasing = false;
+	bool bIsRunning = false;
+	float CurrentSpeed = 150.0f;
+
 protected:
 	FTimerHandle SpawnDurationTimerHandle;
+	FTimerHandle SpeedSettingTimerHandle;
+	FTimerHandle RunModeTimerHandle;
 
 protected:
 	AActor* CachedPlayerCharacter;
@@ -51,6 +57,8 @@ protected:
 public:
 	virtual bool CheakShouldDestroy_Implementation() override;
 
+	virtual void CheckIsChase_Implementation(bool bIsChase) override;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnWeaponUp();
 
@@ -65,4 +73,8 @@ protected:
 	void SetSpawnWhetherToGM(bool Value);
 
 	void TimeupSpawnDuration();
+
+	void SpeedSettingTimer();
+	void SpeedApply();
+	void SpeedReset();
 };

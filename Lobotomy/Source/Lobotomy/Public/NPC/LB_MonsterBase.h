@@ -22,6 +22,10 @@ public:
 	// Behavior Tree에서 호출될 인터페이스 함수. 해당 캐릭터가 사라져야 하는지 확인하는 용도이며, 각 클래스에서 재정의 필수.
 	virtual bool CheakShouldDestroy_Implementation() override;
 
+	// Behavior Tree에서 호출될 인터페이스 함수. 각 클래스에서 재정의 필수.
+	// 해당 캐릭터가 Chase 상태인지 확인하는 용도.
+	virtual void CheckIsChase_Implementation(bool bIsChase) override;
+
 public:
 	virtual void DisappearLogic();
 
