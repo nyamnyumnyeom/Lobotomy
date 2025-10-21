@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "UI/LB_ItemData.h"
 #include "LB_Character.generated.h"
 
 class UCameraComponent;
@@ -182,4 +183,6 @@ public:
 
 	// ---------- -------------------- ----------
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
+    UDataTable* ItemData;
 };

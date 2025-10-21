@@ -15,6 +15,7 @@
 #include "Components/AudioComponent.h"
 #include "DrawDebugHelpers.h"
 #include "LB_Setting.h"
+#include "UI/LB_InGameHud.h"
 
 ALB_Character::ALB_Character()
 {
@@ -387,16 +388,34 @@ void ALB_Character::PickupItem(FName ItemName)
         ShowNoPickup();
         return;
     }
+
     if (ItemName == "Battery")
     {
         AddBattery(0.2f);
-        UE_LOG(LogTemp, Warning, TEXT("Battery get!!"), *ItemName.ToString());
+        UE_LOG(LogTemp, Warning, TEXT("Battery get!!"));
         return;
     }
 
     CurrentItem = ItemName;
-    UE_LOG(LogTemp, Warning, TEXT("Picked up item: %s"), *ItemName.ToString());
 
+    if (ItemData) // ItemData는 UDataTable* 로 헤더에 선언되어 있음
+    {
+        static const FString Context(TEXT("GetItemRowFromCharacter"));
+        FItemRow* Row = ItemData->FindRow<FItemRow>(ItemName, Context);
+        if (Row)
+        {
+            if (HUDUIInstance)
+            {
+                ULB_InGameHud* HUD = Cast<ULB_InGameHud>(HUDUIInstance);
+                if (HUD)
+                {
+                    // HUD에서 UpdateInventory가 DataTable을 참조하므로
+                    // 캐릭터의 ItemData를 HUD에 연결해주거나 (권장: HUD의 ItemDataTable을 에디터에서 세팅)
+                    HUD->UpdateInventory();
+                }
+            }
+        }
+    }
 
     OnInventoryUpdated(CurrentItem);
 }
