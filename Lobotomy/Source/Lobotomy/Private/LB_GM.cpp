@@ -21,6 +21,14 @@ void ALB_GM::BeginPlay()
 	ULB_Setting* S = ULB_Setting::Get();
 }
 
+void ALB_GM::PlayerDeathLogic(FVector TargetLocation)
+{
+	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (!LB_Character) return;
+
+	LB_Character->PlayCameraDeathSequence(TargetLocation);
+}
+
 void ALB_GM::UpdateSet()
 {
 	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())

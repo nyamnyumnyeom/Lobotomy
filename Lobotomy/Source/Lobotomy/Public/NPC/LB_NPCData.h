@@ -13,6 +13,7 @@ enum class EMonsterState : uint8
 	Investigation UMETA(DisplayName = "Investigation"),
 	Chase UMETA(DisplayName = "Chase"),
 	Disappeared UMETA(DisplayName = "Disappeared"),
+	Attack UMETA(DisplayName = "Attack"),
 };
 // @----------@ @----------@ @----------@ @----------@ @----------@
 

@@ -162,6 +162,13 @@ void ALB_AICMonsterBase::SetState_Chase()
 	BB->SetValueAsEnum("CurrentState", static_cast<uint8>(EMonsterState::Chase));
 }
 
+void ALB_AICMonsterBase::SetState_Attack()
+{
+	if (!BB) return;
+
+	BB->SetValueAsEnum("CurrentState", static_cast<uint8>(EMonsterState::Attack));
+}
+
 void ALB_AICMonsterBase::OnLostSightTimeout()
 {
 	if (!BB) return;

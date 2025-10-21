@@ -10,7 +10,7 @@ UCLASS()
 class LOBOTOMY_API ALB_GM : public AGameMode
 {
 	GENERATED_BODY()
-	
+
 	// ---------- 몬스터 스폰 상태 ----------
 protected:
 	// 스폰중인 전기톱 살인마 레퍼런스
@@ -39,6 +39,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	// ---------- 플레이어 게임 오버 ----------
+public:
+	// 플레이어 사망 로직 (TargetLocation : 바라볼 액터의 위치)
+	void PlayerDeathLogic(FVector TargetLocation);
+
+	// ---------- -------------------- ----------
 
 	// ---------- 숨바꼭질 장인 관련 함수 ----------
 public:
