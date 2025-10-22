@@ -106,4 +106,34 @@ public:
 	// Getter
 	FORCEINLINE int32 GetCurrentDay() const { return CurrentDay; }
 	FORCEINLINE bool IsNight() const { return bIsNight; }
+
+	// ------------- 시간 -------------
+protected:
+	// 게임 내 시간
+	int32 CurrentHour = 8;
+	int32 CurrentMinute = 0;
+	int32 CurrentSecond = 0; // 내부 계산용, UI에는 표시 X
+	// 현실 1초당 게임 내 몇 초가 흐를지
+	float TimeScale = 20.f;
+
+	FTimerHandle TimeUpdateTimerHandle;
+
+	void UpdateTimeByTimer();
+
+public:
+	// 시간 카운트 시작
+	UFUNCTION(BlueprintCallable)
+	void StartTimeCount();
+	// 시간 카운트 중ㅈ;
+	UFUNCTION(BlueprintCallable)
+	void StopTimeCount();
+
+	// 현재 시/분 반환
+	UFUNCTION(BlueprintCallable)
+	void GetGameTime(int32& Hours, int32& Minutes) const;
+
+	// 시간 설정
+	UFUNCTION(BlueprintCallable)
+	void SetGameTime(int32 Hour, int32 Minute);
+
 };

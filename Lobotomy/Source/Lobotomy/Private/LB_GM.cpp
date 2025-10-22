@@ -138,3 +138,51 @@ void ALB_GM::ChangeToDay()
 	bIsNight = false;
 	UpdateDate();
 }
+
+void ALB_GM::StartTimeCount()
+{
+	GetWorldTimerManager().SetTimer(TimeUpdateTimerHandle, this, &ALB_GM::UpdateTimeByTimer, 1.f, true);
+}
+
+void ALB_GM::StopTimeCount()
+{
+	GetWorldTimerManager().ClearTimer(TimeUpdateTimerHandle);
+}
+void ALB_GM::UpdateTimeByTimer()
+{
+	// 게임 내 시간 초 단위 증가
+	CurrentSecond += FMath::FloorToInt(TimeScale);
+
+	// 초 -> 분 변환
+	if (CurrentSecond >= 60)
+	{
+		CurrentMinute += CurrentSecond / 60;
+		CurrentSecond = CurrentSecond % 60;
+	}
+
+	// 분 -> 시 변환
+	if (CurrentMinute >= 60)
+	{
+		CurrentHour += CurrentMinute / 60;
+		CurrentMinute = CurrentMinute % 60;
+	}
+
+	// 하루 순환
+	if (CurrentHour >= 24)
+		CurrentHour = CurrentHour % 24;
+
+	UE_LOG(LogTemp, Log, TEXT("Game Time: %02d:%02d"), CurrentHour, CurrentMinute);
+}
+
+void ALB_GM::GetGameTime(int32& Hours, int32& Minutes) const
+{
+	Hours = CurrentHour;
+	Minutes = CurrentMinute;
+}
+
+void ALB_GM::SetGameTime(int32 Hour, int32 Minute)
+{
+	CurrentHour = Hour % 24;
+	CurrentMinute = Minute % 60;
+	CurrentSecond = 0;
+}

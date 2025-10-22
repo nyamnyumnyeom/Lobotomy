@@ -15,6 +15,14 @@ void ULB_InGameHud::NativeConstruct()
         UpdateBattery(PlayerCharacter->BatteryLevel);
         //UpdateInventory();
     }
+
+    ALB_GM* GM = Cast<ALB_GM>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr);
+    if (GM)
+    {
+        GameModeRef = GM;
+    }
+
+    UpdateGameTime();
 }
 
 void ULB_InGameHud::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -24,6 +32,7 @@ void ULB_InGameHud::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
     if (PlayerCharacter)
     {
         UpdateBattery(PlayerCharacter->BatteryLevel);
+        UpdateGameTime();
         //UpdateInventory();
     }
 }
@@ -66,4 +75,15 @@ void ULB_InGameHud::UpdateInventory()
     {
         InvItem->SetVisibility(ESlateVisibility::Hidden);
     }
+}
+
+void ULB_InGameHud::UpdateGameTime()
+{
+    if (!GameTimeText || !GameModeRef.IsValid()) return;
+
+    int32 Hours, Minutes;
+    GameModeRef->GetGameTime(Hours, Minutes);
+
+    FString TimeString = FString::Printf(TEXT("%02d : %02d"), Hours, Minutes);
+    GameTimeText->SetText(FText::FromString(TimeString));
 }
