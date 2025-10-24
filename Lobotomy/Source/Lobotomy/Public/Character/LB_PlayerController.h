@@ -29,6 +29,8 @@ public:
 	UInputAction* EscapeAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* FlashlightAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* UseItemAction;
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetMouseSensitivite(float NewSensitivie);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))

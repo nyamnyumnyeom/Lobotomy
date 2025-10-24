@@ -137,7 +137,7 @@ void UInteractComponent::Interact(AActor* InteractingActor)
 
 	InteractFunction(InteractingActor);
 
-	UE_LOG(LogTemp, Error, TEXT("%s 상호작용됨 - %s"),
+	UE_LOG(LogTemp, Error, TEXT("%s interact ok~~ - %s"),
 		*InteractingActor->GetName(), *GetOwner()->GetName());
 
 	// 여기서 실제 게임 로직 추가 가능

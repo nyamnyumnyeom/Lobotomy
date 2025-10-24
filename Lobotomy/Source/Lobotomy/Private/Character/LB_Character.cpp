@@ -16,6 +16,7 @@
 #include "DrawDebugHelpers.h"
 #include "LB_Setting.h"
 #include "UI/LB_InGameHud.h"
+#include "LB_LockDoor.h"
 
 ALB_Character::ALB_Character()
 {
@@ -226,6 +227,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->FlashlightAction, ETriggerEvent::Started, this, &ALB_Character::ToggleFlashlight_BP);
             }
+            if (PlayerController->UseItemAction)
+            {
+                EnhancedInput->BindAction(PlayerController->UseItemAction, ETriggerEvent::Started, this, &ALB_Character::HandleUseItem);
+            }
         }
     }
 }
@@ -389,16 +394,9 @@ void ALB_Character::PickupItem(FName ItemName)
         return;
     }
 
-    if (ItemName == "Battery")
-    {
-        AddBattery(0.2f);
-        UE_LOG(LogTemp, Warning, TEXT("Battery get!!"));
-        return;
-    }
-
     CurrentItem = ItemName;
 
-    if (ItemData) // ItemData는 UDataTable* 로 헤더에 선언되어 있음
+    if (ItemData)
     {
         static const FString Context(TEXT("GetItemRowFromCharacter"));
         FItemRow* Row = ItemData->FindRow<FItemRow>(ItemName, Context);
@@ -409,8 +407,6 @@ void ALB_Character::PickupItem(FName ItemName)
                 ULB_InGameHud* HUD = Cast<ULB_InGameHud>(HUDUIInstance);
                 if (HUD)
                 {
-                    // HUD에서 UpdateInventory가 DataTable을 참조하므로
-                    // 캐릭터의 ItemData를 HUD에 연결해주거나 (권장: HUD의 ItemDataTable을 에디터에서 세팅)
                     HUD->UpdateInventory();
                 }
             }
@@ -428,3 +424,120 @@ void ALB_Character::AddBattery(float Amount)
     OnInventoryUpdated(CurrentItem);
 }
 
+void ALB_Character::UseItem()
+{
+    if (CurrentItem == NAME_None)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No item equipped to use."));
+        return;
+    }
+    if (!ItemData)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ItemDataTable is missing."));
+        return;
+    }
+    static const FString Context(TEXT("UseItem"));
+    FItemRow* ItemRow = ItemData->FindRow<FItemRow>(CurrentItem, Context);
+    if (!ItemRow)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Item not found in DataTable: %s"), *CurrentItem.ToString());
+        return;
+    }
+    bool bConsumed = false;
+    switch (ItemRow->ItemType)
+    {
+    case EItemType::Battery:
+    {
+        AddBattery(0.2f);
+        UE_LOG(LogTemp, Warning, TEXT("빠떼리충전용~"));
+        bConsumed = true;
+        break;
+    }
+    case EItemType::Key:
+    {
+        ALB_LockDoor* Door = Cast<ALB_LockDoor>(CurrentInteractActor);
+        if (!Door)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("UseItem: No door in front of player."));
+            break;
+        }
+
+        if (Door->bIsOpen)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("UseItem: Door already open."));
+            break;
+        }
+
+        if (Door->RequiredKey.ToString().Equals(CurrentItem.ToString(), ESearchCase::IgnoreCase))
+        {
+            Door->OpenDoor();
+            UE_LOG(LogTemp, Warning, TEXT("문이 열렸습니다! (Key: %s)"), *CurrentItem.ToString());
+            bConsumed = true;
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("열쇠 불일치: Door needs [%s], Player has [%s]"),
+                *Door->RequiredKey.ToString(), *CurrentItem.ToString());
+            OnDoorUnlockFailed();
+        }
+
+        break;
+    }
+
+    case EItemType::Tool:
+    {
+        UE_LOG(LogTemp, Warning, TEXT("탬쓰긴함"));
+        break;
+    }
+    default:
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Item type has no effect."));
+        break;
+        }
+    }
+    if (bConsumed)
+    {
+        CurrentItem = NAME_None;
+        if (HUDUIInstance)
+        {
+            if (ULB_InGameHud* HUD = Cast<ULB_InGameHud>(HUDUIInstance))
+            {
+                HUD->UpdateInventory();
+            }
+        }
+        OnInventoryUpdated(CurrentItem);
+    }
+}
+
+
+void ALB_Character::HandleUseItem(const FInputActionValue& Value)
+{
+    UseItem();
+}
+//
+//bool ALB_Character::TryUseKeyOnCurrentDoor()
+//{
+//    ALB_LockDoor* Door = Cast<ALB_LockDoor>(CurrentInteractActor);
+//    if (!Door)
+//    {
+//        return false;
+//    }
+//
+//    if (Door->bIsOpen)
+//    {
+//        return false;
+//    }
+//
+//    if (Door->RequiredKey == CurrentItem)
+//    {
+//        Door->OpenDoor();
+//        UE_LOG(LogTemp, Warning, TEXT("문이 열렸습니다! (사용된 키: %s)"), *CurrentItem.ToString());
+//        return true;
+//    }
+//    UE_LOG(LogTemp, Warning, TEXT("키가 다릅니다.문 열쇠 %s, 플레이어 열쇠 %s"),
+//    *Door->RequiredKey.ToString(),
+//    * CurrentItem.ToString());
+//        OnDoorUnlockFailed();
+//
+//    return false;
+//}
