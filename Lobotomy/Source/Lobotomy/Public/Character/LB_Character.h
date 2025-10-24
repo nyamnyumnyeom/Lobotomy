@@ -185,4 +185,16 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
     UDataTable* ItemData;
+    // --------------------  아이템 사용 ---------------------------------------ㅅㅂ
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    void UseItem();
+
+    UFUNCTION()
+    void HandleUseItem(const FInputActionValue& Value);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
+    void OnDoorUnlockFailed();
+
+private:
+   // bool TryUseKeyOnCurrentDoor();
 };
