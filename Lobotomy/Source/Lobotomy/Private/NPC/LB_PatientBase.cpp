@@ -9,3 +9,16 @@ ALB_PatientBase::ALB_PatientBase()
 
 	Tags.Add(FName("Patient"));
 }
+
+void ALB_PatientBase::ApplyAnimBlueprint(int32 Index)
+{
+	if (AnimBlueprintPresets.Num() == 0) return;
+
+	TSubclassOf<UAnimInstance> SelectedAnimBP = AnimBlueprintPresets[Index];
+
+	USkeletalMeshComponent* SkelMesh = GetMesh();
+	if (SkelMesh && SelectedAnimBP)
+	{
+		SkelMesh->SetAnimInstanceClass(SelectedAnimBP);
+	}
+}

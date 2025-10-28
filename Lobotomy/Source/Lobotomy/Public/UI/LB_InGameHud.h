@@ -4,6 +4,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Engine/DataTable.h"
 #include "LB_ItemData.h"
+#include "LB_GM.h"
+#include "Components/TextBlock.h"
 #include "LB_InGameHud.generated.h"
 
 class UImage;
@@ -37,6 +39,13 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
     UDataTable* ItemDataTable;
 
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* GameTimeText;
+
+    void UpdateGameTime();
+
 private:
     ALB_Character* PlayerCharacter;
+
+    TWeakObjectPtr<ALB_GM> GameModeRef;
 };

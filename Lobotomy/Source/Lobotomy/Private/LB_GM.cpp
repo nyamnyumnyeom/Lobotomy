@@ -7,6 +7,7 @@
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
 #include "LB_Setting.h"
+#include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
 
 ALB_GM::ALB_GM()
@@ -19,6 +20,7 @@ void ALB_GM::BeginPlay()
 {
     Super::BeginPlay();
 	ULB_Setting* S = ULB_Setting::Get();
+	LoadPage(CurrentPage);
 }
 
 void ALB_GM::PlayerDeathLogic(FVector TargetLocation)
@@ -137,4 +139,143 @@ void ALB_GM::ChangeToDay()
 {
 	bIsNight = false;
 	UpdateDate();
+}
+
+void ALB_GM::StartTimeCount()
+{
+	GetWorldTimerManager().SetTimer(TimeUpdateTimerHandle, this, &ALB_GM::UpdateTimeByTimer, 1.f, true);
+}
+
+void ALB_GM::StopTimeCount()
+{
+	GetWorldTimerManager().ClearTimer(TimeUpdateTimerHandle);
+}
+void ALB_GM::UpdateTimeByTimer()
+{
+	// 게임 내 시간 초 단위 증가
+	CurrentSecond += FMath::FloorToInt(TimeScale);
+
+	// 초 -> 분 변환
+	if (CurrentSecond >= 60)
+	{
+		CurrentMinute += CurrentSecond / 60;
+		CurrentSecond = CurrentSecond % 60;
+	}
+
+	// 분 -> 시 변환
+	if (CurrentMinute >= 60)
+	{
+		CurrentHour += CurrentMinute / 60;
+		CurrentMinute = CurrentMinute % 60;
+	}
+
+	// 하루 순환
+	if (CurrentHour >= 24)
+		CurrentHour = CurrentHour % 24;
+
+	UE_LOG(LogTemp, Log, TEXT("Game Time: %02d:%02d"), CurrentHour, CurrentMinute);
+}
+
+void ALB_GM::GetGameTime(int32& Hours, int32& Minutes) const
+{
+	Hours = CurrentHour;
+	Minutes = CurrentMinute;
+}
+
+void ALB_GM::SetGameTime(int32 Hour, int32 Minute)
+{
+	CurrentHour = Hour % 24;
+	CurrentMinute = Minute % 60;
+	CurrentSecond = 0;
+}
+
+bool ALB_GM::EnsurePageInCache(int32 Page)
+{
+	if (RuntimeCharts.Contains(Page)) return true;
+	if (!ChartDataTable) return false;
+
+	const FString RowName = FString::Printf(TEXT("Page_%02d"), Page);
+	if (const FChartData* Row = ChartDataTable->FindRow<FChartData>(FName(*RowName), TEXT("LB_GM")))
+	{
+		FChartData Copy = *Row;
+		// 안전장치: 체크박스 크기 보정(필요시)
+		if (Copy.DayChecks.Num() < 7) { Copy.DayChecks.SetNum(7, /*bAllowShrinking*/false); }
+		Copy.PageNumber = Page; // 보정
+		RuntimeCharts.Add(Page, Copy);
+		return true;
+	}
+	return false;
+}
+
+void ALB_GM::SyncCurrentFromCacheAndBroadcast()
+{
+	if (FChartData* Found = RuntimeCharts.Find(CurrentPage))
+	{
+		CurrentChart = *Found; // 현재 페이지 스냅샷
+		OnChartUpdated.Broadcast(CurrentPage); // UI에게 “다시 그려!” 신호 //계속 안그리면 삭제함 ㅅㄱ
+	}
+}
+
+void ALB_GM::LoadPage(int32 NewPage)
+{
+	CurrentPage = FMath::Max(1, NewPage);
+	if (!EnsurePageInCache(CurrentPage))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No DataTable row for Page %d"), CurrentPage);
+		// 없으면 빈 값으로라도 캐시 생성(선택)
+		FChartData Blank;
+		Blank.PageNumber = CurrentPage;
+		Blank.DayChecks.SetNum(7);
+		RuntimeCharts.Add(CurrentPage, Blank);
+	}
+	SyncCurrentFromCacheAndBroadcast();
+}
+
+FChartData ALB_GM::GetChartCopy(int32 Page) const
+{
+	if (const FChartData* Found = RuntimeCharts.Find(Page))
+		return *Found;
+
+	// 캐시에 없고 DataTable만 있을 수 있으므로 DataTable 조회(읽기 전용)
+	if (ChartDataTable)
+	{
+		const FString RowName = FString::Printf(TEXT("Page_%02d"), Page);
+		if (const FChartData* Row = ChartDataTable->FindRow<FChartData>(FName(*RowName), TEXT("LB_GM")))
+			return *Row;
+	}
+	FChartData Empty; Empty.PageNumber = Page; Empty.DayChecks.SetNum(7);
+	return Empty;
+}
+
+// --------- 수정 API (다른 액터/블루프린트에서 호출) ----------
+void ALB_GM::SetNameForPage(int32 Page, const FString& NewName)
+{
+	if (!EnsurePageInCache(Page)) return;
+	RuntimeCharts[Page].Name = NewName;
+	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+}
+
+void ALB_GM::SetSymptomForPage(int32 Page, const FString& NewSymptom)
+{
+	if (!EnsurePageInCache(Page)) return;
+	RuntimeCharts[Page].Symptom = NewSymptom;
+	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+}
+
+void ALB_GM::SetRemarkForPage(int32 Page, const FString& NewRemark)
+{
+	if (!EnsurePageInCache(Page)) return;
+	RuntimeCharts[Page].Remark = NewRemark;
+	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+}
+
+void ALB_GM::SetDayCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
+{
+	if (!EnsurePageInCache(Page)) return;
+	if (RuntimeCharts[Page].DayChecks.Num() < 7) RuntimeCharts[Page].DayChecks.SetNum(7);
+	if (RuntimeCharts[Page].DayChecks.IsValidIndex(DayIndex))
+	{
+		RuntimeCharts[Page].DayChecks[DayIndex] = bChecked;
+		if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+	}
 }

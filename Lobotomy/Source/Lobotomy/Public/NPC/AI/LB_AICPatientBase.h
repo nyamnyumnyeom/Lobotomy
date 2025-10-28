@@ -17,8 +17,13 @@ class LOBOTOMY_API ALB_AICPatientBase : public ALB_AICBase
 
 public:
 	// 환자의 행동 상태 초기화. [None : 안움직임], [Strafe : 주변 배회], [Action : 임의 행동]
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State")
 	EPatientState PatientState;
+
+protected:
+	class ALB_PatientBase* NPC;
+
+	FTimerHandle SettingTimerHandle;
 
 public:
 	ALB_AICPatientBase();
@@ -35,4 +40,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetState_Action();
+
+protected:
+	void SetBehaviorAndAnim();
 };
