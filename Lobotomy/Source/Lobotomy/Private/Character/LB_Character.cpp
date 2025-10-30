@@ -514,30 +514,25 @@ void ALB_Character::HandleUseItem(const FInputActionValue& Value)
 {
     UseItem();
 }
-//
-//bool ALB_Character::TryUseKeyOnCurrentDoor()
-//{
-//    ALB_LockDoor* Door = Cast<ALB_LockDoor>(CurrentInteractActor);
-//    if (!Door)
-//    {
-//        return false;
-//    }
-//
-//    if (Door->bIsOpen)
-//    {
-//        return false;
-//    }
-//
-//    if (Door->RequiredKey == CurrentItem)
-//    {
-//        Door->OpenDoor();
-//        UE_LOG(LogTemp, Warning, TEXT("문이 열렸습니다! (사용된 키: %s)"), *CurrentItem.ToString());
-//        return true;
-//    }
-//    UE_LOG(LogTemp, Warning, TEXT("키가 다릅니다.문 열쇠 %s, 플레이어 열쇠 %s"),
-//    *Door->RequiredKey.ToString(),
-//    * CurrentItem.ToString());
-//        OnDoorUnlockFailed();
-//
-//    return false;
-//}
+
+void ALB_Character::ClearCurrentItem()
+{
+    if (CurrentItem != NAME_None)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Item cleared: %s"), *CurrentItem.ToString());
+        CurrentItem = NAME_None;
+
+        if (HUDUIInstance)
+        {
+            if (ULB_InGameHud* HUD = Cast<ULB_InGameHud>(HUDUIInstance))
+            {
+                HUD->UpdateInventory();
+            }
+        }
+        OnInventoryUpdated(CurrentItem);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No item to clear."));
+    }
+}
