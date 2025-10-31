@@ -140,6 +140,4 @@ void UInteractComponent::Interact(AActor* InteractingActor)
 	UE_LOG(LogTemp, Error, TEXT("%s interact ok~~ - %s"),
 		*InteractingActor->GetName(), *GetOwner()->GetName());
 
-	// 여기서 실제 게임 로직 추가 가능
-	// 예: 아이템 획득, 문 열기, 버튼 작동 등
 }
