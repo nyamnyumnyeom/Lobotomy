@@ -195,6 +195,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
     void OnDoorUnlockFailed();
 
+    UFUNCTION(BlueprintCallable, Category = "Item")
+    void ClearCurrentItem();
+
 private:
    // bool TryUseKeyOnCurrentDoor();
 };
