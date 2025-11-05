@@ -217,7 +217,7 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             }
             if (PlayerController->InteractAction)
             {
-                EnhancedInput->BindAction(PlayerController->InteractAction, ETriggerEvent::Triggered, this, &ALB_Character::Interact);
+                EnhancedInput->BindAction(PlayerController->InteractAction, ETriggerEvent::Started, this, &ALB_Character::Interact);
             }
             if (PlayerController->EscapeAction)
             {
