@@ -51,8 +51,8 @@ ALB_Character::ALB_Character()
     bWasWalking = false;
     bWasRunning = false;
 
-    InteractionTraceDistance = 300.0f;
-    InteractionSphereRadius = 45.0f;
+    InteractionTraceDistance = 400.0f;
+    InteractionSphereRadius = 200.0f;
     CurrentInteractActor = nullptr;
 
     BatteryLevel = 1.0f;
