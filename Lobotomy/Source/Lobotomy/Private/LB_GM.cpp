@@ -2,11 +2,13 @@
 #include "Character/LB_PlayerController.h"
 #include "Character/LB_Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
 #include "LB_Setting.h"
+#include "UI/LB_DialogueUI.h"
 #include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
 
@@ -277,5 +279,32 @@ void ALB_GM::SetDayCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
 	{
 		RuntimeCharts[Page].DayChecks[DayIndex] = bChecked;
 		if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+	}
+}
+
+void ALB_GM::StartDialogue(FName StartRow)
+{
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		ALB_Character* Player = Cast<ALB_Character>(PC->GetPawn());
+		if (Player)
+		{
+			Player->HideHUDUI();
+		}
+
+		FInputModeUIOnly InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
+		PC->bShowMouseCursor = true;
+	}
+
+	if (DialogueWidgetClass && DialogueTable)
+	{
+		ULB_DialogueUI* DialogueUI = CreateWidget<ULB_DialogueUI>(GetWorld(), DialogueWidgetClass);
+		if (DialogueUI)
+		{
+			DialogueUI->AddToViewport(10);
+			DialogueUI->InitDialogue(DialogueTable, StartRow);
+		}
 	}
 }
