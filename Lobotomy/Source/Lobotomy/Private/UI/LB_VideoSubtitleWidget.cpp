@@ -27,10 +27,8 @@ void ULB_VideoSubtitleWidget::NativeConstruct()
     //     }
     // }
 
-    // ✅ 자막 로드
     LoadSRTFile();
 
-    // ✅ 영상 재생
     if (MediaPlayer && MediaSource)
     {
         MediaPlayer->OpenSource(MediaSource);
