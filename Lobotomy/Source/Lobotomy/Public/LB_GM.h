@@ -93,20 +93,26 @@ public:
 	// ------------- 날짜 & 밤낮 ---------
 public:
 	// 현재 날짜 (1일부터 시작)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Days")
 	int32 CurrentDay = 1;
 
 	// 낮/밤 여부 (true = 밤, false = 낮)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Days")
 	bool bIsNight = false;
 
+	UFUNCTION(BlueprintCallable)
 	void UpdateDate();
 
 	// 날짜 초기화 (1일로)
+	UFUNCTION(BlueprintCallable)
 	void ClearDate();
 
 	// 낮 → 밤
+	UFUNCTION(BlueprintCallable)
 	void ChangeToNight();
 
 	// 밤 → 낮
+	UFUNCTION(BlueprintCallable)
 	void ChangeToDay();
 
 	// Getter
