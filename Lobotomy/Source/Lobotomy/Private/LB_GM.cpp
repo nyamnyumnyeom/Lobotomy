@@ -250,21 +250,21 @@ FChartData ALB_GM::GetChartCopy(int32 Page) const
 }
 
 // --------- 수정 API (다른 액터/블루프린트에서 호출) ----------
-void ALB_GM::SetNameForPage(int32 Page, const FString& NewName)
+void ALB_GM::SetNameForPage(int32 Page, const FText& NewName)
 {
 	if (!EnsurePageInCache(Page)) return;
 	RuntimeCharts[Page].Name = NewName;
 	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
 }
 
-void ALB_GM::SetSymptomForPage(int32 Page, const FString& NewSymptom)
+void ALB_GM::SetSymptomForPage(int32 Page, const FText& NewSymptom)
 {
 	if (!EnsurePageInCache(Page)) return;
 	RuntimeCharts[Page].Symptom = NewSymptom;
 	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
 }
 
-void ALB_GM::SetRemarkForPage(int32 Page, const FString& NewRemark)
+void ALB_GM::SetRemarkForPage(int32 Page, const FText& NewRemark)
 {
 	if (!EnsurePageInCache(Page)) return;
 	RuntimeCharts[Page].Remark = NewRemark;

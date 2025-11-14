@@ -11,13 +11,13 @@ struct FChartData : public FTableRowBase
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FString Name;
+    FText Name;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FString Symptom;
+    FText Symptom;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FString Remark;
+    FText Remark;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 PageNumber = 0;
