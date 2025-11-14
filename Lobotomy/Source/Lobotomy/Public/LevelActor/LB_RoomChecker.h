@@ -20,6 +20,9 @@ public:
 	float StayDurationForSpawnHAS = 30.0f;
 
 protected:
+	class ALB_GM* GM;
+
+protected:
 	FTimerHandle PlayerTimerHandle;
 
 public:
