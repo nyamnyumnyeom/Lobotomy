@@ -25,22 +25,22 @@ void ULB_NoteUi::HandleChartUpdated(int32 /*PageNumber*/)
 }
 
 
-void ULB_NoteUi::SetName(const FString& NewName)
+void ULB_NoteUi::SetName(const FText& NewName)
 {
     if (NameText)
-        NameText->SetText(FText::FromString(NewName));
+        NameText->SetText(NewName);
 }
 
-void ULB_NoteUi::SetSymptom(const FString& NewSymptom)
+void ULB_NoteUi::SetSymptom(const FText& NewSymptom)
 {
     if (SymptomText)
-        SymptomText->SetText(FText::FromString(NewSymptom));
+        SymptomText->SetText(NewSymptom);
 }
 
-void ULB_NoteUi::SetRemark(const FString& NewRemark)
+void ULB_NoteUi::SetRemark(const FText& NewRemark)
 {
     if (RemarkText)
-        RemarkText->SetText(FText::FromString(NewRemark));
+        RemarkText->SetText(NewRemark);
 }
 
 void ULB_NoteUi::SetPageNumber(int32 PageNumber)
@@ -68,9 +68,9 @@ void ULB_NoteUi::RefreshFromGameMode()
     {
         const FChartData Data = GM->GetCurrentChartCopy();
 
-        if (NameText)       NameText->SetText(FText::FromString(Data.Name));
-        if (SymptomText)    SymptomText->SetText(FText::FromString(Data.Symptom));
-        if (RemarkText)     RemarkText->SetText(FText::FromString(Data.Remark));
+        if (NameText)       NameText->SetText(Data.Name);
+        if (SymptomText)    SymptomText->SetText(Data.Symptom);
+        if (RemarkText)     RemarkText->SetText(Data.Remark);
         if (PageNumberText) PageNumberText->SetText(FText::AsNumber(Data.PageNumber));
 
         // 체크박스들 반영 (0~6)

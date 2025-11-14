@@ -54,13 +54,13 @@ public:
 
     /** 데이터 업데이트 함수들 */
     UFUNCTION(BlueprintCallable, Category = "Medical Record")
-    void SetName(const FString& NewName);
+    void SetName(const FText& NewName);
 
     UFUNCTION(BlueprintCallable, Category = "Medical Record")
-    void SetSymptom(const FString& NewSymptom);
+    void SetSymptom(const FText& NewSymptom);
 
     UFUNCTION(BlueprintCallable, Category = "Medical Record")
-    void SetRemark(const FString& NewRemark);
+    void SetRemark(const FText& NewRemark);
 
     UFUNCTION(BlueprintCallable, Category = "Medical Record")
     void SetPageNumber(int32 PageNumber);
