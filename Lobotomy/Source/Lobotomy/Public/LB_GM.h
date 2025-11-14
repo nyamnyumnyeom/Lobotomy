@@ -170,11 +170,11 @@ public:
 	FChartData GetCurrentChartCopy() const { return CurrentChart; }
 
 	UFUNCTION(BlueprintCallable, Category = "Chart")
-	void SetNameForPage(int32 Page, const FString& NewName);
+	void SetNameForPage(int32 Page, const FText& NewName);
 	UFUNCTION(BlueprintCallable, Category = "Chart")
-	void SetSymptomForPage(int32 Page, const FString& NewSymptom);
+	void SetSymptomForPage(int32 Page, const FText& NewSymptom);
 	UFUNCTION(BlueprintCallable, Category = "Chart")
-	void SetRemarkForPage(int32 Page, const FString& NewRemark);
+	void SetRemarkForPage(int32 Page, const FText& NewRemark);
 
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void SetDayCheckForPage(int32 Page, int32 DayIndex /*0~6*/, bool bChecked);
