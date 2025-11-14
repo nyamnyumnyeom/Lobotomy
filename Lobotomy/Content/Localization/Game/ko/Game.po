@@ -1,0 +1,568 @@
+﻿# Game Korean translation.
+# Fill out your copyright notice in the Description page of Project Settings.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Game\n"
+"POT-Creation-Date: 2025-11-13 08:02\n"
+"PO-Revision-Date: 2025-11-13 08:02\n"
+"Language-Team: \n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Key:	CC7751CE4CF983A288A53986086C3988
+#. SourceLocation:	/Game/BP_LB_GM.BP_LB_GM_C:ExecuteUbergraph_BP_LB_GM [Script Bytecode]
+#: /Game/BP_LB_GM.BP_LB_GM_C:ExecuteUbergraph_BP_LB_GM [Script Bytecode]
+msgctxt ",CC7751CE4CF983A288A53986086C3988"
+msgid "라이트 변경 완료"
+msgstr ""
+
+#. Key:	5280049C4F06104422197088BFC319BA
+#. SourceLocation:	/Game/Items/BP_Key.BP_Key_C:BPC_InteractComponent_GEN_VARIABLE.InteractionText.Text
+#: /Game/Items/BP_Key.BP_Key_C:BPC_InteractComponent_GEN_VARIABLE.InteractionText.Text
+msgctxt ",5280049C4F06104422197088BFC319BA"
+msgid "Mainstkey"
+msgstr ""
+
+#. Key:	A15871D4479ECA5D8F03DAB72647CE7F
+#. SourceLocation:	/Game/Items/BP_LB_LockDoor.BP_LB_LockDoor_C:BPC_InteractComponent_GEN_VARIABLE.DisplayText
+#: /Game/Items/BP_LB_LockDoor.BP_LB_LockDoor_C:BPC_InteractComponent_GEN_VARIABLE.DisplayText
+msgctxt ",A15871D4479ECA5D8F03DAB72647CE7F"
+msgid "Mainss"
+msgstr ""
+
+#. Key:	6C8B21B9405C02CB82EDADBB969786DE
+#. SourceLocation:	/Game/Items/BP_LB_LockDoor.BP_LB_LockDoor_C:BPC_InteractComponent_GEN_VARIABLE.InteractionText.Text
+#: /Game/Items/BP_LB_LockDoor.BP_LB_LockDoor_C:BPC_InteractComponent_GEN_VARIABLE.InteractionText.Text
+msgctxt ",6C8B21B9405C02CB82EDADBB969786DE"
+msgid "Mainst"
+msgstr ""
+
+#. Key:	EA18D5814D103BA74D1362B9F36AB557
+#. SourceLocation:	/Game/Items/BP_LB_LockTwoDoor.BP_LB_LockTwoDoor_C:BPC_InteractComponent_GEN_VARIABLE.DisplayText
+#: /Game/Items/BP_LB_LockTwoDoor.BP_LB_LockTwoDoor_C:BPC_InteractComponent_GEN_VARIABLE.DisplayText
+msgctxt ",EA18D5814D103BA74D1362B9F36AB557"
+msgid "Mainss"
+msgstr ""
+
+#. Key:	89912E854AD88DF95B06D68DD30AA8DB
+#. SourceLocation:	/Game/Items/BP_LB_LockTwoDoor.BP_LB_LockTwoDoor_C:BPC_InteractComponent_GEN_VARIABLE.InteractionText.Text
+#: /Game/Items/BP_LB_LockTwoDoor.BP_LB_LockTwoDoor_C:BPC_InteractComponent_GEN_VARIABLE.InteractionText.Text
+msgctxt ",89912E854AD88DF95B06D68DD30AA8DB"
+msgid "Mainst"
+msgstr ""
+
+#. Key:	2B28A6714D4564C2F73833B553E0F4BD
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.A
+#: /Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.A
+msgctxt ",2B28A6714D4564C2F73833B553E0F4BD"
+msgid "Pupil"
+msgstr ""
+
+#. Key:	CD485F77451A067CFB89CFAD73070C43
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.B
+#: /Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.B
+msgctxt ",CD485F77451A067CFB89CFAD73070C43"
+msgid "Secondary"
+msgstr ""
+
+#. Key:	475AEC7647D7F1E14C3F21842FBC198C
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.G
+#: /Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.G
+msgctxt ",475AEC7647D7F1E14C3F21842FBC198C"
+msgid "Shadow"
+msgstr ""
+
+#. Key:	58C2342445EC4EC1C5BDAF82EC8AAF03
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.R
+#: /Game/MetaHumans/Common/Lookdev_UHM/Eye/Material_Functions/MF_customIris.MF_customIris:MaterialExpressionTextureSampleParameter2D_4.ChannelNames.R
+msgctxt ",58C2342445EC4EC1C5BDAF82EC8AAF03"
+msgid "Details"
+msgstr ""
+
+#. Key:	51DD1E2E4DD771C698C0E2A43D6153D6
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.A
+#: /Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.A
+msgctxt ",51DD1E2E4DD771C698C0E2A43D6153D6"
+msgid "AO"
+msgstr ""
+
+#. Key:	C0A233FD4990CF696EC1629C086F4D73
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.B
+#: /Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.B
+msgctxt ",C0A233FD4990CF696EC1629C086F4D73"
+msgid "Normal B"
+msgstr ""
+
+#. Key:	04360FC24611A431D3C707A6CF72828E
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.G
+#: /Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.G
+msgctxt ",04360FC24611A431D3C707A6CF72828E"
+msgid "Normal G"
+msgstr ""
+
+#. Key:	61F3F6E2470898B8A8C6C6AABB858485
+#. SourceLocation:	/Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.R
+#: /Game/MetaHumans/Common/Lookdev_UHM/Skin/Material_Functions/MF_skin_bentNormalsAO.MF_skin_bentNormalsAO:MaterialExpressionTextureSampleParameter2D_0.ChannelNames.R
+msgctxt ",61F3F6E2470898B8A8C6C6AABB858485"
+msgid "Normal R"
+msgstr ""
+
+#. Key:	1A07ABFB4F881089C4DDE38F56A7753C
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Hi001.DialogueText
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Hi001.DialogueText
+msgctxt ",1A07ABFB4F881089C4DDE38F56A7753C"
+msgid "아아아아아아ㅏ"
+msgstr ""
+
+#. Key:	34B4C38B457A720B0890DCBD7615AC13
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Hi001.SpeakerName
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Hi001.SpeakerName
+msgctxt ",34B4C38B457A720B0890DCBD7615AC13"
+msgid "테스트"
+msgstr ""
+
+#. Key:	8E94E34142182A17DBE5359E01721840
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Hi002.DialogueText
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Hi002.DialogueText
+msgctxt ",8E94E34142182A17DBE5359E01721840"
+msgid "asdasdsadasdasdsa아아아아아아ㅏ"
+msgstr ""
+
+#. Key:	4DF89AE548C87B723F400C8659836591
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Test001.DialogueText
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Test001.DialogueText
+msgctxt ",4DF89AE548C87B723F400C8659836591"
+msgid "안녕 ? 만나서 반가워. 아니 사실 반갑지 않아. 넌 누구니 ?"
+msgstr ""
+
+#. Key:	233944434DE1FFB36349EBAAA9BB2969
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Test001.SpeakerName
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Test001.SpeakerName
+msgctxt ",233944434DE1FFB36349EBAAA9BB2969"
+msgid "James marker"
+msgstr ""
+
+#. Key:	BD528F4B4EB3C8E444958DA24818BE20
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Test002.DialogueText
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Test002.DialogueText
+msgctxt ",BD528F4B4EB3C8E444958DA24818BE20"
+msgid "왜 온지 모르지만 저리 가"
+msgstr ""
+
+#. Key:	6E4F42454DCB07C7436E1E9B573933A2
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Test003.DialogueText
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Test003.DialogueText
+msgctxt ",6E4F42454DCB07C7436E1E9B573933A2"
+msgid "알았어. 빠이염~"
+msgstr ""
+
+#. Key:	8BEB54094103A022473449BA368A6B8D
+#. SourceLocation:	/Game/UI/Data/DT_DialogueData.DT_DialogueData.Test003.SpeakerName
+#: /Game/UI/Data/DT_DialogueData.DT_DialogueData.Test003.SpeakerName
+msgctxt ",8BEB54094103A022473449BA368A6B8D"
+msgid "Me"
+msgstr ""
+
+#. Key:	A073C9714296DD2C2ED0118170E1E2B8
+#. SourceLocation:	/Game/UI/Data/DT_Items.DT_Items.Battery.ItemName
+#: /Game/UI/Data/DT_Items.DT_Items.Battery.ItemName
+msgctxt ",A073C9714296DD2C2ED0118170E1E2B8"
+msgid "Battery"
+msgstr ""
+
+#. Key:	BAE222DA44941FCEE10481A1C5DA2DEB
+#. SourceLocation:	/Game/UI/Data/DT_Items.DT_Items.Key_Mainst01.ItemName
+#: /Game/UI/Data/DT_Items.DT_Items.Key_Mainst01.ItemName
+msgctxt ",BAE222DA44941FCEE10481A1C5DA2DEB"
+msgid "Key_Mainst01"
+msgstr ""
+
+#. Key:	C06EB1A143EFDCF2DB95C28448C2F30B
+#. SourceLocation:	/Game/UI/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_107.Text
+#: /Game/UI/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_107.Text
+msgctxt ",C06EB1A143EFDCF2DB95C28448C2F30B"
+msgid "Back To Title"
+msgstr ""
+
+#. Key:	6A3EFB5249FBCD83293EDEB752830F50
+#. SourceLocation:	/Game/UI/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_57.Text
+#: /Game/UI/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_57.Text
+msgctxt ",6A3EFB5249FBCD83293EDEB752830F50"
+msgid "GAME OVER"
+msgstr ""
+
+#. Key:	2DC4DD9A4E83AD9EAED2B483C23CEE3B
+#. SourceLocation:	/Game/UI/WBP_InteractWidget.WBP_InteractWidget_C:WidgetTree.TextBlock_0.Text
+#: /Game/UI/WBP_InteractWidget.WBP_InteractWidget_C:WidgetTree.TextBlock_0.Text
+msgctxt ",2DC4DD9A4E83AD9EAED2B483C23CEE3B"
+msgid "[ E ]"
+msgstr ""
+
+#. Key:	65A800A14F07792619C21789DA5B9246
+#. SourceLocation:	/Game/UI/WBP_LB_DialogueUI.WBP_LB_DialogueUI_C:WidgetTree.DialogueText.Text
+#: /Game/UI/WBP_LB_DialogueUI.WBP_LB_DialogueUI_C:WidgetTree.DialogueText.Text
+msgctxt ",65A800A14F07792619C21789DA5B9246"
+msgid "Have we seen before?"
+msgstr ""
+
+#. Key:	6CAC514947E6E5F3F4A75B845D35B163
+#. SourceLocation:	/Game/UI/WBP_LB_DialogueUI.WBP_LB_DialogueUI_C:WidgetTree.SpeakerText.Text
+#: /Game/UI/WBP_LB_DialogueUI.WBP_LB_DialogueUI_C:WidgetTree.SpeakerText.Text
+msgctxt ",6CAC514947E6E5F3F4A75B845D35B163"
+msgid "Alex jim"
+msgstr ""
+
+#. Key:	17E21DBE43CBB240B8BF2BBB06B10630
+#. SourceLocation:	/Game/UI/WBP_LB_InGameHud.WBP_LB_InGameHud_C:WidgetTree.Cannotopen.Text
+#: /Game/UI/WBP_LB_InGameHud.WBP_LB_InGameHud_C:WidgetTree.Cannotopen.Text
+msgctxt ",17E21DBE43CBB240B8BF2BBB06B10630"
+msgid "Can't open this door"
+msgstr ""
+
+#. Key:	TextBlockDefaultValue
+#. SourceLocation:	/Game/UI/WBP_LB_InGameHud.WBP_LB_InGameHud_C:WidgetTree.GameTimeText.Text
+#: /Game/UI/WBP_LB_InGameHud.WBP_LB_InGameHud_C:WidgetTree.GameTimeText.Text
+msgctxt "UMG,TextBlockDefaultValue"
+msgid "Text Block"
+msgstr ""
+
+#. Key:	97BFF1A04ED79A0F935D3CABD99E7B38
+#. SourceLocation:	/Game/UI/WBP_LB_InGameHud.WBP_LB_InGameHud_C:WidgetTree.NoPickup.Text
+#: /Game/UI/WBP_LB_InGameHud.WBP_LB_InGameHud_C:WidgetTree.NoPickup.Text
+msgctxt ",97BFF1A04ED79A0F935D3CABD99E7B38"
+msgid "Cannot Pick Up Item"
+msgstr ""
+
+#. Key:	235732914E4C7E5B6644C9AEFED5FF80
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution.Text
+msgctxt ",235732914E4C7E5B6644C9AEFED5FF80"
+msgid "Resolution"
+msgstr ""
+
+#. Key:	1F7240A44EE4873B30F84C8BC792B826
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_1.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_1.Text
+msgctxt ",1F7240A44EE4873B30F84C8BC792B826"
+msgid "WindowMode"
+msgstr ""
+
+#. Key:	E579B0B84156202A4C379A90A97799F2
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_2.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_2.Text
+msgctxt ",E579B0B84156202A4C379A90A97799F2"
+msgid "AntiAliasing"
+msgstr ""
+
+#. Key:	6D6E282A41E71B5418390485F53496AD
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_3.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_3.Text
+msgctxt ",6D6E282A41E71B5418390485F53496AD"
+msgid "Postprocessing"
+msgstr ""
+
+#. Key:	D3F17B904C6A894AA3A6A2A2A34DAFD5
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_4.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_4.Text
+msgctxt ",D3F17B904C6A894AA3A6A2A2A34DAFD5"
+msgid "Shadow Quailty"
+msgstr ""
+
+#. Key:	36B44AB14C685B78654F62B779F9F8B7
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_5.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_5.Text
+msgctxt ",36B44AB14C685B78654F62B779F9F8B7"
+msgid "Texture Quailty"
+msgstr ""
+
+#. Key:	76C8FFD3440879B6E68C3FA95C8924B0
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_6.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.Resolution_6.Text
+msgctxt ",76C8FFD3440879B6E68C3FA95C8924B0"
+msgid "Language"
+msgstr ""
+
+#. Key:	BF94D37D40BEC60CD7D65C9C9646788D
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock.Text
+msgctxt ",BF94D37D40BEC60CD7D65C9C9646788D"
+msgid "Sensitivity"
+msgstr ""
+
+#. Key:	A0B2C61D4D38E5B1727D6986D1424EA5
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_1.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_1.Text
+msgctxt ",A0B2C61D4D38E5B1727D6986D1424EA5"
+msgid "Brightness"
+msgstr ""
+
+#. Key:	EB74A3E64433908B927BA38AC0314BD1
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_100.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_100.Text
+msgctxt ",EB74A3E64433908B927BA38AC0314BD1"
+msgid "Back"
+msgstr ""
+
+#. Key:	C4C4922442AF59580DA24D9F23EECDB4
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_101.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_101.Text
+msgctxt ",C4C4922442AF59580DA24D9F23EECDB4"
+msgid "Reset"
+msgstr ""
+
+#. Key:	77CCCA2543AD8CB7CBD1389CB9142A13
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_102.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_102.Text
+msgctxt ",77CCCA2543AD8CB7CBD1389CB9142A13"
+msgid "Apply"
+msgstr ""
+
+#. Key:	271F1F3B410E05E14BDEE6AA4C94D478
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_98.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_98.Text
+msgctxt ",271F1F3B410E05E14BDEE6AA4C94D478"
+msgid "Volume"
+msgstr ""
+
+#. Key:	761D316C4EB7AFD51BD0D0AFA34C6835
+#. SourceLocation:	/Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_99.Text
+#: /Game/UI/WBP_LB_SettingUI.WBP_LB_SettingUI_C:WidgetTree.TextBlock_99.Text
+msgctxt ",761D316C4EB7AFD51BD0D0AFA34C6835"
+msgid "Setting"
+msgstr ""
+
+#. Key:	2E34FC154237AF52BD499AAC59CF6D8E
+#. SourceLocation:	/Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_0.Text
+#: /Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_0.Text
+msgctxt ",2E34FC154237AF52BD499AAC59CF6D8E"
+msgid "Start"
+msgstr ""
+
+#. Key:	B3937B9E4B9CEAD6B4EF5397EF55EE98
+#. SourceLocation:	/Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_1.Text
+#: /Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_1.Text
+msgctxt ",B3937B9E4B9CEAD6B4EF5397EF55EE98"
+msgid "Option"
+msgstr ""
+
+#. Key:	E58C994A4A6204B40A3BD5A5AD2A846D
+#. SourceLocation:	/Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_2.Text
+#: /Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_2.Text
+msgctxt ",E58C994A4A6204B40A3BD5A5AD2A846D"
+msgid "Credit"
+msgstr ""
+
+#. Key:	6FDE8AE4496DB9981B31449DD95F496F
+#. SourceLocation:	/Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_3.Text
+#: /Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_3.Text
+msgctxt ",6FDE8AE4496DB9981B31449DD95F496F"
+msgid "Exit"
+msgstr ""
+
+#. Key:	1BEACBFE4DE728D783B458A4647A8C15
+#. SourceLocation:	/Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_4.Text
+#: /Game/UI/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_4.Text
+msgctxt ",1BEACBFE4DE728D783B458A4647A8C15"
+msgid "Lobotomy"
+msgstr ""
+
+#. Key:	B4B75E3249DC064149B8858D2EE4B2AE
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.asd.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.asd.Text
+msgctxt ",B4B75E3249DC064149B8858D2EE4B2AE"
+msgid "Symptom"
+msgstr ""
+
+#. Key:	B6FB2BB44519B621F03BE2910890F9F6
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.asdczxc.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.asdczxc.Text
+msgctxt ",B6FB2BB44519B621F03BE2910890F9F6"
+msgid "Name "
+msgstr ""
+
+#. Key:	5FDB4C3D43D55F579F72CF8D5973CA8E
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.Chart.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.Chart.Text
+msgctxt ",5FDB4C3D43D55F579F72CF8D5973CA8E"
+msgid "Chart"
+msgstr ""
+
+#. Key:	5163B0B745C22B4097C28DA9FC5ECAAA
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.NameText.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.NameText.Text
+msgctxt ",5163B0B745C22B4097C28DA9FC5ECAAA"
+msgid "Liam"
+msgstr ""
+
+#. Key:	A05C80884E7F9F56AFB49C89190044DA
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.PagenumberText.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.PagenumberText.Text
+msgctxt ",A05C80884E7F9F56AFB49C89190044DA"
+msgid "Page"
+msgstr ""
+
+#. Key:	E2EED3184C150B2D7ADED7B6C49A7143
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.RemarkText.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.RemarkText.Text
+msgctxt ",E2EED3184C150B2D7ADED7B6C49A7143"
+msgid "Every night, someone is staring at him from the door. \r\nSometimes someone knocks on the door.\r\n\r\n\r\nP.S. He is gripped by extreme fear."
+msgstr ""
+
+#. Key:	5409B81043E27C0ACFBD779B11F3C00B
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.SymptomText.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.SymptomText.Text
+msgctxt ",5409B81043E27C0ACFBD779B11F3C00B"
+msgid "???"
+msgstr ""
+
+#. Key:	1C3304B740EB6B70A6DBD7B3968D4DA0
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock.Text
+msgctxt ",1C3304B740EB6B70A6DBD7B3968D4DA0"
+msgid "Day 1"
+msgstr ""
+
+#. Key:	3CDD277340D3CDF366A95D944B472E33
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_1.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_1.Text
+msgctxt ",3CDD277340D3CDF366A95D944B472E33"
+msgid "Day 3"
+msgstr ""
+
+#. Key:	9F82BF1941DC27FD06A75DB4EAA4165B
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_2.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_2.Text
+msgctxt ",9F82BF1941DC27FD06A75DB4EAA4165B"
+msgid "Day 4"
+msgstr ""
+
+#. Key:	E8CE0F2C48389E17B9B9199A47588E60
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_3.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_3.Text
+msgctxt ",E8CE0F2C48389E17B9B9199A47588E60"
+msgid "Day 2"
+msgstr ""
+
+#. Key:	C570104449F322B4947DCD95904DD9EA
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_4.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_4.Text
+msgctxt ",C570104449F322B4947DCD95904DD9EA"
+msgid "Day 5"
+msgstr ""
+
+#. Key:	E82226F04242666D9F05D8B9BFF5E553
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_5.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_5.Text
+msgctxt ",E82226F04242666D9F05D8B9BFF5E553"
+msgid "Day 6"
+msgstr ""
+
+#. Key:	97679D314AEF4F527B0B2BB8F15B3EA5
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_6.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_6.Text
+msgctxt ",97679D314AEF4F527B0B2BB8F15B3EA5"
+msgid "Day 7"
+msgstr ""
+
+#. Key:	F10F71A24A61A16991FFB1BE5481A786
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_7.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_7.Text
+msgctxt ",F10F71A24A61A16991FFB1BE5481A786"
+msgid "Previous"
+msgstr ""
+
+#. Key:	060B4DD846785C5A0483C4890C88F523
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_8.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_8.Text
+msgctxt ",060B4DD846785C5A0483C4890C88F523"
+msgid "Next"
+msgstr ""
+
+#. Key:	8E5105EB4BAA9D514E3CC983277410B2
+#. SourceLocation:	/Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_95.Text
+#: /Game/UI/WBP_NoteUi.WBP_NoteUi_C:WidgetTree.TextBlock_95.Text
+msgctxt ",8E5105EB4BAA9D514E3CC983277410B2"
+msgid "Remark"
+msgstr ""
+
+#. Key:	C98BC42C45B6B7A6A5C2D7BCE9C69798
+#. SourceLocation:	/Game/UI/WBP_PauseMenu.WBP_PauseMenu_C:WidgetTree.TextBlock_0.Text
+#: /Game/UI/WBP_PauseMenu.WBP_PauseMenu_C:WidgetTree.TextBlock_0.Text
+msgctxt ",C98BC42C45B6B7A6A5C2D7BCE9C69798"
+msgid "Resume"
+msgstr ""
+
+#. Key:	22D122A64A501F2D3E3A658613B6A35A
+#. SourceLocation:	/Game/UI/WBP_PauseMenu.WBP_PauseMenu_C:WidgetTree.TextBlock_1.Text
+#: /Game/UI/WBP_PauseMenu.WBP_PauseMenu_C:WidgetTree.TextBlock_1.Text
+msgctxt ",22D122A64A501F2D3E3A658613B6A35A"
+msgid "Option"
+msgstr ""
+
+#. Key:	4DF415AB4D0AFC253737E89B4DA1EEF3
+#. SourceLocation:	/Game/UI/WBP_PauseMenu.WBP_PauseMenu_C:WidgetTree.TextBlock_2.Text
+#: /Game/UI/WBP_PauseMenu.WBP_PauseMenu_C:WidgetTree.TextBlock_2.Text
+msgctxt ",4DF415AB4D0AFC253737E89B4DA1EEF3"
+msgid "MainMenu"
+msgstr ""
+
+#. Key:	58A6A7CC4346D60740076D85AE303E3D
+#. SourceLocation:	/Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_0.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_0.NewTextRenderComponent.Text
+msgctxt ",58A6A7CC4346D60740076D85AE303E3D"
+msgid "Windows"
+msgstr ""
+
+#. Key:	02BED2394BD2BF95415614AFD4159EC3
+#. SourceLocation:	/Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+msgctxt ",02BED2394BD2BF95415614AFD4159EC3"
+msgid "Roof"
+msgstr ""
+
+#. Key:	8C9B01D941D947D06F96538984A81ED4
+#. SourceLocation:	/Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_2.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_2.NewTextRenderComponent.Text
+msgctxt ",8C9B01D941D947D06F96538984A81ED4"
+msgid "Walls"
+msgstr ""
+
+#. Key:	6FD365D44701A99CCC3631A33A35E00B
+#. SourceLocation:	/Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_3.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_3.NewTextRenderComponent.Text
+msgctxt ",6FD365D44701A99CCC3631A33A35E00B"
+msgid "Floors"
+msgstr ""
+
+#. Key:	9AC754754486E07B5F86F7A9F8756B40
+#. SourceLocation:	/Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_4.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_4.NewTextRenderComponent.Text
+msgctxt ",9AC754754486E07B5F86F7A9F8756B40"
+msgid "Doors"
+msgstr ""
+
+#. Key:	2A0564F74EE69428F827C8A505AE2429
+#. SourceLocation:	/Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_5.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/Levels/VictorianHospital_Showcase.VictorianHospital_Showcase:PersistentLevel.TextRenderActor_5.NewTextRenderComponent.Text
+msgctxt ",2A0564F74EE69428F827C8A505AE2429"
+msgid "Stairs"
+msgstr ""
+
+#. Key:	691499C143CEC4755BDDE8B68BE07F52
+#. SourceLocation:	/Game/VictorianHospital/OldWest/VOL1/Maps/Overview.Overview:PersistentLevel.TextRenderActor_0.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/OldWest/VOL1/Maps/Overview.Overview:PersistentLevel.TextRenderActor_0.NewTextRenderComponent.Text
+msgctxt ",691499C143CEC4755BDDE8B68BE07F52"
+msgid "Nanite High Mesh Resolution Meshses"
+msgstr ""
+
+#. Key:	53383F3B4E90C59AE9472FBBDF986CB3
+#. SourceLocation:	/Game/VictorianHospital/OldWest/VOL1/Maps/Overview.Overview:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+#: /Game/VictorianHospital/OldWest/VOL1/Maps/Overview.Overview:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+msgctxt ",53383F3B4E90C59AE9472FBBDF986CB3"
+msgid "Standard Low Poly Baked Meshes"
+msgstr ""
+
