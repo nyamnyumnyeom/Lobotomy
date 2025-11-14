@@ -3,6 +3,8 @@
 
 #include "LevelActor/LB_RoomChecker.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "LB_GM.h"
 
 ALB_RoomChecker::ALB_RoomChecker()
 {
@@ -24,6 +26,7 @@ void ALB_RoomChecker::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 void ALB_RoomChecker::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -43,10 +46,15 @@ void ALB_RoomChecker::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+
+		if (!GM) return;
+		//
 	}
 }
 
 void ALB_RoomChecker::OnPlayerStay()
 {
+	if (!GM) return;
+	//
 
 }
