@@ -29,6 +29,14 @@ void ALB_MusicBox::BeginPlay()
 	GetWorldTimerManager().SetTimer(
 		NoiseTimerHandle,
 		this,
+		&ALB_MusicBox::MusicOff,
+		DestroyTime,
+		false
+	);
+
+	GetWorldTimerManager().SetTimer(
+		NoiseTimerHandle,
+		this,
 		&ALB_MusicBox::MakeNoiseForAI,
 		1.0f,    
 		true  

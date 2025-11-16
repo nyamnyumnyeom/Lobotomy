@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
 	class USoundBase* MusicSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	float DestroyTime = 30.0f;
+
 protected:
 	FTimerHandle NoiseTimerHandle;
 

@@ -55,7 +55,7 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 		{
 			SpawnedMusicBox->SetOwner(this);
 
-			GetWorldTimerManager().SetTimer(MusicBoxTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxTimeup, 20.0f, false);
+			GetWorldTimerManager().SetTimer(MusicBoxTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxTimeup, TimeupTime, false);
 		}
 	}
 }
@@ -63,6 +63,8 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 void ALB_TargetPoint_MusicBox::StopMusicBoxTimer()
 {
 	GetWorld()->GetTimerManager().ClearTimer(MusicBoxTimerHandle);
+
+	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
 
 	GetWorldTimerManager().SetTimer(MusicBoxDestroyTimerHandle, this, &ALB_TargetPoint_MusicBox::TryMusicBoxDestroy, 0.7f, true);
 

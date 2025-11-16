@@ -31,6 +31,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	TSubclassOf<AActor> ChainSawManClass;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float TimeupTime = 20.0f;
+
 protected:
 	FTimerHandle MusicBoxTimerHandle;
 	FTimerHandle MusicBoxDestroyTimerHandle;
