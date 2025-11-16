@@ -25,6 +25,14 @@ void ALB_MusicBox::BeginPlay()
 		AudioComp->SetSound(MusicSound);
 		AudioComp->Play();
 	}
+
+	GetWorldTimerManager().SetTimer(
+		NoiseTimerHandle,
+		this,
+		&ALB_MusicBox::MakeNoiseForAI,
+		1.0f,    
+		true  
+	);
 }
 
 void ALB_MusicBox::MusicOff()

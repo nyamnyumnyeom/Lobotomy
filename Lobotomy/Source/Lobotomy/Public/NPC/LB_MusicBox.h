@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
 	class USoundBase* MusicSound;
 
+protected:
+	FTimerHandle NoiseTimerHandle;
+
 public:	
 	ALB_MusicBox();
 
@@ -29,5 +32,8 @@ public:
 	// 상호작용으로 음악 종료
 	UFUNCTION(BlueprintCallable)
 	void MusicOff();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void MakeNoiseForAI();
 
 };

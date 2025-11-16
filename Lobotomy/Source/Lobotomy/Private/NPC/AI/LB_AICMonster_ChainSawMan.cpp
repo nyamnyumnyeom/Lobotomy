@@ -41,71 +41,73 @@ void ALB_AICMonster_ChainSawMan::OnPossess(APawn* InPawn)
 
 void ALB_AICMonster_ChainSawMan::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (!Actor->ActorHasTag("Player")) return;
-
-	if (Stimulus.WasSuccessfullySensed())
+	if (Actor->ActorHasTag("Player") || Actor->ActorHasTag("SoundActor"))
 	{
-		if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
+
+		if (Stimulus.WasSuccessfullySensed())
 		{
-			FVector SoundLocation = Stimulus.StimulusLocation;
-			FVector MyLocation = GetPawn()->GetActorLocation();
-
-			FHitResult Hit;
-			FCollisionQueryParams Params;
-			Params.AddIgnoredActor(GetPawn());
-
-			bool bBlocked = GetWorld()->LineTraceSingleByChannel(
-				Hit,
-				MyLocation,
-				SoundLocation,
-				ECC_Visibility,
-				Params
-			);
-
-			if (!bBlocked)
+			if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
 			{
-				SetState_Investigation_Hear(SoundLocation);
-			}
-			else
-			{
-				UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-				if (NavSys)
+				FVector SoundLocation = Stimulus.StimulusLocation;
+				FVector MyLocation = GetPawn()->GetActorLocation();
+
+				FHitResult Hit;
+				FCollisionQueryParams Params;
+				Params.AddIgnoredActor(GetPawn());
+
+				bool bBlocked = GetWorld()->LineTraceSingleByChannel(
+					Hit,
+					MyLocation,
+					SoundLocation,
+					ECC_Visibility,
+					Params
+				);
+
+				if (!bBlocked)
 				{
-
-					FNavAgentProperties AgentProps = this->GetNavAgentPropertiesRef();
-					ANavigationData* NavData = NavSys->GetNavDataForProps(AgentProps);
-
-					FVector StartLocation = MyLocation;
-					FVector EndLocation = SoundLocation;
-
-					FPathFindingQuery Query(this, *NavData, StartLocation, EndLocation);
-					FPathFindingResult Result = NavSys->FindPathSync(Query);
-
-					if (Result.Path.IsValid() && Result.Result == ENavigationQueryResult::Success)
+					SetState_Investigation_Hear(SoundLocation);
+				}
+				else
+				{
+					UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+					if (NavSys)
 					{
-						const float PathDistance = Result.Path->GetLength();
 
-						if (PathDistance <= HearingDistance)
+						FNavAgentProperties AgentProps = this->GetNavAgentPropertiesRef();
+						ANavigationData* NavData = NavSys->GetNavDataForProps(AgentProps);
+
+						FVector StartLocation = MyLocation;
+						FVector EndLocation = SoundLocation;
+
+						FPathFindingQuery Query(this, *NavData, StartLocation, EndLocation);
+						FPathFindingResult Result = NavSys->FindPathSync(Query);
+
+						if (Result.Path.IsValid() && Result.Result == ENavigationQueryResult::Success)
 						{
-							SetState_Investigation_Hear(SoundLocation);
+							const float PathDistance = Result.Path->GetLength();
+
+							if (PathDistance <= HearingDistance)
+							{
+								SetState_Investigation_Hear(SoundLocation);
+							}
 						}
 					}
 				}
 			}
 		}
-	}
-	else
-	{
-		if (Stimulus.Type == UAISense::GetSenseID(UAISense_Sight::StaticClass()))
+		else
 		{
-			GetWorld()->GetTimerManager().SetTimer(LostSightTimerHandle, this, &ALB_AICMonsterBase::OnLostSightTimeout, LostSightTime, false);
+			if (Stimulus.Type == UAISense::GetSenseID(UAISense_Sight::StaticClass()))
+			{
+				GetWorld()->GetTimerManager().SetTimer(LostSightTimerHandle, this, &ALB_AICMonsterBase::OnLostSightTimeout, LostSightTime, false);
 
-			if (!BB) return;
+				if (!BB) return;
 
-			BB->SetValueAsVector("LastSeenLocation", Stimulus.StimulusLocation);
-			BB->SetValueAsBool("IsSeePlayer", false);
+				BB->SetValueAsVector("LastSeenLocation", Stimulus.StimulusLocation);
+				BB->SetValueAsBool("IsSeePlayer", false);
+			}
 		}
-	}
 
-	Super::OnPerceptionUpdated(Actor, Stimulus);
+		Super::OnPerceptionUpdated(Actor, Stimulus);
+	}
 }

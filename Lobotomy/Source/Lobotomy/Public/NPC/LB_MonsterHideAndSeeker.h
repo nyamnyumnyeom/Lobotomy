@@ -15,6 +15,9 @@ class LOBOTOMY_API ALB_MonsterHideAndSeeker : public ALB_MonsterBase
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	class USphereComponent* PlayerDetectSphere;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music")
 	class UAudioComponent* AudioComp;
 
@@ -22,9 +25,12 @@ public:
 	class USoundBase* MusicSound;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "See")
 	float Threshold = 0.95f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float MoveDuration = 2.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float MoveSpeed = 0.3f;
 
 protected:
@@ -35,12 +41,23 @@ protected:
 
 protected:
 	FTimerHandle MoveTimerHandle;
+	FTimerHandle BeginPlayTimerHandle;
 
 public:
 	ALB_MonsterHideAndSeeker();
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnSphereBeginOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
 
 public:
 	virtual void Tick(float DeltaTime) override;

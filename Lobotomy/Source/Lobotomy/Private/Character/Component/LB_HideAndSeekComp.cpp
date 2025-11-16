@@ -26,7 +26,7 @@ void ULB_HideAndSeekComp::TriggerHASSpawn()
 	ALB_TargetPoint_HAS* NearestHASPoint = FindNearestHAS();
 	if (NearestHASPoint)
 	{
-		NearestHASPoint->HASSystemActivate(bIsPlayerOutDoor);
+		NearestHASPoint->HASSystemActivate(bIsPlayerInRoom);
 	}
 	else
 	{

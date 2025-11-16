@@ -30,7 +30,7 @@ void ALB_TargetPoint_HAS::BeginPlay()
 
 }
 
-void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsOutDoor)
+void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsPlayerInRoom)
 {
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GM)
@@ -43,7 +43,7 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsOutDoor)
 				{
 					FVector SpawnLocation = GetActorLocation();
 					FRotator SpawnRotation = GetActorRotation();
-					if (!bIsOutDoor)
+					if (bIsPlayerInRoom)
 					{
 						SpawnLocation = InsideBillboard->GetComponentLocation();
 						SpawnRotation = InsideBillboard->GetComponentRotation();
@@ -55,27 +55,27 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsOutDoor)
 			}
 			else
 			{
-				SpawnLogic(ChainSawManClass, bIsOutDoor);
+				SpawnLogic(ChainSawManClass, bIsPlayerInRoom);
 			}	
 
 			GM->ResetKnockCount();
 		}
 		else
 		{
-			SpawnLogic(HideAndSeekerClass, bIsOutDoor);
+			SpawnLogic(HideAndSeekerClass, bIsPlayerInRoom);
 
 			GM->AddKnockCount();
 		}
 	}
 }
 
-void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsOutDoor)
+void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPlayerInRoom)
 {
 	if (!SpawnClass) return;
 
 	FVector SpawnLocation = GetActorLocation();
 	FRotator SpawnRotation = GetActorRotation();
-	if (!bIsOutDoor)
+	if (bIsPlayerInRoom)
 	{
 		SpawnLocation = InsideBillboard->GetComponentLocation();
 		SpawnRotation = InsideBillboard->GetComponentRotation();
@@ -91,13 +91,18 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsOut
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 	{
 		SpawnLocation = HitResult.ImpactPoint;
+		SpawnLocation += FVector(0, 0, 88.0f);
 	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	if (SpawnClass)
 	{
 		if (SpawnClass == HideAndSeekerClass)
 		{
-			SpawnedHideAndSeeker = GetWorld()->SpawnActor<ALB_MonsterHideAndSeeker>(SpawnClass, SpawnLocation, SpawnRotation);
+			SpawnedHideAndSeeker = GetWorld()->SpawnActor<ALB_MonsterHideAndSeeker>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (SpawnedHideAndSeeker)
 			{
 				SpawnedHideAndSeeker->SetOwner(this);
@@ -107,7 +112,7 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsOut
 		
 		if (SpawnClass == ChainSawManClass)
 		{
-			SpawnedChainSawMan = GetWorld()->SpawnActor<ALB_Monster_ChainSawMan>(SpawnClass, SpawnLocation, SpawnRotation);
+			SpawnedChainSawMan = GetWorld()->SpawnActor<ALB_Monster_ChainSawMan>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (SpawnedChainSawMan)
 			{
 				SpawnedChainSawMan->SetOwner(this);

@@ -5,10 +5,22 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/SphereComponent.h"
 
 ALB_MonsterHideAndSeeker::ALB_MonsterHideAndSeeker()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	PlayerDetectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectSphere"));
+	PlayerDetectSphere->SetupAttachment(RootComponent);
+
+	PlayerDetectSphere->InitSphereRadius(300.f);
+	PlayerDetectSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	PlayerDetectSphere->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	PlayerDetectSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PlayerDetectSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	PlayerDetectSphere->OnComponentBeginOverlap.AddDynamic(this, &ALB_MonsterHideAndSeeker::OnSphereBeginOverlap);
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	AudioComp->SetupAttachment(RootComponent);
@@ -25,6 +37,18 @@ void ALB_MonsterHideAndSeeker::BeginPlay()
 	{
 		AudioComp->SetSound(MusicSound);
 		AudioComp->Play();
+	}
+
+	GetWorldTimerManager().SetTimer(BeginPlayTimerHandle, this, &ALB_MonsterHideAndSeeker::StartRandomSideMove, 5.0f, false);
+}
+
+void ALB_MonsterHideAndSeeker::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!OtherActor) return;
+
+	if (OtherActor->ActorHasTag("Player"))
+	{
+		StartRandomSideMove();
 	}
 }
 
@@ -56,7 +80,11 @@ void ALB_MonsterHideAndSeeker::Tick(float DeltaTime)
 
 void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 {
+	if (bIsMovingSideways) return;
+
 	bIsMovingSideways = true;
+
+	GetWorldTimerManager().ClearTimer(BeginPlayTimerHandle);
 
 	float RandomSide = FMath::RandBool() ? 1.0f : -1.0f;
 

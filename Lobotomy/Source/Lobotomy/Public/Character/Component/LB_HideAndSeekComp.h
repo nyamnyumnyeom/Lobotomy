@@ -18,7 +18,7 @@ public:
 	float SearchRadius = 1500.0f;
 
 protected:
-	bool bIsPlayerOutDoor;
+	bool bIsPlayerInRoom;
 
 protected:
 	FTimerHandle TriggerLoopTimerHandle;
@@ -36,10 +36,10 @@ public:
 	void TriggerHASSpawn();
 
 	// TriggerHASSpawn() 함수를 작동시키기 전에 실행해야 하는 함수.
-	// 플레이어가 문 기준 안쪽(방)에서 실행할 경우 false,
-	// 플레이어가 문 기준 바깥쪽(복도)에서 실행할 경우 true.
+	// 플레이어가 문 기준 안쪽(방)에서 실행할 경우 true,
+	// 플레이어가 문 기준 바깥쪽(복도)에서 실행할 경우 false.
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
-	FORCEINLINE void SetIsPlayerOutDoor(bool IsPlayerOutDoor) { bIsPlayerOutDoor = IsPlayerOutDoor; }
+	FORCEINLINE void SetIsPlayerOutDoor(bool bIsPlayerInTheRoom) { bIsPlayerInRoom = bIsPlayerInTheRoom; }
 
 protected:
 	class ALB_TargetPoint_HAS* FindNearestHAS();

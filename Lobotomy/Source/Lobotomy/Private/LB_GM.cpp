@@ -56,6 +56,54 @@ void ALB_GM::AddKnockCount()
 	}
 }
 
+void ALB_GM::PlayerIntoRoom()
+{
+	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+
+	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+
+	bIsPlayerInRoom = true;
+
+	float SpawnDelay = FMath::FRandRange(RoomDurationForSpawnHAS_Min, RoomDurationForSpawnHAS_Max);
+
+	AtRoomSecondForMusicBox = FMath::RandRange(RoomDurationForMusicBox_Min, RoomDurationForMusicBox_Max);
+
+	GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
+
+	GetWorldTimerManager().SetTimer(AtRoomSecondTimerHandle, this, &ALB_GM::AtRoomSecondTimer, 1.0f, true);
+}
+
+void ALB_GM::PlayerIntoLobby()
+{
+	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+
+	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+
+	if (bShouldMusicBoxSpawn)
+	{
+		OnMusicBoxSpawnTime();
+	}
+
+	AtRoomSecond = 0;
+	bShouldMusicBoxSpawn = false;
+
+	bIsPlayerInRoom = false;
+
+	float SpawnDelay = FMath::FRandRange(LobbyDurationForSpawnHAS_Min, LobbyDurationForSpawnHAS_Max);
+
+	GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
+}
+
+void ALB_GM::AtRoomSecondTimer()
+{
+	if (AtRoomSecond >= AtRoomSecondForMusicBox)
+	{
+		bShouldMusicBoxSpawn = true;
+	}
+
+	AtRoomSecond++;
+}
+
 void ALB_GM::ResetKnockCount()
 {
 	KnockCount = 0;

@@ -64,7 +64,7 @@ void ALB_TargetPoint_MusicBox::StopMusicBoxTimer()
 {
 	GetWorld()->GetTimerManager().ClearTimer(MusicBoxTimerHandle);
 
-	GetWorldTimerManager().SetTimer(MusicBoxDestroyTimerHandle, this, &ALB_TargetPoint_MusicBox::TryMusicBoxDestroy, 2.0f, true);
+	GetWorldTimerManager().SetTimer(MusicBoxDestroyTimerHandle, this, &ALB_TargetPoint_MusicBox::TryMusicBoxDestroy, 0.7f, true);
 
 }
 
@@ -84,7 +84,12 @@ void ALB_TargetPoint_MusicBox::MusicBoxTimeup()
 			}
 			else
 			{
+				FVector SpawnLocation = ChainSawManSpawnPoint->GetComponentLocation();
+				FRotator SpawnRotation = ChainSawManSpawnPoint->GetComponentRotation();
+				FVector SpawnScale = FVector(1.0f, 1.0f, 1.0f);
+				FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation, SpawnScale);
 
+				GM->SetChainSawManTransform(SpawnTransform);
 			}
 		}
     }
