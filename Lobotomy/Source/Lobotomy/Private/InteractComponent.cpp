@@ -2,6 +2,9 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/InstancedStaticMeshComponent.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/ChildActorComponent.h"
 #include "TimerManager.h"
 
 UInteractComponent::UInteractComponent()
@@ -19,6 +22,21 @@ UInteractComponent::UInteractComponent()
 void UInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (AActor* Owner = GetOwner())
+	{
+		TArray<UMeshComponent*> FoundMeshes;
+		Owner->GetComponents<UMeshComponent>(FoundMeshes);
+
+		for (auto* M : FoundMeshes)
+		{
+			if (M)
+			{
+				Meshes.Add(M);
+				OriginalOverlayMaterials.Add(M->GetOverlayMaterial());
+			}
+		}
+	}
 
 	if (AActor* Owner = GetOwner())
 	{
@@ -63,6 +81,11 @@ void UInteractComponent::ShowWidget()
 			);
 		}
 	}
+	if (isoverlayok)
+	{
+	
+	SetOverlayVisible(true);
+	}
 }
 
 void UInteractComponent::HideWidget()
@@ -75,7 +98,74 @@ void UInteractComponent::HideWidget()
 			GetWorld()->GetTimerManager().ClearTimer(LookAtTimerHandle);
 		}
 	}
+	if (isoverlayok)
+	{
+
+		SetOverlayVisible(false);
+	}
 }
+
+
+void UInteractComponent::CollectAllMeshes(AActor* Actor)
+{
+	if (!Actor) return;
+
+	TArray<UActorComponent*> Components = Actor->GetComponents().Array();
+
+	for (UActorComponent* Comp : Components)
+	{
+		if (UMeshComponent* Mesh = Cast<UMeshComponent>(Comp))
+		{
+			if (Mesh->IsA(UInstancedStaticMeshComponent::StaticClass()) ||
+				Mesh->IsA(UHierarchicalInstancedStaticMeshComponent::StaticClass()))
+			{
+				continue;
+			}
+
+			Meshes.Add(Mesh);
+			OriginalOverlayMaterials.Add(Mesh->GetOverlayMaterial());
+		}
+	}
+
+	TArray<UChildActorComponent*> ChildActors;
+	Actor->GetComponents<UChildActorComponent>(ChildActors);
+
+	for (UChildActorComponent* Child : ChildActors)
+	{
+		if (AActor* ChildActor = Child->GetChildActor())
+		{
+			CollectAllMeshes(ChildActor);
+		}
+	}
+}
+
+void UInteractComponent::SetOverlayVisible(bool bVisible)
+{
+	for (int32 i = 0; i < Meshes.Num(); i++)
+	{
+		UMeshComponent* Mesh = Meshes[i];
+		if (!Mesh) continue;
+
+		if (bVisible)
+		{
+			if (OverlayMaterial)
+			{
+				Mesh->SetOverlayMaterial(OverlayMaterial);
+			}
+		}
+		else
+		{
+			UMaterialInterface* OrigMat =
+				OriginalOverlayMaterials.IsValidIndex(i)
+				? OriginalOverlayMaterials[i]
+				: nullptr;
+
+			Mesh->SetOverlayMaterial(OrigMat);
+		}
+	}
+}
+
+
 
 void UInteractComponent::UpdateWidgetTransform()
 {

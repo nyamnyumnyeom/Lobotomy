@@ -29,6 +29,9 @@ protected:
 public:
 	ATargetPoint_Patient();
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float upscale = 0;
+
 protected:
 	virtual void BeginPlay() override;
 
