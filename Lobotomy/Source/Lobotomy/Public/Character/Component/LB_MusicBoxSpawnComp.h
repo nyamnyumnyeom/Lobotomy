@@ -17,6 +17,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float SphereTraceRadius = 1000.0f;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float Threshold = 0.5f;
+
 public:	
 	ULB_MusicBoxSpawnComp();
 

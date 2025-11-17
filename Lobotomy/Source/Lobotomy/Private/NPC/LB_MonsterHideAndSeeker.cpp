@@ -33,13 +33,13 @@ void ALB_MonsterHideAndSeeker::BeginPlay()
 
 	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
-	if (MusicSound && AudioComp)
+	if (KnockSound && AudioComp)
 	{
-		AudioComp->SetSound(MusicSound);
+		AudioComp->SetSound(KnockSound);
 		AudioComp->Play();
 	}
 
-	GetWorldTimerManager().SetTimer(BeginPlayTimerHandle, this, &ALB_MonsterHideAndSeeker::StartRandomSideMove, 5.0f, false);
+	GetWorldTimerManager().SetTimer(BeginPlayTimerHandle, this, &ALB_MonsterHideAndSeeker::StartRandomSideMove, 10.0f, false);
 }
 
 void ALB_MonsterHideAndSeeker::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -91,12 +91,24 @@ void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 	MoveDirection = GetActorRightVector() * RandomSide;
 
 	GetWorldTimerManager().SetTimer(MoveTimerHandle, this, &ALB_MonsterHideAndSeeker::StopRandomSideMove, MoveDuration, false);
+
+	if (KnockSound && AudioComp)
+	{
+		AudioComp->SetSound(KnockSound);
+		AudioComp->Play();
+	}
 }
 
 void ALB_MonsterHideAndSeeker::StopRandomSideMove()
 {
 	bIsMovingSideways = false;
 	MoveDirection = FVector::ZeroVector;
+
+	if (LaghingSound && AudioComp)
+	{
+		AudioComp->SetSound(LaghingSound);
+		AudioComp->Play();
+	}
 
 	Destroy();
 }

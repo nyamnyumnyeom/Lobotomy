@@ -63,28 +63,28 @@ public:
 	// 플레이어가 방에서 체류한 시간(초 단위).
 	int32 AtRoomSecond = 0;
 	// 오르골이 등장하기 위해 방에 체류해야 하는 시간(초 단위).
-	int32 AtRoomSecondForMusicBox = 8;
+	int32 AtRoomSecondForMusicBox = 80;
 
 	// 플레이어가 방에서 나갈 때 오르골이 등장하기 위해 방에 체류해야 하는 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 RoomDurationForMusicBox_Min = 5;
+	int32 LobbyDurationForMusicBox_Min = 50;
 	// 플레이어가 방에서 나갈 때 오르골이 등장하기 위해 방에 체류해야 하는 최대 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 RoomDurationForMusicBox_Max = 8;
+	int32 LobbyDurationForMusicBox_Max = 80;
 
 	// 플레이어가 방에서 오래 있으면 숨바꼭질 장인이 등장하기까지 걸리는 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RoomDurationForSpawnHAS_Min = 3.0f;
+	float RoomDurationForSpawnHAS_Min = 25.0f;
 	// 플레이어가 방에서 오래 있으면 숨바꼭질 장인이 등장하기까지 걸리는 최대 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RoomDurationForSpawnHAS_Max = 5.0f;
+	float RoomDurationForSpawnHAS_Max = 35.0f;
 
-	// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최소 시간.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LobbyDurationForSpawnHAS_Min = 5.0f;
-	// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최대 시간.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LobbyDurationForSpawnHAS_Max = 7.0f;
+	//// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최소 시간.
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//float LobbyDurationForSpawnHAS_Min = 55.0f;
+	//// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최대 시간.
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//float LobbyDurationForSpawnHAS_Max = 85.0f;
 
 protected:
 	FTimerHandle AtRoomSecondTimerHandle;

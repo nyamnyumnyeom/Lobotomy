@@ -17,6 +17,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float SearchRadius = 1500.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float Threshold = 0.5f;
+
 protected:
 	bool bIsPlayerInRoom;
 
@@ -34,6 +37,8 @@ public:
 	// 근처에 스폰할 타겟 포인트가 없다면 1초마다 재검사해 로직 실행을 시도함.
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	void TriggerHASSpawn();
+
+	void TriggerLoopTimerClear();
 
 	// TriggerHASSpawn() 함수를 작동시키기 전에 실행해야 하는 함수.
 	// 플레이어가 문 기준 안쪽(방)에서 실행할 경우 true,

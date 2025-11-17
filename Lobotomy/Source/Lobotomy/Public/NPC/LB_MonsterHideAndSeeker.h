@@ -22,7 +22,10 @@ public:
 	class UAudioComponent* AudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
-	class USoundBase* MusicSound;
+	class USoundBase* KnockSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	class USoundBase* LaghingSound;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "See")

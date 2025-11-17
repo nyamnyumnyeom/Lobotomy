@@ -44,23 +44,36 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 		ALB_TargetPoint_MusicBox* NearestPoint = nullptr;
 		float MinDist = FLT_MAX;
 
+		AActor* NearestActor = nullptr;
+
 		for (const FHitResult& Hit : HitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && HitActor->ActorHasTag("MusicBoxPoint"))
 			{
-				float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
-				if (Dist < MinDist)
+				FVector ToPlayer = (HitActor->GetActorLocation() - Start).GetSafeNormal();
+
+				float Dot = FVector::DotProduct(Start, ToPlayer);
+
+				if (Dot <= Threshold)
 				{
-					MinDist = Dist;
-					NearestPoint = Cast<ALB_TargetPoint_MusicBox>(HitActor);
+					float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
+					if (Dist < MinDist)
+					{
+						MinDist = Dist;
+						NearestActor = HitActor;
+					}
 				}
 			}
 		}
 
-		if (NearestPoint)
+		if (NearestActor)
 		{
-			NearestPoint->MusicBoxSystemActivate();
+			NearestPoint = Cast<ALB_TargetPoint_MusicBox>(NearestActor);
+			if (NearestPoint)
+			{
+				NearestPoint->MusicBoxSystemActivate();
+			}
 		}
 	}
 }
