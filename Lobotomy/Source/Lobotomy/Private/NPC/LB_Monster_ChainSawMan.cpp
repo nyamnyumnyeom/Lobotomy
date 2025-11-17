@@ -10,6 +10,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NPC/LB_NPCData.h"
+#include "Components/AudioComponent.h"
 
 ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 {
@@ -52,6 +53,18 @@ void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 				CachedPlayerCharacter = OtherActor;
 				AIC->SetState_Attack();
 
+				if (AudioComp && AudioComp->IsPlaying())
+				{
+					AudioComp->Stop();
+				}
+
+				int32 RandomIndex = FMath::RandRange(0, NormalSounds.Num() - 1);
+				if (NormalSounds[RandomIndex] && AudioComp)
+				{
+					AudioComp->SetSound(NormalSounds[RandomIndex]);
+					AudioComp->Play();
+				}
+
 			}
 		}
 	}
@@ -92,6 +105,15 @@ void ALB_Monster_ChainSawMan::SpawnLogic()
 		GetWorldTimerManager().ClearTimer(SpawnDurationTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_ChainSawMan::TimeupSpawnDuration, SpawnDuration, false);
 	}
+
+	int32 RandomIndex = FMath::RandRange(0, SpawnSounds.Num() - 1);
+	if (SpawnSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(SpawnSounds[RandomIndex]);
+		AudioComp->Play();
+	}
+
+	GetWorldTimerManager().SetTimer(SoundPlayTimerHandle, this, &ALB_Monster_ChainSawMan::SoundPlay, SoundPlayDelay, true);
 }
 
 void ALB_Monster_ChainSawMan::SetActorRotationToPlayer()
@@ -111,6 +133,13 @@ void ALB_Monster_ChainSawMan::SetActorRotationToPlayer()
 void ALB_Monster_ChainSawMan::DisappearLogic()
 {
 	SetSpawnWhetherToGM(false);
+
+	GetWorldTimerManager().ClearTimer(SoundPlayTimerHandle);
+
+	if (AudioComp && AudioComp->IsPlaying())
+	{
+		AudioComp->Stop();
+	}
 
 	Destroy();
 }
@@ -185,4 +214,16 @@ void ALB_Monster_ChainSawMan::SpeedReset()
 	bIsRunning = false;
 	CurrentSpeed = 150.0f;
 	SpeedApply();
+}
+
+void ALB_Monster_ChainSawMan::SoundPlay()
+{
+	if (AudioComp && AudioComp->IsPlaying()) return;
+
+	int32 RandomIndex = FMath::RandRange(0, NormalSounds.Num() - 1);
+	if (NormalSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(NormalSounds[RandomIndex]);
+		AudioComp->Play();
+	}
 }

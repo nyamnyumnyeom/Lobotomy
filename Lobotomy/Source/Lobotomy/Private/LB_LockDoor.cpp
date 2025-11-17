@@ -2,6 +2,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/SceneComponent.h"
 #include "Character/LB_Character.h"
+#include "Components/AudioComponent.h"
 
 ALB_LockDoor::ALB_LockDoor()
 {
@@ -29,6 +30,13 @@ void ALB_LockDoor::OpenDoor()
     if (bIsOpen) return;
     bIsOpen = true;
 
+	int32 RandomIndex = FMath::RandRange(0, OpenSounds.Num() - 1);
+	if (OpenSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(OpenSounds[RandomIndex]);
+		AudioComp->Play();
+	}
+
     UE_LOG(LogTemp, Warning, TEXT("Door opened."));
 }
 
@@ -36,6 +44,13 @@ void ALB_LockDoor::CloseDoor()
 {
     if (!bIsOpen) return;
     bIsOpen = false;
+
+	int32 RandomIndex = FMath::RandRange(0, CloseSounds.Num() - 1);
+	if (CloseSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(CloseSounds[RandomIndex]);
+		AudioComp->Play();
+	}
 
     UE_LOG(LogTemp, Warning, TEXT("Door closed."));
 }

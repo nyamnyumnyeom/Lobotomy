@@ -31,6 +31,23 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* DoorMesh;
 
+	// 家府
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music")
+	class UAudioComponent* AudioComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> OpenSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> CloseSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> AutoOpenSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> ChainSawManOpenSounds;
+
     // 角力 巩 肺流
     UFUNCTION(BlueprintCallable, Category = "Door")
     void OpenDoor();
