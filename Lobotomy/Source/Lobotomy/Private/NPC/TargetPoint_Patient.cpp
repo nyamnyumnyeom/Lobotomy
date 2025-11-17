@@ -18,7 +18,7 @@ void ATargetPoint_Patient::BeginPlay()
 	SpawnLogic(PatientClass);
 }
 
-void ATargetPoint_Patient::SpawnLogic(TSubclassOf<AActor> SpawnClass)
+void ATargetPoint_Patient::``(TSubclassOf<AActor> SpawnClass)
 {
 	if (!SpawnClass) return;
 
@@ -37,6 +37,12 @@ void ATargetPoint_Patient::SpawnLogic(TSubclassOf<AActor> SpawnClass)
 		SpawnLocation = HitResult.ImpactPoint;
 	}
 
-	SpawnedPatient = GetWorld()->SpawnActor<ALB_PatientBase>(SpawnClass, SpawnLocation, SpawnRotation);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	SpawnLocation += FVector(0, 0, upscale);
+
+	SpawnedPatient = GetWorld()->SpawnActor<ALB_PatientBase>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 	SpawnedPatient->BehaviorMode = BehaviorModeChoose;
 }
