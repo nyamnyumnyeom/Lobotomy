@@ -23,28 +23,28 @@ void ULB_HideAndSeekComp::BeginPlay()
 
 void ULB_HideAndSeekComp::TriggerHASSpawn()
 {
-	//ALB_TargetPoint_HAS* NearestHASPoint = FindNearestHAS();
-	//if (NearestHASPoint)
-	//{
-	//	AActor* MyPlayer = GetOwner();
-	//	if (!MyPlayer) return;
+	ALB_TargetPoint_HAS* NearestHASPoint = FindNearestHAS();
+	if (NearestHASPoint)
+	{
+		AActor* MyPlayer = GetOwner();
+		if (!MyPlayer) return;
 
-	//	FVector ToPlayer = (HitActor->GetActorLocation() - MyPlayer->GetActorLocation()).GetSafeNormal();
+		FVector ToPlayer = (NearestHASPoint->GetActorLocation() - MyPlayer->GetActorLocation()).GetSafeNormal();
 
-	//	float Dot = FVector::DotProduct(Start, ToPlayer);
+		float Dot = FVector::DotProduct(MyPlayer->GetActorLocation(), ToPlayer);
 
-	//	if (Dot <= Threshold)
-	//	{
+		if (Dot <= Threshold)
+		{
+			NearestHASPoint->HASSystemActivate(bIsPlayerInRoom);
+			return;
+		}
+	}
 
-	//	NearestHASPoint->HASSystemActivate(bIsPlayerInRoom);
-	//	return;
-	//}
 
-
-	//if (GetWorld())
-	//{
-	//	GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_HideAndSeekComp::TriggerHASSpawn, 1.0f, false);
-	//}
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_HideAndSeekComp::TriggerHASSpawn, 1.0f, false);
+	}
 }
 
 void ULB_HideAndSeekComp::TriggerLoopTimerClear()
@@ -80,7 +80,7 @@ ALB_TargetPoint_HAS* ULB_HideAndSeekComp::FindNearestHAS()
 	if (!bHit) return nullptr;
 
 	ALB_TargetPoint_HAS* NearestTarget = nullptr;
-	float MinDist = FLT_MAX;
+	float MinDist = PathLimit;
 
 	for (const FHitResult& Hit : HitResults)
 	{

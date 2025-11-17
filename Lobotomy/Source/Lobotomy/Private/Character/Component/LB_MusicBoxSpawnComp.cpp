@@ -73,8 +73,18 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 			if (NearestPoint)
 			{
 				NearestPoint->MusicBoxSystemActivate();
+				return;
 			}
 		}
 	}
+
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn, 10.0f, false);
+	}
 }
 
+void ULB_MusicBoxSpawnComp::TriggerLoopTimerClear()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TriggerLoopTimerHandle);
+}
