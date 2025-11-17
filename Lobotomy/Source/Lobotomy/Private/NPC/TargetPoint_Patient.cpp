@@ -18,7 +18,7 @@ void ATargetPoint_Patient::BeginPlay()
 	SpawnLogic(PatientClass);
 }
 
-void ATargetPoint_Patient::``(TSubclassOf<AActor> SpawnClass)
+void ATargetPoint_Patient::SpawnLogic(TSubclassOf<AActor> SpawnClass)
 {
 	if (!SpawnClass) return;
 

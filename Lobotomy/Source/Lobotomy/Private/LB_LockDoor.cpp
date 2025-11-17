@@ -3,6 +3,8 @@
 #include "Components/SceneComponent.h"
 #include "Character/LB_Character.h"
 #include "Components/AudioComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
 
 ALB_LockDoor::ALB_LockDoor()
 {
@@ -20,22 +22,96 @@ ALB_LockDoor::ALB_LockDoor()
     DoorMesh->SetCollisionResponseToAllChannels(ECR_Block);
     DoorMesh->SetCollisionObjectType(ECC_WorldStatic);
 
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	AudioComp->SetupAttachment(RootComponent);
+	AudioComp->bAutoActivate = false;
+
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->SetupAttachment(RootComponent);
+
+	SphereCollision->InitSphereRadius(300.0f);
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ALB_LockDoor::OnOverlapBegin);
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ALB_LockDoor::OnOverlapEnd);
+
+	DoorHandleWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("DoorHandleWidget"));
+	DoorHandleWidget->SetupAttachment(SphereCollision);
+
     bIsOpen = false;
 }
 
+void ALB_LockDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!OtherActor) return;
 
+	if (OtherActor->ActorHasTag("Player"))
+	{
+		OnDoorHandleWidgetFadeIn();
+	}
+}
+
+void ALB_LockDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (!OtherActor) return;
+
+	if (OtherActor->ActorHasTag("Player"))
+	{
+		OnDoorHandleWidgetFadeOut();
+	}
+}
+
+void ALB_LockDoor::PlayDoorSound(int32 SoundValue)
+{
+	TArray<USoundBase*> CurrentSoundBases;
+
+	switch (SoundValue)
+	{
+	case 0:
+		CurrentSoundBases = OpenSounds;
+		break;
+
+	case 1:
+		CurrentSoundBases = CloseSounds;
+		break;
+
+	case 2:
+		CurrentSoundBases = AutoOpenSounds;
+		break;
+
+	case 3:
+		CurrentSoundBases = ChainSawManOpenSounds;
+		break;
+
+	default:
+		break;
+	}
+
+	if (!IsValid(CurrentSoundBases[0])) return;
+
+	int32 RandomIndex = FMath::RandRange(0, CurrentSoundBases.Num() - 1);
+	if (CurrentSoundBases[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(CurrentSoundBases[RandomIndex]);
+		AudioComp->Play();
+	}
+}
+
+void ALB_LockDoor::PlayUnlockSound()
+{
+	if (UnlockSound && AudioComp)
+	{
+		AudioComp->SetSound(UnlockSound);
+		AudioComp->Play();
+	}
+}
 
 void ALB_LockDoor::OpenDoor()
 {
     if (bIsOpen) return;
     bIsOpen = true;
-
-	int32 RandomIndex = FMath::RandRange(0, OpenSounds.Num() - 1);
-	if (OpenSounds[RandomIndex] && AudioComp)
-	{
-		AudioComp->SetSound(OpenSounds[RandomIndex]);
-		AudioComp->Play();
-	}
 
     UE_LOG(LogTemp, Warning, TEXT("Door opened."));
 }
@@ -44,13 +120,6 @@ void ALB_LockDoor::CloseDoor()
 {
     if (!bIsOpen) return;
     bIsOpen = false;
-
-	int32 RandomIndex = FMath::RandRange(0, CloseSounds.Num() - 1);
-	if (CloseSounds[RandomIndex] && AudioComp)
-	{
-		AudioComp->SetSound(CloseSounds[RandomIndex]);
-		AudioComp->Play();
-	}
 
     UE_LOG(LogTemp, Warning, TEXT("Door closed."));
 }

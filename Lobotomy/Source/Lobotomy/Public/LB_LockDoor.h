@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -17,11 +17,11 @@ public:
 	ALB_LockDoor();
 
 public:
-    // ¹®ÀÌ ¿­·ÁÀÖ´ÂÁö ¿©ºÎ
+    // ë¬¸ì´ ì—´ë ¤ìˆëŠ”ì§€ ì—¬ë¶€
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
     bool bIsOpen;
 
-    // ÇØ´ç ¹®À» ¿­ ¼ö ÀÖ´Â Å° ÀÌ¸§ (¾ÆÀÌÅÛ µ¥ÀÌÅÍ Å×ÀÌºíÀÇ ItemCode)
+    // í•´ë‹¹ ë¬¸ì„ ì—´ ìˆ˜ ìˆëŠ” í‚¤ ì´ë¦„ (ì•„ì´í…œ ë°ì´í„° í…Œì´ë¸”ì˜ ItemCode)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
     FName RequiredKey;
 
@@ -31,7 +31,37 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* DoorMesh;
 
-	// ¼Ò¸®
+	// ë¬¸ ê³ ë¦¬ì— ë†“ì„ UI ê´€ë ¨ ì½”ë“œ
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	class USphereComponent* SphereCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	class UWidgetComponent* DoorHandleWidget;
+
+	UFUNCTION()
+	void OnOverlapBegin(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDoorHandleWidgetFadeIn();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDoorHandleWidgetFadeOut();
+
+	// ì†Œë¦¬
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music")
 	class UAudioComponent* AudioComp;
@@ -48,7 +78,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
 	TArray<class USoundBase*> ChainSawManOpenSounds;
 
-    // ½ÇÁ¦ ¹® ·ÎÁ÷
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	class USoundBase* UnlockSound;
+
+	// [0 : ì—´ë¦¬ëŠ” ì†Œë¦¬], [1 : ë‹«íˆëŠ” ì†Œë¦¬], [2 : ìë™ ì—´ë¦¼ ì†Œë¦¬], [3 : ì „ê¸°í†±ì´ ì—´ë•Œ ì†Œë¦¬]
+	UFUNCTION(BlueprintCallable, Category = "Music")
+	void PlayDoorSound(int32 SoundValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Music")
+	void PlayUnlockSound();
+
+    // ì‹¤ì œ ë¬¸ ë¡œì§
     UFUNCTION(BlueprintCallable, Category = "Door")
     void OpenDoor();
 
