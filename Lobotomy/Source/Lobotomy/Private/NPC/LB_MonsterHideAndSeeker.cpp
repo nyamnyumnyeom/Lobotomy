@@ -81,6 +81,7 @@ void ALB_MonsterHideAndSeeker::Tick(float DeltaTime)
 
 void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 {
+	if (bShouldLogicStop) return;
 	if (bIsMovingSideways) return;
 
 	bIsMovingSideways = true;
@@ -103,6 +104,7 @@ void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 
 void ALB_MonsterHideAndSeeker::StopRandomSideMove()
 {
+	bShouldLogicStop = true;
 	bIsMovingSideways = false;
 	MoveDirection = FVector::ZeroVector;
 
@@ -113,5 +115,13 @@ void ALB_MonsterHideAndSeeker::StopRandomSideMove()
 		AudioComp->Play();
 	}
 
+	GetMesh()->SetVisibility(false);
+
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &ALB_MonsterHideAndSeeker::RealDestroy, 5.0f, false);
+	
+}
+
+void ALB_MonsterHideAndSeeker::RealDestroy()
+{
 	Destroy();
 }

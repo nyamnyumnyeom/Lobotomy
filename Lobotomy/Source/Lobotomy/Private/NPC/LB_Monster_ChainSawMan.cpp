@@ -25,6 +25,10 @@ ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ALB_Monster_ChainSawMan::OnOverlapBegin);
+
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	AudioComp->SetupAttachment(RootComponent);
+	AudioComp->bAutoActivate = false;
 }
 
 void ALB_Monster_ChainSawMan::BeginPlay()

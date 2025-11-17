@@ -41,10 +41,12 @@ protected:
 
 	FVector MoveDirection;
 	bool bIsMovingSideways = false;
+	bool bShouldLogicStop = false;
 
 protected:
 	FTimerHandle MoveTimerHandle;
 	FTimerHandle BeginPlayTimerHandle;
+	FTimerHandle DestroyTimerHandle;
 
 public:
 	ALB_MonsterHideAndSeeker();
@@ -69,4 +71,6 @@ protected:
 	void StartRandomSideMove();
 
 	void StopRandomSideMove();
+
+	void RealDestroy();
 };

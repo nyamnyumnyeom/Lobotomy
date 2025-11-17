@@ -29,9 +29,10 @@ void ULB_HideAndSeekComp::TriggerHASSpawn()
 		AActor* MyPlayer = GetOwner();
 		if (!MyPlayer) return;
 
+		FVector PlayerForward = MyPlayer->GetActorForwardVector().GetSafeNormal();
 		FVector ToPlayer = (NearestHASPoint->GetActorLocation() - MyPlayer->GetActorLocation()).GetSafeNormal();
 
-		float Dot = FVector::DotProduct(MyPlayer->GetActorLocation(), ToPlayer);
+		float Dot = FVector::DotProduct(PlayerForward, ToPlayer);
 
 		if (Dot <= Threshold)
 		{
