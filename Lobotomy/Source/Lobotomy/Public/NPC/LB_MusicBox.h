@@ -17,7 +17,7 @@ public:
 
 	// 오르골 소리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
-	class USoundBase* MusicSound;
+	TArray<class USoundBase*> MusicSounds;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
 	float DestroyTime = 30.0f;

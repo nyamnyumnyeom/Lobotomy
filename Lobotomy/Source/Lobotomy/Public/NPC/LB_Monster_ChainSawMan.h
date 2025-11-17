@@ -19,9 +19,26 @@ protected:
 	class USphereComponent* SphereCollision;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music")
+	class UAudioComponent* AudioComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> SpawnSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> NormalSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> FinishSounds;
+
+public:
 	// 스폰 후 유지 가능한 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float SpawnDuration = 60.0f;
+
+	// 재생중인 소리가 있는지 확인하고, 없으면 랜덤 재생시킬 로직의 실행 빈도.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	float SoundPlayDelay = 1.0f;
 
 protected:
 	// 스폰 유지 시간이 초과되었는가?
@@ -35,6 +52,7 @@ protected:
 	FTimerHandle SpawnDurationTimerHandle;
 	FTimerHandle SpeedSettingTimerHandle;
 	FTimerHandle RunModeTimerHandle;
+	FTimerHandle SoundPlayTimerHandle;
 
 protected:
 	AActor* CachedPlayerCharacter;
@@ -77,4 +95,6 @@ protected:
 	void SpeedSettingTimer();
 	void SpeedApply();
 	void SpeedReset();
+
+	void SoundPlay();
 };

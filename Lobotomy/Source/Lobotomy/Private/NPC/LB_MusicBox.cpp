@@ -19,10 +19,11 @@ ALB_MusicBox::ALB_MusicBox()
 void ALB_MusicBox::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (MusicSound && AudioComp)
+
+	int32 RandomIndex = FMath::RandRange(0, MusicSounds.Num() - 1);
+	if (MusicSounds[RandomIndex] && AudioComp)
 	{
-		AudioComp->SetSound(MusicSound);
+		AudioComp->SetSound(MusicSounds[RandomIndex]);
 		AudioComp->Play();
 	}
 
@@ -50,7 +51,7 @@ void ALB_MusicBox::MusicOff()
 		OwnerTargetPoint->StopMusicBoxTimer();
 	}
 
-	if (MusicSound && AudioComp)
+	if (AudioComp)
 	{
 		AudioComp->Stop();
 	}

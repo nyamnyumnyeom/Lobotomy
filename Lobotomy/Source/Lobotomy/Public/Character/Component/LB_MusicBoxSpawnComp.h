@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float Threshold = 0.5f;
 
+protected:
+	FTimerHandle TriggerLoopTimerHandle;
+
 public:	
 	ULB_MusicBoxSpawnComp();
 
@@ -32,4 +35,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	void TriggerMusicBoxSpawn();
 
+	void TriggerLoopTimerClear();
 };

@@ -17,8 +17,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float SearchRadius = 1500.0f;
 
+	// 플레이어 캐릭터 ~ 가까운 타깃 포인트까지의 거리 최대 한도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
-	float Threshold = 0.5f;
+	float PathLimit = 2000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float Threshold = 0.7f;
 
 protected:
 	bool bIsPlayerInRoom;

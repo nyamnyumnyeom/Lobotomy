@@ -33,9 +33,10 @@ void ALB_MonsterHideAndSeeker::BeginPlay()
 
 	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
-	if (KnockSound && AudioComp)
+	int32 RandomIndex = FMath::RandRange(0, KnockSounds.Num() - 1);
+	if (KnockSounds[RandomIndex] && AudioComp)
 	{
-		AudioComp->SetSound(KnockSound);
+		AudioComp->SetSound(KnockSounds[RandomIndex]);
 		AudioComp->Play();
 	}
 
@@ -92,9 +93,10 @@ void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 
 	GetWorldTimerManager().SetTimer(MoveTimerHandle, this, &ALB_MonsterHideAndSeeker::StopRandomSideMove, MoveDuration, false);
 
-	if (KnockSound && AudioComp)
+	int32 RandomIndex = FMath::RandRange(0, KnockSounds.Num() - 1);
+	if (KnockSounds[RandomIndex] && AudioComp)
 	{
-		AudioComp->SetSound(KnockSound);
+		AudioComp->SetSound(KnockSounds[RandomIndex]);
 		AudioComp->Play();
 	}
 }
@@ -104,9 +106,10 @@ void ALB_MonsterHideAndSeeker::StopRandomSideMove()
 	bIsMovingSideways = false;
 	MoveDirection = FVector::ZeroVector;
 
-	if (LaghingSound && AudioComp)
+	int32 RandomIndex = FMath::RandRange(0, LaghingSounds.Num() - 1);
+	if (LaghingSounds[RandomIndex] && AudioComp)
 	{
-		AudioComp->SetSound(LaghingSound);
+		AudioComp->SetSound(LaghingSounds[RandomIndex]);
 		AudioComp->Play();
 	}
 
