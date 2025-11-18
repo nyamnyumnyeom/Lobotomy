@@ -44,5 +44,5 @@ void ATargetPoint_Patient::SpawnLogic(TSubclassOf<AActor> SpawnClass)
 	SpawnLocation += FVector(0, 0, upscale);
 
 	SpawnedPatient = GetWorld()->SpawnActor<ALB_PatientBase>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
-	SpawnedPatient->BehaviorMode = BehaviorModeChoose;
+	//SpawnedPatient->BehaviorMode = BehaviorModeChoose;
 }
