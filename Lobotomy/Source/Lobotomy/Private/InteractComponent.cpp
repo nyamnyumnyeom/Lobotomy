@@ -181,22 +181,27 @@ void UInteractComponent::UpdateWidgetTransform()
 	Owner->GetActorBounds(true, Origin, Extent);
 
 	FVector BaseLocation = Origin + FVector(0.f, 0.f, Extent.Z);
-	FVector DirectionToPlayer = (PlayerLocation - BaseLocation).GetSafeNormal();
+
+	FVector DirectionToPlayer = PlayerLocation - BaseLocation;
+	DirectionToPlayer.Z = 0.f;
+	DirectionToPlayer = DirectionToPlayer.GetSafeNormal();
 
 	FVector NewWorldLocation = BaseLocation + (DirectionToPlayer * WidgetDistance) + WidgetStaticOffset;
+
+	NewWorldLocation.Z = BaseLocation.Z + WidgetStaticOffset.Z;
+
 	InteractionText->SetWorldLocation(NewWorldLocation);
 
 	FVector ToPlayerFromText = PlayerLocation - InteractionText->GetComponentLocation();
 	FRotator LookAtRot = ToPlayerFromText.Rotation();
+	LookAtRot.Pitch = 0.f;
+	LookAtRot.Roll = 0.f;
+
 	InteractionText->SetWorldRotation(LookAtRot);
 
 	UpdateWidgetSize();
-
-			/*FVector BoundsOrigin, BoundsExtent;
-			SizeComp->GetOwner()->GetActorBounds(false, BoundsOrigin, BoundsExtent);
-			float MaxExtent = BoundsExtent.GetMax();
-			InteractionText->SetWorldSize(MaxExtent * 0.2f);*/
 }
+
 
 void UInteractComponent::UpdateWidgetSize()
 {
