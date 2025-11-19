@@ -8,6 +8,7 @@
 #include "NPC/LB_Monster_ChainSawMan.h"
 #include "LB_GM.h"
 #include "Kismet/GameplayStatics.h"
+#include "LB_LockDoor.h"
 
 ALB_TargetPoint_HAS::ALB_TargetPoint_HAS()
 {
@@ -71,6 +72,8 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsPlayerInRoom)
 
 void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPlayerInRoom)
 {
+	if (CheckNearbyDoorOpened()) return;
+
 	if (!SpawnClass) return;
 
 	FVector SpawnLocation = GetActorLocation();
@@ -120,4 +123,47 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 			}
 		}
 	}
+}
+
+bool ALB_TargetPoint_HAS::CheckNearbyDoorOpened()
+{
+	UWorld* World = GetWorld();
+	if (!World) return true;
+
+	FVector Start = GetActorLocation();
+	FVector End = Start;
+	float Radius = 200.f;
+
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
+	FCollisionQueryParams Params;
+	Params.bTraceComplex = false;
+	Params.AddIgnoredActor(this);
+
+	TArray<FHitResult> HitResults;
+
+	bool bHit = World->SweepMultiByChannel(
+		HitResults,
+		Start,
+		End,
+		FQuat::Identity,
+		ECC_WorldDynamic, 
+		Sphere,
+		Params
+	);
+
+	if (!bHit) return true;
+
+	for (const FHitResult& Hit : HitResults)
+	{
+		ALB_LockDoor* Door = Cast<ALB_LockDoor>(Hit.GetActor());
+		if (Door)
+		{
+			if (Door->bIsOpen)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

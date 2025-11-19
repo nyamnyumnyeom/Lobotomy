@@ -59,4 +59,5 @@ public:
 protected:
 	void SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsOutDoor);
 
+	bool CheckNearbyDoorOpened();
 };
