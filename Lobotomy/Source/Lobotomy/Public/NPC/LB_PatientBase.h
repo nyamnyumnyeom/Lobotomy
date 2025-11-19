@@ -33,8 +33,14 @@ public:
 	int32 BehaviorMode = 0;
 
 protected:
+	FVector CachedActorLocation = FVector::ZeroVector;
+	FRotator CachedActorRotator = FRotator::ZeroRotator;
+
 	FVector OriginLocation = FVector::ZeroVector;
 	FRotator OriginRotator = FRotator::ZeroRotator;
+
+	FVector BedLocation = FVector::ZeroVector;
+	FRotator BedRotation = FRotator::ZeroRotator;
 
 public:
 	ALB_PatientBase();

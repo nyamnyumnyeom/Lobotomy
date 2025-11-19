@@ -28,6 +28,12 @@ void ALB_PatientBase::BeginPlay()
 	{
 		OriginLocation = MeshComp->GetComponentLocation();
 		OriginRotator = MeshComp->GetComponentRotation();
+
+		BedLocation = SleepAtBedBillboard->GetComponentLocation();
+		BedRotation = SleepAtBedBillboard->GetComponentRotation() + FRotator(0.0f, -90.0f, 0.0f);
+
+		CachedActorLocation = GetActorLocation();
+		CachedActorRotator = GetActorRotation();
 	}
 }
 
@@ -49,13 +55,15 @@ void ALB_PatientBase::OnNightBehavior()
 {
 	ApplyAnimBlueprint(4);
 
-	FVector BedLocation = SleepAtBedBillboard->GetComponentLocation();
-
-	FRotator BedRotation = SleepAtBedBillboard->GetComponentRotation() + FRotator(0.0f, -90.0f, 0.0f);
-
 	USkeletalMeshComponent* MeshComp = GetMesh();
 	if (MeshComp)
 	{
+		CachedActorLocation = GetActorLocation();
+		CachedActorRotator = GetActorRotation();
+
+		SetActorLocation(BedLocation + FVector(0.0f, 0.0f, 98.0f));
+		SetActorRotation(BedRotation);
+
 		MeshComp->SetWorldLocation(BedLocation);
 		MeshComp->SetWorldRotation(BedRotation);
 	}
@@ -68,28 +76,16 @@ void ALB_PatientBase::OnDayBehavior()
 	USkeletalMeshComponent* MeshComp = GetMesh();
 	if (MeshComp)
 	{
-		FVector NewLocation;
-		FRotator NewRotation;
+		FVector NewLocation = OriginLocation;
+		FRotator NewRotator = OriginRotator;
 
-		if (OriginLocation == FVector::ZeroVector)
-		{
-			NewLocation = GetActorLocation();
-		}
-		else
-		{
-			NewLocation = OriginLocation;
-		}
+		SetActorLocation(CachedActorLocation);
+		SetActorRotation(CachedActorRotator);
 
-		if (OriginRotator == FRotator::ZeroRotator)
-		{
-			NewRotation = GetActorRotation();
-		}
-		else
-		{
-			NewRotation = OriginRotator;
-		}
+		NewLocation = GetActorLocation() + FVector(0.0f, 0.0f, -88.0f);
+		NewRotator = GetActorRotation() + FRotator(0.0f, -90.0f, 0.0f);
 
 		MeshComp->SetWorldLocation(NewLocation);
-		MeshComp->SetWorldRotation(NewRotation);
+		MeshComp->SetWorldRotation(NewRotator);
 	}
 }
