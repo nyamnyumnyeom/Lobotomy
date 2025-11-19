@@ -189,7 +189,6 @@ void ALB_GM::ChangeToNight()
 void ALB_GM::ChangeToDay()
 {
 	bIsNight = false;
-	UpdateDate();
 }
 
 void ALB_GM::StartTimeCount()
