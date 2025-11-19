@@ -54,7 +54,10 @@ void ALB_LockDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (OtherActor->ActorHasTag("DoorPass"))
 	{
-		OnWalkerBeginOverlap();
+		if (GetWorld())
+		{
+			GetWorld()->GetTimerManager().SetTimer(OpenLoopTimerHandle, this, &ALB_LockDoor::OnWalkerBeginOverlap, 1.0f, true);
+		}
 	}
 }
 
@@ -69,7 +72,12 @@ void ALB_LockDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 
 	if (OtherActor->ActorHasTag("DoorPass"))
 	{
-		OnWalkerEndOverlap();
+		if (GetWorld())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(OpenLoopTimerHandle);
+
+			OnWalkerEndOverlap();
+		}
 	}
 }
 
