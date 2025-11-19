@@ -136,9 +136,18 @@ void ALB_Character::Tick(float DeltaTime)
     );
 
     // Debug// 디버그 라인 & 스피어 표시
-    /*FColor LineColor = bHit ? FColor::Green : FColor::Red;
-    DrawDebugSphere(GetWorld(), End, InteractionSphereRadius, 12, LineColor, false, 0.f);*/
+    //DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, 0, 1.0f);
 
+    //if (bHit)
+    //{
+    //    // 무언가에 부딪혔다면, 부딪힌 지점에 초록색 구체
+    //    DrawDebugSphere(GetWorld(), HitResult.Location, 20.0f, 12, FColor::Green, false, -1.0f);
+    //}
+    //else
+    //{
+    //    // 아무것도 안 부딪혔으면 끝지점에 빨간 구체
+    //    DrawDebugSphere(GetWorld(), End, 20.0f, 12, FColor::Red, false, -1.0f);
+    //}
 // Debug
     AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
 
