@@ -61,6 +61,14 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDoorHandleWidgetFadeOut();
 
+	// 전기톱, 걷는 환자가 비긴오버랩되면 문 열기.
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWalkerBeginOverlap();
+
+	// 전기톱, 걷는 환자가 엔드오버랩되면 문 닫기
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWalkerEndOverlap();
+
 	// 소리
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music")

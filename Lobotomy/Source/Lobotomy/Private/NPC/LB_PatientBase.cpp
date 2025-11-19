@@ -34,6 +34,7 @@ void ALB_PatientBase::BeginPlay()
 
 		CachedActorLocation = GetActorLocation();
 		CachedActorRotator = GetActorRotation();
+
 	}
 }
 
@@ -69,7 +70,7 @@ void ALB_PatientBase::OnNightBehavior()
 	}
 }
 
-void ALB_PatientBase::OnDayBehavior()
+void ALB_PatientBase::OnDayBehavior(bool bIsWalker)
 {
 	ApplyAnimBlueprint(BehaviorMode);
 
@@ -82,8 +83,11 @@ void ALB_PatientBase::OnDayBehavior()
 		SetActorLocation(CachedActorLocation);
 		SetActorRotation(CachedActorRotator);
 
-		NewLocation = GetActorLocation() + FVector(0.0f, 0.0f, -88.0f);
-		NewRotator = GetActorRotation() + FRotator(0.0f, -90.0f, 0.0f);
+		if (bIsWalker)
+		{
+			NewLocation = GetActorLocation() + FVector(0.0f, 0.0f, -88.0f);
+			NewRotator = GetActorRotation() + FRotator(0.0f, -90.0f, 0.0f);
+		}
 
 		MeshComp->SetWorldLocation(NewLocation);
 		MeshComp->SetWorldRotation(NewRotator);
