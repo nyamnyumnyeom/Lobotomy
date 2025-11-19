@@ -227,6 +227,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->UseItemAction, ETriggerEvent::Started, this, &ALB_Character::HandleUseItem);
             }
+            if (PlayerController->ChartAction)
+            {
+                EnhancedInput->BindAction(PlayerController->ChartAction, ETriggerEvent::Started, this, &ALB_Character::HandleChart);
+            }
         }
     }
 }

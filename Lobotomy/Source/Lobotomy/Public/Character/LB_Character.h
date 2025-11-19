@@ -48,6 +48,9 @@ public:
     void StopSprint();
 
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void HandleChart();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void OnEscapeToggle();
 
     UFUNCTION()

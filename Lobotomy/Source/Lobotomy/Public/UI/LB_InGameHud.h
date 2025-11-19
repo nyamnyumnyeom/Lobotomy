@@ -26,12 +26,15 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     void UpdateInventory();
 
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery01;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery02;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery03;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery04;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UImage* Battery05;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UTextBlock* ItemNameText;
 
     UPROPERTY(meta = (BindWidget)) UImage* InvItem;
 
