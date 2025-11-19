@@ -76,10 +76,10 @@ public:
 
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-    float InteractionTraceDistance;
+    float InteractionTraceDistance = 0;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-    float InteractionSphereRadius;
+    float InteractionSphereRadius = 0;
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Interaction")
     TObjectPtr<AActor> CurrentInteractActor;
