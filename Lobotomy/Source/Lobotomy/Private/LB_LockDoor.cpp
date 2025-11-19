@@ -166,7 +166,7 @@ bool ALB_LockDoor::TryUnlockDoor(ALB_Character* PlayerCharacter)
 
     if (HeldItem == RequiredKey)
     {
-        OpenDoor();
+        //OpenDoor();
         UE_LOG(LogTemp, Warning, TEXT("Unlocked door with key: %s"), *HeldItem.ToString());
         return true;
     }
