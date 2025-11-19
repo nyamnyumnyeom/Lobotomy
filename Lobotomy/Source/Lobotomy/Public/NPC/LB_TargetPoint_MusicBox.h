@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/TargetPoint.h"
+#include "Components/BillboardComponent.h"
+#include "Components/ArrowComponent.h"
 #include "LB_TargetPoint_MusicBox.generated.h"
 
 /**

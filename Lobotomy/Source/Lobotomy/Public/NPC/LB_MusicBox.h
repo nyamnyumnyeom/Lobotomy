@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BillboardComponent.h"
+#include "Components/ArrowComponent.h"
 #include "LB_MusicBox.generated.h"
 
 UCLASS()

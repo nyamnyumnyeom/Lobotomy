@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "NPC/LB_NPCBase.h"
+#include "Components/BillboardComponent.h"
+#include "Components/ArrowComponent.h"
 #include "LB_PatientBase.generated.h"
 
 /**
