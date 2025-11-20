@@ -157,7 +157,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void HideHUDUI();
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
     FName CurrentItem;
 
     UFUNCTION(BlueprintCallable, Category = "Inventory")
@@ -171,6 +171,9 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void ShowNoPickup();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void Noitemuse();
 
 private:
     bool bIsHUDVisible;
