@@ -89,9 +89,6 @@ ALB_TargetPoint_HAS* ULB_HideAndSeekComp::FindNearestHAS()
 		if (!HitActor || !HitActor->ActorHasTag("HideAndSeekPoint"))
 			continue;
 
-		ALB_TargetPoint_HAS* Target = Cast<ALB_TargetPoint_HAS>(HitActor);
-		if (!Target) continue;
-
 		UNavigationPath* NavPath =
 			NavSys->FindPathToLocationSynchronously(World, Start, HitActor->GetActorLocation());
 
@@ -106,6 +103,8 @@ ALB_TargetPoint_HAS* ULB_HideAndSeekComp::FindNearestHAS()
 			if (PathLen < MinDist)
 			{
 				MinDist = PathLen;
+
+				ALB_TargetPoint_HAS* Target = Cast<ALB_TargetPoint_HAS>(HitActor);
 				NearestTarget = Target;
 			}
 		}

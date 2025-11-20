@@ -9,6 +9,7 @@
 #include "LB_GM.h"
 #include "Kismet/GameplayStatics.h"
 #include "LB_LockDoor.h"
+#include "Character/LB_Character.h"
 
 ALB_TargetPoint_HAS::ALB_TargetPoint_HAS()
 {
@@ -64,17 +65,53 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsPlayerInRoom)
 		else
 		{
 			SpawnLogic(HideAndSeekerClass, bIsPlayerInRoom);
-
-			GM->AddKnockCount();
 		}
 	}
 }
 
 void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPlayerInRoom)
 {
-	if (CheckNearbyDoorOpened()) return;
-
 	if (!SpawnClass) return;
+
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	if (GM->GetShouldHASAttackMode())
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+
+		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
+		if (!Player) return;
+
+		FVector PlayerLocation = Player->GetActorLocation();
+
+		FVector Forward = Player->GetActorForwardVector();
+
+		FVector SpawnLocation = PlayerLocation - (Forward * AnglyKnockerDistanceOffset);
+
+		SpawnLocation.Z += AnglyKnockerZOffset;
+
+		FRotator SpawnRotation = (PlayerLocation - SpawnLocation).Rotation();
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		if (SpawnClass == HideAndSeekerClass)
+		{
+			SpawnedHideAndSeeker = GetWorld()->SpawnActor<ALB_MonsterHideAndSeeker>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+			if (SpawnedHideAndSeeker)
+			{
+				SpawnedHideAndSeeker->SetOwner(this);
+				SpawnedHideAndSeeker->bIsAngry = true;
+
+				GM->PlayerDeathLogic(FVector(0, 0, 0), 1);
+			}
+		}
+
+		return;
+	}
 
 	FVector SpawnLocation = GetActorLocation();
 	FRotator SpawnRotation = GetActorRotation();
@@ -110,6 +147,18 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 			{
 				SpawnedHideAndSeeker->SetOwner(this);
 
+				if (CheckNearbyDoorOpened())
+				{
+					SpawnedHideAndSeeker->StartLogic_DoorOpen();
+
+					GM->AddHelloCount();
+				}
+				else
+				{
+					SpawnedHideAndSeeker->StartLogic_DoorClose();
+
+					GM->AddKnockCount();
+				}
 			}
 		}
 		

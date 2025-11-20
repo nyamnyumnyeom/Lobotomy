@@ -37,6 +37,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float RespawnDistance = 1000.0f;
 
+	// 노커가 3번 인사한 뒤 4번째 스폰시 플레이어 후방에 스폰할 때 거리 오프셋 설정.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float AnglyKnockerDistanceOffset = 100.0f;
+
+	// 노커가 3번 인사한 뒤 4번째 스폰시 플레이어 후방에 스폰할 때 높이 오프셋 설정.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float AnglyKnockerZOffset = 0.0f;
+
 protected:
 	FTimerHandle HASTimerHandle;
 	FTimerHandle HASDestroyTimerHandle;

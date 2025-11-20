@@ -131,6 +131,22 @@ void ALB_GM::ResetKnockCount()
 	ShouldChainSawManSpawn = false;
 }
 
+void ALB_GM::AddHelloCount()
+{
+	HelloCount++;
+
+	if (HelloCount > HelloLimit)
+	{
+		ShouldHASAttackMode = true;
+	}
+}
+
+void ALB_GM::ResetHelloCount()
+{
+	KnockCount = 0;
+	ShouldHASAttackMode = false;
+}
+
 void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 {
 	if (!ChainSawManRef.IsValid()) return;

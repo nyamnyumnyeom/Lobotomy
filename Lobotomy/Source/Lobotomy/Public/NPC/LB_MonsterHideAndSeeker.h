@@ -27,6 +27,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
 	TArray<class USoundBase*> LaghingSounds;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> HelloSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> ScreamSounds;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "See")
 	float Threshold = 0.95f;
@@ -35,6 +41,10 @@ public:
 	float MoveDuration = 2.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float MoveSpeed = 0.3f;
+
+	bool bIsDoorOpen = false;
+
+	bool bIsAngry = false;
 
 protected:
 	ACharacter* PlayerCharacter;
@@ -46,6 +56,7 @@ protected:
 protected:
 	FTimerHandle MoveTimerHandle;
 	FTimerHandle BeginPlayTimerHandle;
+	FTimerHandle BeginPlaySoundTimerHandle;
 	FTimerHandle DestroyTimerHandle;
 
 public:
@@ -66,6 +77,13 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	void StartLogic_DoorClose();
+
+	void StartLogic_DoorOpen();
+
+	void PlayKnockSound();
 
 protected:
 	void StartRandomSideMove();
