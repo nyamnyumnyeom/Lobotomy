@@ -53,6 +53,7 @@ public:
 	// 1 : 노커
 	// 10 : 낮에 시간초과
 	// 11 : 밤에 시간초과
+	UFUNCTION(BlueprintCallable)
 	void PlayerDeathLogic(FVector TargetLocation, int32 Num);
 
 	// ---------- -------------------- ----------
