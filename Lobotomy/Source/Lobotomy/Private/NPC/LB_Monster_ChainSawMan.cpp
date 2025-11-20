@@ -186,7 +186,7 @@ void ALB_Monster_ChainSawMan::SpeedSettingTimer()
 
 	if (!bIsChasing)
 	{
-		CurrentSpeed = 150.0f;
+		CurrentSpeed = DefaultSpeed;
 		SpeedApply();
 		return;
 	}
@@ -197,12 +197,15 @@ void ALB_Monster_ChainSawMan::SpeedSettingTimer()
 	if (Rand <= 10)
 	{
 		bIsRunning = true;
-		CurrentSpeed = 225.0f;
+		CurrentSpeed = DashSpeed;
 		SpeedApply();
 
 		if (GetWorld())
 		{
-			GetWorldTimerManager().SetTimer(RunModeTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedReset, 10.5f, false);
+			GetWorldTimerManager().ClearTimer(RunModeTimerHandle);
+
+			int32 DashTime = FMath::RandRange(5, 10);
+			GetWorldTimerManager().SetTimer(RunModeTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedReset, DashTime, false);
 		}
 	}
 
@@ -216,7 +219,7 @@ void ALB_Monster_ChainSawMan::SpeedApply()
 void ALB_Monster_ChainSawMan::SpeedReset()
 {
 	bIsRunning = false;
-	CurrentSpeed = 150.0f;
+	CurrentSpeed = DefaultSpeed;
 	SpeedApply();
 }
 

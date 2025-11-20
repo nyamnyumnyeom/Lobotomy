@@ -202,15 +202,28 @@ bool ALB_TargetPoint_HAS::CheckNearbyDoorOpened()
 
 	if (!bHit) return true;
 
+	ALB_LockDoor* Door = nullptr;
+	float MinDist = 1000.0f;
+
 	for (const FHitResult& Hit : HitResults)
 	{
-		ALB_LockDoor* Door = Cast<ALB_LockDoor>(Hit.GetActor());
-		if (Door)
+		AActor* HitActor = Hit.GetActor();
+		if (!HitActor || !HitActor->ActorHasTag("Door")) continue;
+
+		float DoorDistance = FVector::Dist(GetActorLocation(), HitActor->GetActorLocation());
+		if (DoorDistance < MinDist)
 		{
-			if (Door->bIsOpen)
-			{
-				return true;
-			}
+			MinDist = DoorDistance;
+
+			Door = Cast<ALB_LockDoor>(Hit.GetActor());
+		}
+	}
+
+	if (Door)
+	{
+		if (Door->bIsOpen)
+		{
+			return true;
 		}
 	}
 

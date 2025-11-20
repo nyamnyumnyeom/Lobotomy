@@ -73,23 +73,23 @@ public:
 	bool bShouldMusicBoxSpawn = false;
 
 	// 플레이어가 방에서 체류한 시간(초 단위).
-	int32 AtRoomSecond = 0;
+	//int32 AtRoomSecond = 0;
 	// 오르골이 등장하기 위해 방에 체류해야 하는 시간(초 단위).
-	int32 AtRoomSecondForMusicBox = 80;
+	//int32 AtRoomSecondForMusicBox = 80;
 
 	// 플레이어가 방에서 나갈 때 오르골이 등장하기 위해 방에 체류해야 하는 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 LobbyDurationForMusicBox_Min = 50;
+	int32 LobbyDurationForMusicBox_Min = 15;
 	// 플레이어가 방에서 나갈 때 오르골이 등장하기 위해 방에 체류해야 하는 최대 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 LobbyDurationForMusicBox_Max = 80;
+	int32 LobbyDurationForMusicBox_Max = 25;
 
 	// 플레이어가 방에서 오래 있으면 숨바꼭질 장인이 등장하기까지 걸리는 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RoomDurationForSpawnHAS_Min = 25.0f;
+	int32 RoomDurationForSpawnHAS_Min = 20;
 	// 플레이어가 방에서 오래 있으면 숨바꼭질 장인이 등장하기까지 걸리는 최대 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RoomDurationForSpawnHAS_Max = 35.0f;
+	int32 RoomDurationForSpawnHAS_Max = 30;
 
 	//// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최소 시간.
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -103,13 +103,16 @@ protected:
 	FTimerHandle PlayerTimerHandle;
 
 public:
+	// 후반 일차에 갈 수록 스폰에 필요한 시간을 감소시키는 로직.
+	float CalculateSpawnDelay(int32 Min, int32 Max);
+
 	// 플레이어가 복도에서 나가 방에 도달했을 때 실행됨.
 	void PlayerIntoRoom();
 	// 플레이어가 방에서 나가 복도에 도달했을 때 실행됨.
 	void PlayerIntoLobby();
 
 	// 플레이어가 방에 있는 경우 매 초 AtRoomSecond를 올림.
-	void AtRoomSecondTimer();
+	//void AtRoomSecondTimer();
 
 	// 플레이어가 복도/방 체류시간 초과시 다음 실행을 블루프린트로 넘겨줌.
 	UFUNCTION(BlueprintImplementableEvent)

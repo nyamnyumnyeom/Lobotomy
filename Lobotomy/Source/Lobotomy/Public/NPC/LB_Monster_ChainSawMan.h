@@ -36,9 +36,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float SpawnDuration = 60.0f;
 
+	// 기본 이동 속도.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float DefaultSpeed = 200.0f;
+	// 달리기 이동 속도.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float DashSpeed = 300.0f;
+
 	// 재생중인 소리가 있는지 확인하고, 없으면 랜덤 재생시킬 로직의 실행 빈도.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
-	float SoundPlayDelay = 1.0f;
+	float SoundPlayDelay = 0.5f;
 
 protected:
 	// 스폰 유지 시간이 초과되었는가?
@@ -46,7 +53,7 @@ protected:
 
 	bool bIsChasing = false;
 	bool bIsRunning = false;
-	float CurrentSpeed = 150.0f;
+	float CurrentSpeed = 200.0f;
 
 protected:
 	FTimerHandle SpawnDurationTimerHandle;

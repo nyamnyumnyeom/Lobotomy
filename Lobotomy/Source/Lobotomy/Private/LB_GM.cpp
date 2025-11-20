@@ -79,6 +79,21 @@ void ALB_GM::AddKnockCount()
 	}
 }
 
+float ALB_GM::CalculateSpawnDelay(int32 Min, int32 Max)
+{
+	float SpawnDelay = FMath::RandRange(Min, Max);
+	float DelayReduction = (CurrentDay - 1) * 5;
+	if (DelayReduction < 0) DelayReduction = 0;
+	if (DelayReduction > 40) DelayReduction = 40;
+
+	float NewDelay = SpawnDelay - ((SpawnDelay / 100) * DelayReduction);
+
+	UE_LOG(LogTemp, Log, TEXT("Day : %i"), CurrentDay);
+	UE_LOG(LogTemp, Log, TEXT("NewDelay : %f"), NewDelay);
+
+	return NewDelay;
+}
+
 void ALB_GM::PlayerIntoRoom()
 {
 	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
@@ -87,7 +102,7 @@ void ALB_GM::PlayerIntoRoom()
 
 	bIsPlayerInRoom = true;
 
-	float SpawnDelay = FMath::FRandRange(RoomDurationForSpawnHAS_Min, RoomDurationForSpawnHAS_Max);
+	float SpawnDelay = CalculateSpawnDelay(RoomDurationForSpawnHAS_Min, RoomDurationForSpawnHAS_Max);
 
 	GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
 
@@ -104,7 +119,7 @@ void ALB_GM::PlayerIntoLobby()
 		OnMusicBoxSpawnTime();
 	}
 
-	AtRoomSecond = 0;
+	//AtRoomSecond = 0;
 	bShouldMusicBoxSpawn = false;
 
 	bIsPlayerInRoom = false;
@@ -113,20 +128,22 @@ void ALB_GM::PlayerIntoLobby()
 	//
 	//GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
 
-	AtRoomSecondForMusicBox = FMath::RandRange(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
+	//AtRoomSecondForMusicBox = FMath::RandRange(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
 
-	GetWorldTimerManager().SetTimer(AtRoomSecondTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, AtRoomSecondForMusicBox, false);
+	float SpawnDelay = CalculateSpawnDelay(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
+
+	GetWorldTimerManager().SetTimer(AtRoomSecondTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, SpawnDelay, false);
 }
 
-void ALB_GM::AtRoomSecondTimer()
-{
-	if (AtRoomSecond >= AtRoomSecondForMusicBox)
-	{
-		bShouldMusicBoxSpawn = true;
-	}
-
-	AtRoomSecond++;
-}
+//void ALB_GM::AtRoomSecondTimer()
+//{
+//	if (AtRoomSecond >= AtRoomSecondForMusicBox)
+//	{
+//		bShouldMusicBoxSpawn = true;
+//	}
+//
+//	AtRoomSecond++;
+//}
 
 void ALB_GM::ResetKnockCount()
 {
