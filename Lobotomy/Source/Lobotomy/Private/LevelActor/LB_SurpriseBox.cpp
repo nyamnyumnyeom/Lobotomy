@@ -18,3 +18,10 @@ void ALB_SurpriseBox::BeginPlay()
 	
 }
 
+// Called every frame
+void ALB_SurpriseBox::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
