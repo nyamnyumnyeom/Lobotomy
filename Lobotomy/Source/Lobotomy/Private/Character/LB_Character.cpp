@@ -361,11 +361,6 @@ void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
     HeartbeatTarget = NewTarget;
 }
 
-void ALB_Character::HandleEscape(const FInputActionValue& Value)
-{
-    OnEscapeToggle();
-}
-
 void ALB_Character::ShowHUDUI()
 {
     if (HUDUIInstance)

@@ -53,7 +53,7 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void OnEscapeToggle();
 
-    UFUNCTION()
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void HandleEscape(const FInputActionValue& Value);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
