@@ -236,10 +236,18 @@ void ALB_GM::StopTimeCount()
 {
 	GetWorldTimerManager().ClearTimer(TimeUpdateTimerHandle);
 }
+
 void ALB_GM::UpdateTimeByTimer()
 {
 	// 게임 내 시간 초 단위 증가
-	CurrentSecond += FMath::FloorToInt(TimeScale);
+	float CurrentScale = TimeScale;
+
+	if (bIsNight)
+	{
+		CurrentScale *= 1.5f;
+	}
+
+	CurrentSecond += FMath::FloorToInt(CurrentScale);
 
 	// 초 -> 분 변환
 	if (CurrentSecond >= 60)
@@ -258,8 +266,6 @@ void ALB_GM::UpdateTimeByTimer()
 	// 하루 순환
 	if (CurrentHour >= 24)
 		CurrentHour = CurrentHour % 24;
-
-	UE_LOG(LogTemp, Log, TEXT("Game Time: %02d:%02d"), CurrentHour, CurrentMinute);
 }
 
 void ALB_GM::GetGameTime(int32& Hours, int32& Minutes) const
