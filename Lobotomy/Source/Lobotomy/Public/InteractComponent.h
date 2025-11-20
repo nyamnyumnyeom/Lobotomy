@@ -21,6 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void Interact(AActor* InteractingActor);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interact")
+	void OnInteractBPevent();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void InteractFunction(AActor* InteractingActor);
 
@@ -67,6 +70,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Overlayui")
 	bool isoverlayok = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "interact")
+	bool interactbp = false;
 
 private:
 	void CollectAllMeshes(AActor* Actor);

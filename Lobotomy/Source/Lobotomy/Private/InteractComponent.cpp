@@ -86,6 +86,7 @@ void UInteractComponent::ShowWidget()
 	
 	SetOverlayVisible(true);
 	}
+	OnInteractBPevent();
 }
 
 void UInteractComponent::HideWidget()
