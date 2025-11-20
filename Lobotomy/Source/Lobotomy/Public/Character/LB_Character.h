@@ -177,9 +177,21 @@ private:
 
 	// ---------- 플레이어 게임 오버 ----------
 public:
-	// 플레이어 사망시의 카메라 시퀀스 재생 (TargetLocation : 바라볼 액터의 위치)
+	// 전기톱에게 사망시의 카메라 시퀀스 재생 (TargetLocation : 바라볼 액터의 위치)
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCameraDeathSequence(FVector TargetLocation);
+
+	// 노커에게 사망시의 카메라 시퀀스 재생
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDeathSequence_Knocker();
+
+	// 낮에 시간 초과 사망시의 로직
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDayDeathLogic();
+
+	// 밤에 시간 초과 사망시의 로직
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnNightDeathLogic();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateDeathUI();

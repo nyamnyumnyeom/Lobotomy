@@ -25,12 +25,32 @@ void ALB_GM::BeginPlay()
 	LoadPage(CurrentPage);
 }
 
-void ALB_GM::PlayerDeathLogic(FVector TargetLocation)
+void ALB_GM::PlayerDeathLogic(FVector TargetLocation, int32 Num)
 {
 	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!LB_Character) return;
 
-	LB_Character->PlayCameraDeathSequence(TargetLocation);
+	switch (Num)
+	{
+	case 0:
+		LB_Character->PlayCameraDeathSequence(TargetLocation);
+		break;
+
+	case 1:
+		LB_Character->PlayDeathSequence_Knocker();
+		break;
+
+	case 10:
+		LB_Character->OnDayDeathLogic();
+		break;
+
+	case 11:
+		LB_Character->OnNightDeathLogic();
+		break;
+
+	default:
+		break;
+	}
 }
 
 void ALB_GM::UpdateSet()

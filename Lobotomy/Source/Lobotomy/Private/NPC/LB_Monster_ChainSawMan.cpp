@@ -62,10 +62,10 @@ void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 					AudioComp->Stop();
 				}
 
-				int32 RandomIndex = FMath::RandRange(0, NormalSounds.Num() - 1);
-				if (NormalSounds[RandomIndex] && AudioComp)
+				int32 RandomIndex = FMath::RandRange(0, FinishSounds.Num() - 1);
+				if (FinishSounds[RandomIndex] && AudioComp)
 				{
-					AudioComp->SetSound(NormalSounds[RandomIndex]);
+					AudioComp->SetSound(FinishSounds[RandomIndex]);
 					AudioComp->Play();
 				}
 
