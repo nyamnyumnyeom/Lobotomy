@@ -56,6 +56,8 @@ ALB_Character::ALB_Character()
     BatteryLevel = 1.0f;
 
     bIsHUDVisible = false;
+
+    CurrentItem = NAME_None;
 }
 
 void ALB_Character::BeginPlay()
@@ -382,14 +384,17 @@ void ALB_Character::HideHUDUI()
 
 void ALB_Character::PickupItem(FName ItemName)
 {
-    if (CurrentItem != NAME_None)
+
+    if (!CurrentItem.IsNone())
     {
-        UE_LOG(LogTemp, Warning, TEXT("Cannot pick up %s: already holding %s"), *ItemName.ToString(), *CurrentItem.ToString());
+        UE_LOG(LogTemp, Error, TEXT("이미 아이템이 있어서 줍기 실패! (ShowNoPickup 호출)"));
+
         ShowNoPickup();
         return;
     }
 
     CurrentItem = ItemName;
+
 
     if (ItemData)
     {
@@ -407,92 +412,60 @@ void ALB_Character::PickupItem(FName ItemName)
             }
         }
     }
-
-    OnInventoryUpdated(CurrentItem);
 }
 
 void ALB_Character::AddBattery(float Amount)
 {
     BatteryLevel = FMath::Clamp(BatteryLevel + Amount, 0.0f, 1.0f);
     UE_LOG(LogTemp, Warning, TEXT("Battery Level: %f"), BatteryLevel);
-
-    OnInventoryUpdated(CurrentItem);
 }
 
 void ALB_Character::UseItem()
 {
     if (CurrentItem == NAME_None)
     {
-        UE_LOG(LogTemp, Warning, TEXT("No item equipped to use."));
         return;
     }
     if (!ItemData)
     {
-        UE_LOG(LogTemp, Warning, TEXT("ItemDataTable is missing."));
         return;
     }
+
     static const FString Context(TEXT("UseItem"));
     FItemRow* ItemRow = ItemData->FindRow<FItemRow>(CurrentItem, Context);
+
     if (!ItemRow)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Item not found in DataTable: %s"), *CurrentItem.ToString());
         return;
     }
+
     bool bConsumed = false;
+
     switch (ItemRow->ItemType)
     {
     case EItemType::Battery:
-    {
+        {
+
         AddBattery(0.2f);
-        UE_LOG(LogTemp, Warning, TEXT("빠떼리충전용~"));
+        UE_LOG(LogTemp, Warning, TEXT("배터리 사용: 충전 완료"));
+
         bConsumed = true;
         break;
-    }
-    case EItemType::Key:
-    {
-        ALB_LockDoor* Door = Cast<ALB_LockDoor>(CurrentInteractActor);
-        if (!Door)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("UseItem: No door in front of player."));
-            break;
         }
 
-        if (Door->bIsOpen)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("UseItem: Door already open."));
-            break;
-        }
-
-        if (Door->RequiredKey.ToString().Equals(CurrentItem.ToString(), ESearchCase::IgnoreCase))
-        {
-            Door->OpenDoor();
-            UE_LOG(LogTemp, Warning, TEXT("문이 열렸습니다! (Key: %s)"), *CurrentItem.ToString());
-            bConsumed = true;
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("열쇠 불일치: Door needs [%s], Player has [%s]"),
-                *Door->RequiredKey.ToString(), *CurrentItem.ToString());
-            OnDoorUnlockFailed();
-        }
-
-        break;
-    }
-
-    case EItemType::Tool:
-    {
-        UE_LOG(LogTemp, Warning, TEXT("탬쓰긴함"));
-        break;
-    }
     default:
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Item type has no effect."));
+        {
+        UE_LOG(LogTemp, Warning, TEXT("이 아이템은 바로 사용할 수 없습니다. (Interaction 필요 등)"));
+        bConsumed = false;
+        Noitemuse();
         break;
         }
     }
+
     if (bConsumed)
     {
         CurrentItem = NAME_None;
+
         if (HUDUIInstance)
         {
             if (ULB_InGameHud* HUD = Cast<ULB_InGameHud>(HUDUIInstance))

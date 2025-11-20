@@ -27,6 +27,10 @@ void ALB_PlayerController::BeginPlay()
 			}
 		}
 	}
+	if (ULB_Setting* Setting = ULB_Setting::Get())
+	{
+		Setting->ApplyCustomSettings();
+	}
 }
 
 void ALB_PlayerController::SetMouseSensitivite(float NewSensitivie)

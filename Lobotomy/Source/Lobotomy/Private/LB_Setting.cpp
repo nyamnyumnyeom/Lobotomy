@@ -8,22 +8,27 @@
 void ULB_Setting::ApplyCustomSettings()
 {
     // -------------------
-    // 1. 볼륨
+    // 1. 볼륨 (UGameUserSettings가 관리 안 함 -> 직접 구현)
     if (USoundClass* SC = MasterSoundClass.LoadSynchronous())
     {
         SC->Properties.Volume = FMath::Clamp(MasterVolume, 0.f, 1.f);
     }
 
     // -------------------
-    // 2. 밝기
-    const float Mid = FMath::Clamp(Brightness, 0.5f, 1.5f);
+    // 2. 밝기 (UGameUserSettings가 관리 안 함 -> 직접 구현)
+    // r.Color.Mid는 감마/중간톤 조절이므로 계속 사용 가능
+    float TargetMid = FMath::GetMappedRangeValueClamped(
+        FVector2D(0.f, 1.f),    // 입력 범위 (슬라이더)
+        FVector2D(2.0f, 0.5f),  // 출력 범위 (2.0=어두움, 0.5=밝음)
+        Brightness              // 현재 슬라이더 값
+    );
+
     if (GEngine && GetWorld())
     {
-        GEngine->Exec(GetWorld(), *FString::Printf(TEXT("r.Color.Mid %.3f"), Mid));
+        GEngine->Exec(GetWorld(), *FString::Printf(TEXT("r.Color.Mid %.3f"), TargetMid));
     }
-
     // -------------------
-    // 3. 마우스 감도
+    // 3. 마우스 감도 (UGameUserSettings가 관리 안 함 -> 직접 구현)
     if (UWorld* World = GetWorld())
     {
         if (APlayerController* PC = World->GetFirstPlayerController())
@@ -35,135 +40,58 @@ void ULB_Setting::ApplyCustomSettings()
         }
     }
 
-    // -------------------
-    // 4. 그래픽 품질 적용
-    if (GetWorld() && GEngine)
-    {
-        FString Cmd;
-
-        Cmd = FString::Printf(TEXT("sg.AntiAliasingQuality %d"), GetAntiAliasingQuality());
-        GEngine->Exec(GetWorld(), *Cmd);
-
-        Cmd = FString::Printf(TEXT("sg.PostProcessQuality %d"), GetPostProcessingQuality());
-        GEngine->Exec(GetWorld(), *Cmd);
-
-        Cmd = FString::Printf(TEXT("sg.ShadowQuality %d"), GetShadowQuality());
-        GEngine->Exec(GetWorld(), *Cmd);
-
-        Cmd = FString::Printf(TEXT("sg.TextureQuality %d"), GetTextureQuality());
-        GEngine->Exec(GetWorld(), *Cmd);
-
-        // 전체 스케일러빌리티 적용
-        Cmd = FString::Printf(TEXT("sg.SetOverallQualityLevel %d"), GetOverallScalabilityLevel());
-        GEngine->Exec(GetWorld(), *Cmd);
-    }
-
-    // -------------------
-    // 5. 해상도 & 화면 모드 적용
-    const FIntPoint Res = GetScreenResolution();
-    const EWindowMode::Type WinMode = GetFullscreenMode();
-    FString FullscreenCmd;
-
-    switch (WinMode)
-    {
-    case EWindowMode::Fullscreen:        FullscreenCmd = TEXT("Fullscreen"); break;
-    case EWindowMode::Windowed:          FullscreenCmd = TEXT("Windowed"); break;
-    case EWindowMode::WindowedFullscreen:FullscreenCmd = TEXT("WindowedFullscreen"); break;
-    default: FullscreenCmd = TEXT("Windowed"); break;
-    }
-
-    FString ResolutionCmd = FString::Printf(TEXT("r.SetRes %dx%d%s"), Res.X, Res.Y, *FullscreenCmd);
-    if (GEngine && GetWorld())
-    {
-        GEngine->Exec(GetWorld(), *ResolutionCmd);
-    }
+    // [중요]
+    // 그래픽 품질(sg.*)과 해상도(r.SetRes) 관련 코드는 
+    // Super::ApplySettings()에서 자동으로 처리하므로 모두 삭제했습니다.
 }
 
 void ULB_Setting::ApplySettings(bool bCheckForCommandLineOverrides)
 {
+    // 1. 엔진 기본 설정 적용 (해상도, 전체화면, 그래픽 품질 등)
+    // 이 함수가 내부적으로 Scalability::SetQualityLevels를 호출하여 렌더링에 반영합니다.
     Super::ApplySettings(bCheckForCommandLineOverrides);
+
+    // 2. 내 커스텀 설정 적용 (볼륨, 밝기, 감도)
     ApplyCustomSettings();
 }
 
 void ULB_Setting::LoadSettings(bool bForceReload)
 {
+    // 1. 엔진 기본 설정 로드 (GameUserSettings.ini에서 자동으로 읽어옴)
+    Super::LoadSettings(bForceReload);
 
-    // -------------------
-    // 기존 커스텀 값 불러오기
+    // 2. 커스텀 값만 추가로 로드
+    // (TextureQuality 등은 Super::LoadSettings가 이미 로드했으므로 중복 로드 삭제)
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivite, GGameUserSettingsIni);
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("Brightness"), Brightness, GGameUserSettingsIni);
 
-    int32 Temp;
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("AntiAliasingQuality"), Temp, GGameUserSettingsIni);
-    SetAntiAliasingQuality(Temp);
-
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("PostProcessingQuality"), Temp, GGameUserSettingsIni);
-    SetPostProcessingQuality(Temp);
-
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("ShadowQuality"), Temp, GGameUserSettingsIni);
-    SetShadowQuality(Temp);
-
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("TextureQuality"), Temp, GGameUserSettingsIni);
-    SetTextureQuality(Temp);
-
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("OverallScalabilityLevel"), Temp, GGameUserSettingsIni);
-    SetOverallScalabilityLevel(Temp);
-
-    // 해상도
-    int32 Width = 1920, Height = 1080;
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("ScreenWidth"), Width, GGameUserSettingsIni);
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("ScreenHeight"), Height, GGameUserSettingsIni);
-    SetScreenResolution(FIntPoint(Width, Height));
-
-    // 화면 모드
-    int32 ModeInt = 1;
-    GConfig->GetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("FullscreenMode"), ModeInt, GGameUserSettingsIni);
-    SetFullscreenMode(static_cast<EWindowMode::Type>(ModeInt));
-
-    Super::LoadSettings(bForceReload);
+    // 3. 로드된 커스텀 값 즉시 적용
+    ApplyCustomSettings();
 }
 
 void ULB_Setting::SaveSettings()
 {
-    // -------------------
-    // 커스텀 값 저장
+    // 1. 커스텀 값 저장
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivite, GGameUserSettingsIni);
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("Brightness"), Brightness, GGameUserSettingsIni);
 
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("AntiAliasingQuality"), GetAntiAliasingQuality(), GGameUserSettingsIni);
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("PostProcessingQuality"), GetPostProcessingQuality(), GGameUserSettingsIni);
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("ShadowQuality"), GetShadowQuality(), GGameUserSettingsIni);
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("TextureQuality"), GetTextureQuality(), GGameUserSettingsIni);
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("OverallScalabilityLevel"), GetOverallScalabilityLevel(), GGameUserSettingsIni);
-
-    FIntPoint Res = GetScreenResolution();
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("ScreenWidth"), Res.X, GGameUserSettingsIni);
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("ScreenHeight"), Res.Y, GGameUserSettingsIni);
-
-    GConfig->SetInt(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("FullscreenMode"), static_cast<int32>(GetFullscreenMode()), GGameUserSettingsIni);
-
-    GConfig->Flush(false, GGameUserSettingsIni);
-
+    // 2. 엔진 기본 설정 저장 (TextureQuality, Resolution 등은 Super가 알아서 저장함)
     Super::SaveSettings();
+
+    // GConfig->Flush는 Super::SaveSettings 내부에서도 호출될 수 있으나, 확실하게 하기 위해 둬도 무방합니다.
+    GConfig->Flush(false, GGameUserSettingsIni);
 }
 
 void ULB_Setting::ResetToDefaults()
 {
+    Super::SetToDefaults();
+
     MouseSensitivite = 1.0f;
     MasterVolume = 1.0f;
-    Brightness = 1.0f;
+    Brightness = 0.66f;
 
-    SetOverallScalabilityLevel(2); // 중간
-    SetAntiAliasingQuality(2);
-    SetPostProcessingQuality(2);
-    SetShadowQuality(2);
-    SetTextureQuality(2);
-
-    SetScreenResolution(FIntPoint(1920, 1080));
-    SetFullscreenMode(EWindowMode::Windowed);
-
-    SaveSettings();
     ApplySettings(false);
+    SaveSettings();
 }
