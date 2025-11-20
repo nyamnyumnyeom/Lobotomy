@@ -278,4 +278,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	UDataTable* DialogueTable;
 
+	// ---------- 설정 관련 함수 ----------
+public:
+	UFUNCTION(BlueprintCallable, Category = "Save")
+	void SaveOtherSetting(int32 MasterVolume);
+
+	UFUNCTION(BlueprintCallable, Category = "Save")
+	void LoadOtherSetting(int32& MasterVolume);
+	// ---------- -------------------- ----------
 };

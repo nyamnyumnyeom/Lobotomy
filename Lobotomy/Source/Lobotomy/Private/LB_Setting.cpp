@@ -11,7 +11,7 @@ void ULB_Setting::ApplyCustomSettings()
     // 1. 볼륨 (UGameUserSettings가 관리 안 함 -> 직접 구현)
     if (USoundClass* SC = MasterSoundClass.LoadSynchronous())
     {
-        SC->Properties.Volume = FMath::Clamp(MasterVolume, 0.f, 1.f);
+        SC->Properties.Volume = FMath::Clamp(MasterVolume, 0.f, 2.f);
     }
 
     // -------------------

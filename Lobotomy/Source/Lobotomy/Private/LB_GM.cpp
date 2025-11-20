@@ -11,6 +11,7 @@
 #include "UI/LB_DialogueUI.h"
 #include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
+#include "Save/LB_SaveSetting.h"
 
 ALB_GM::ALB_GM()
 {
@@ -411,4 +412,42 @@ void ALB_GM::StartDialogue(FName StartRow)
 			DialogueUI->InitDialogue(DialogueTable, StartRow);
 		}
 	}
+}
+
+void ALB_GM::SaveOtherSetting(int32 MasterVolume)
+{
+	FString SaveSlotName = FString("OtherSetting");
+
+	ULB_SaveSetting* NewSettingData = NewObject<ULB_SaveSetting>();
+
+	NewSettingData->Volume_Master = MasterVolume;
+
+	if (false == UGameplayStatics::SaveGameToSlot(NewSettingData, SaveSlotName, 0))
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Save Failed..."));
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Save Succeeded!!!"));
+	}
+}
+
+void ALB_GM::LoadOtherSetting(int32& MasterVolume)
+{
+	FString SaveSlotName = FString("OtherSetting");
+
+	ULB_SaveSetting* NewSettingData = Cast<ULB_SaveSetting>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
+	if (NewSettingData == nullptr)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("No Save Found. Creating New SaveGame Object."));
+
+		NewSettingData = Cast<ULB_SaveSetting>(UGameplayStatics::CreateSaveGameObject(ULB_SaveSetting::StaticClass()));
+		if (NewSettingData == nullptr)
+		{
+			//UE_LOG(LogTemp, Error, TEXT("SaveGame Object Creation Failed."));
+			return;
+		}
+	}
+
+	MasterVolume = NewSettingData->Volume_Master;
 }

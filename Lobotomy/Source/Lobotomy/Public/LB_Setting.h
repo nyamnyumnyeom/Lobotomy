@@ -23,7 +23,7 @@ public:
     float Brightness = 1.0f;       // 
 
     /** Reference to Master SoundClass (에디터에서 할당 가능) */
-    UPROPERTY(EditDefaultsOnly, Category = "Audio")
+    //UPROPERTY(EditDefaultsOnly, Category = "Audio")
     TSoftObjectPtr<USoundClass> MasterSoundClass;
 
     /** Custom settings 적용 */
