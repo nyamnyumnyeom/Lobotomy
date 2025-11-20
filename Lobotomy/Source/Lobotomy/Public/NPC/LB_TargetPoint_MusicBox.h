@@ -34,11 +34,17 @@ public:
 	TSubclassOf<AActor> ChainSawManClass;
 
 public:
+	// 오르골이 스폰된 후 몇초가 지나야 전기톱을 스폰시킬지.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float TimeupTime = 20.0f;
 
+	// 오르골이 스폰된 후 몇초가 지나야 디스폰 시도할지.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float DespawnTime = 25.0f;
+
 protected:
 	FTimerHandle MusicBoxTimerHandle;
+	FTimerHandle MusicBoxStopTimerHandle;
 	FTimerHandle MusicBoxDestroyTimerHandle;
 
 protected:
