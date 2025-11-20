@@ -48,6 +48,9 @@ void ALB_GM::PlayerDeathLogic(FVector TargetLocation, int32 Num)
 		LB_Character->OnNightDeathLogic();
 		break;
 
+	case 13:
+		LB_Character->Timeout();
+		break;
 	default:
 		break;
 	}

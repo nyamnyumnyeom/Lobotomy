@@ -199,6 +199,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateDeathUI();
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void Timeout();
+
 	// ---------- -------------------- ----------
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
