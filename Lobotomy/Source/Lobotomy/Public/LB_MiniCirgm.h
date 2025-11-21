@@ -71,6 +71,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void OnMiniGameFail();
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void Soundcall();
+
 private:
     void UpdatePointer(float DeltaTime);
     void SpawnRandomSuccessZone();

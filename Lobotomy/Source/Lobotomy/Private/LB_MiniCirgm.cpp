@@ -74,7 +74,7 @@ void ULB_MiniCirgm::OnInputPressed()
 {
     if (!bIsPlaying)
         return;
-
+    Soundcall();
     CheckSuccess();
 }
 
@@ -86,6 +86,7 @@ void ULB_MiniCirgm::CheckSuccess()
     {
         bSuccessThisRound = true;
         SuccessCount++;
+        RotateSpeed += 30.f;
     }
     else
     {
