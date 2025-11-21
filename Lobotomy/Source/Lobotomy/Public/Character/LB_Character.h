@@ -104,6 +104,7 @@ public:
     void StartHeartbeat();
     void StopHeartbeat();
     void SetHeartbeatTarget(AActor* NewTarget);
+	void ResetHeartbeatTarget();
 
 protected:
 
@@ -111,28 +112,28 @@ protected:
     USoundBase* HeartbeatSound;
 
     UPROPERTY()
-    TObjectPtr<UAudioComponent> HeartbeatAudioComponent;
+    TObjectPtr<UAudioComponent> HeartbeatAudioComponent = nullptr;
 
     UPROPERTY()
     TObjectPtr<AActor> HeartbeatTarget;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MinDistance = 10.f;
+    float MinDistance = 300.0f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxDistance = 250.f;
+    float MaxDistance = 2500.0f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MinVolume = 0.2f;
+    float MinVolume = 0.8f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxVolume = 1.0f;
+    float MaxVolume = 2.0f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     float MinPitch = 0.5f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxPitch = 2.0f;
+    float MaxPitch = 1.5f;
 
     UFUNCTION(BlueprintImplementableEvent, Category = "Flashlight")
     void ToggleFlashlight_BP();

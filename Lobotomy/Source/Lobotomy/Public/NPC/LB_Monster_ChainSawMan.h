@@ -104,4 +104,6 @@ protected:
 	void SpeedReset();
 
 	void SoundPlay();
+
+	void HeartbeatToggle(bool Value);
 };
