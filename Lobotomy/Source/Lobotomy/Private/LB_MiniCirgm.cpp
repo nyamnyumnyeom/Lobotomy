@@ -86,7 +86,7 @@ void ULB_MiniCirgm::CheckSuccess()
     {
         bSuccessThisRound = true;
         SuccessCount++;
-        RotateSpeed += 30.f;
+        RotateSpeed += 70.f;
     }
     else
     {
