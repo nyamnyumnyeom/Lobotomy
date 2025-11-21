@@ -10,7 +10,15 @@ UCLASS()
 class LOBOTOMY_API ALB_SurpriseBox : public AActor
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> BatteryClass;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsSurprise = true;
+
 public:	
 	// Sets default values for this actor's properties
 	ALB_SurpriseBox();
@@ -22,5 +30,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SpawnBattery();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void DespawnBattery();
 
 };

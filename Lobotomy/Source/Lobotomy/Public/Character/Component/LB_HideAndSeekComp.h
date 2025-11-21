@@ -27,6 +27,8 @@ public:
 protected:
 	bool bIsPlayerInRoom;
 
+	bool bIsSpawnWait = false;
+
 protected:
 	FTimerHandle TriggerLoopTimerHandle;
 

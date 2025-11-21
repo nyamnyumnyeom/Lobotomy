@@ -41,6 +41,8 @@ ALB_LockDoor::ALB_LockDoor()
 	DoorHandleWidget->SetupAttachment(SphereCollision);
 
     bIsOpen = false;
+
+	Tags.Add(FName("Door"));
 }
 
 void ALB_LockDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -3,6 +3,8 @@
 
 #include "Character/Component/LB_MusicBoxSpawnComp.h"
 #include "NPC/LB_TargetPoint_MusicBox.h"
+#include "Kismet/GameplayStatics.h"
+#include "LB_GM.h"
 
 ULB_MusicBoxSpawnComp::ULB_MusicBoxSpawnComp()
 {
@@ -18,6 +20,11 @@ void ULB_MusicBoxSpawnComp::BeginPlay()
 
 void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 {
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	if (GM->bIsNight == false) return;
+
 	AActor* MyOwnerPawn = GetOwner();
 	if (!MyOwnerPawn) return;
 

@@ -11,6 +11,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NPC/LB_NPCData.h"
 #include "Components/AudioComponent.h"
+#include "Character/LB_Character.h"
 
 ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 {
@@ -41,6 +42,8 @@ void ALB_Monster_ChainSawMan::BeginPlay()
 	{
 		GetWorldTimerManager().SetTimer(SpeedSettingTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedSettingTimer, 2.0f, true);
 	}
+
+	HeartbeatToggle(true);
 }
 
 void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -53,6 +56,8 @@ void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 			if (AIC)
 			{
 				OnWeaponUp();
+
+				HeartbeatToggle(false);
 
 				CachedPlayerCharacter = OtherActor;
 				AIC->SetState_Attack();
@@ -144,6 +149,8 @@ void ALB_Monster_ChainSawMan::DisappearLogic()
 	{
 		AudioComp->Stop();
 	}
+	
+	HeartbeatToggle(false);
 
 	Destroy();
 }
@@ -232,5 +239,23 @@ void ALB_Monster_ChainSawMan::SoundPlay()
 	{
 		AudioComp->SetSound(NormalSounds[RandomIndex]);
 		AudioComp->Play();
+	}
+}
+
+void ALB_Monster_ChainSawMan::HeartbeatToggle(bool Value)
+{
+	ALB_Character* Player = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Player)
+	{
+		if (Value)
+		{
+			Player->SetHeartbeatTarget(this);
+			Player->StartHeartbeat();
+		}
+		else
+		{
+			Player->ResetHeartbeatTarget();
+			Player->StopHeartbeat();
+		}
 	}
 }

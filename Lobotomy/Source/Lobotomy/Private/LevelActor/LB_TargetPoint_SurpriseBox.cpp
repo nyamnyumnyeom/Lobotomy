@@ -36,14 +36,23 @@ void ALB_TargetPoint_SurpriseBox::SpawnSurpriseBox()
 		{
 			SpawnedSurpriseBox->SetOwner(this);
 
+			bool SurpriseMode = false;
+			int32 RandomValue = FMath::RandRange(0, 100);
+			if (RandomValue < SurpriseProbability)
+			{
+				SurpriseMode = true;
+			}
+
+			SpawnedSurpriseBox->bIsSurprise = SurpriseMode;
 		}
 	}
 }
 
 void ALB_TargetPoint_SurpriseBox::DespawnSurpriseBox()
 {
-	if (SpawnedSurpriseBox != nullptr) return;
+	if (SpawnedSurpriseBox == nullptr) return;
 
+	SpawnedSurpriseBox->DespawnBattery();
 	SpawnedSurpriseBox->Destroy();
 	SpawnedSurpriseBox = nullptr;
 }

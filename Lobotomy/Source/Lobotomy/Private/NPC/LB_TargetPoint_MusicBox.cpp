@@ -119,7 +119,9 @@ void ALB_TargetPoint_MusicBox::TryMusicBoxDestroy()
 
 	if (Dot >= 0) return;
 
+	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
+
+	if(SpawnedMusicBox)
 	SpawnedMusicBox->Destroy();
 
-	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
 }

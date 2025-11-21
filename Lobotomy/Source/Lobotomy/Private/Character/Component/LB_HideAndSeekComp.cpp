@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "NPC/LB_TargetPoint_HAS.h"
+#include "LB_GM.h"
 
 ULB_HideAndSeekComp::ULB_HideAndSeekComp()
 {
@@ -23,6 +24,11 @@ void ULB_HideAndSeekComp::BeginPlay()
 
 void ULB_HideAndSeekComp::TriggerHASSpawn()
 {
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	if (GM->bIsNight == false) return;
+
 	ALB_TargetPoint_HAS* NearestHASPoint = FindNearestHAS();
 	if (NearestHASPoint)
 	{
@@ -37,10 +43,12 @@ void ULB_HideAndSeekComp::TriggerHASSpawn()
 		if (Dot <= Threshold)
 		{
 			NearestHASPoint->HASSystemActivate(bIsPlayerInRoom);
+
+			GM->PlayerIntoRoom();
+
 			return;
 		}
 	}
-
 
 	if (GetWorld())
 	{

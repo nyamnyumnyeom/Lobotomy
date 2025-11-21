@@ -115,10 +115,10 @@ void ALB_GM::PlayerIntoLobby()
 
 	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
 
-	if (bShouldMusicBoxSpawn)
-	{
-		OnMusicBoxSpawnTime();
-	}
+	//if (bShouldMusicBoxSpawn)
+	//{
+	//	OnMusicBoxSpawnTime();
+	//}
 
 	//AtRoomSecond = 0;
 	bShouldMusicBoxSpawn = false;

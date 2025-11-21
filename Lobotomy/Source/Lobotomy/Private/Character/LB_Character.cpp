@@ -363,6 +363,11 @@ void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
     HeartbeatTarget = NewTarget;
 }
 
+void ALB_Character::ResetHeartbeatTarget()
+{
+	HeartbeatTarget = nullptr;
+}
+
 void ALB_Character::ShowHUDUI()
 {
     if (HUDUIInstance)
