@@ -7,9 +7,7 @@ void ULB_MiniCirgm::NativeConstruct()
     Super::NativeConstruct();
 
     if (ResultText)
-    {
         ResultText->SetVisibility(ESlateVisibility::Hidden);
-    }
 
     StartMiniGame();
 }
@@ -20,6 +18,7 @@ void ULB_MiniCirgm::StartMiniGame()
     CurrentRound = 1;
     SuccessCount = 0;
     PointerAngle = 0.f;
+
     SpawnRandomSuccessZone();
 
     if (ResultText)
@@ -31,12 +30,23 @@ void ULB_MiniCirgm::StopMiniGame()
     bIsPlaying = false;
 }
 
+float ULB_MiniCirgm::NormalizeAngle(float Angle)
+{
+    Angle = FMath::Fmod(Angle, 360.f);
+    if (Angle < 0.f)
+        Angle += 360.f;
+
+    return Angle;
+}
+
 void ULB_MiniCirgm::SpawnRandomSuccessZone()
 {
     float RandomStart = FMath::FRandRange(0.f, 360.f);
-    SuccessStartAngle = RandomStart;
-    SuccessEndAngle = RandomStart + SuccessZoneSize;
 
+    SuccessStartAngle = NormalizeAngle(RandomStart);
+    SuccessEndAngle = NormalizeAngle(RandomStart + SuccessZoneSize);
+
+    // 성공 이미지 회전
     if (SuccessZone)
     {
         FWidgetTransform Transform = SuccessZone->RenderTransform;
@@ -58,9 +68,7 @@ void ULB_MiniCirgm::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 void ULB_MiniCirgm::UpdatePointer(float DeltaTime)
 {
     PointerAngle += RotateSpeed * DeltaTime;
-
-    if (PointerAngle >= 360.f)
-        PointerAngle -= 360.f;
+    PointerAngle = NormalizeAngle(PointerAngle);
 
     if (Pointer)
     {
@@ -70,21 +78,29 @@ void ULB_MiniCirgm::UpdatePointer(float DeltaTime)
     }
 }
 
+bool ULB_MiniCirgm::IsAngleInRange(float Angle, float Start, float End)
+{
+    if (Start <= End)
+        return Angle >= Start && Angle <= End;
+
+    return (Angle >= Start || Angle <= End);
+}
+
 void ULB_MiniCirgm::OnInputPressed()
 {
     if (!bIsPlaying)
         return;
+
     Soundcall();
     CheckSuccess();
 }
 
 void ULB_MiniCirgm::CheckSuccess()
 {
-    bool bSuccessThisRound = false;
+    bool bSuccessThisRound = IsAngleInRange(PointerAngle, SuccessStartAngle, SuccessEndAngle);
 
-    if (PointerAngle >= SuccessStartAngle && PointerAngle <= SuccessEndAngle)
+    if (bSuccessThisRound)
     {
-        bSuccessThisRound = true;
         SuccessCount++;
         RotateSpeed += 70.f;
     }
@@ -97,9 +113,11 @@ void ULB_MiniCirgm::CheckSuccess()
             ResultText->SetVisibility(ESlateVisibility::Visible);
             ResultText->SetText(FText::FromString(TEXT("FAIL")));
         }
+
         OnMiniGameFail();
         return;
     }
+
     if (SuccessCount >= RequiredSuccessCount)
     {
         bIsPlaying = false;
@@ -109,12 +127,12 @@ void ULB_MiniCirgm::CheckSuccess()
             ResultText->SetVisibility(ESlateVisibility::Visible);
             ResultText->SetText(FText::FromString(TEXT("CLEAR")));
         }
+
         OnMiniGameCleared();
         return;
     }
 
     CurrentRound++;
-
     PointerAngle = 0.f;
     SpawnRandomSuccessZone();
 }

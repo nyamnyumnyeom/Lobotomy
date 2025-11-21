@@ -74,6 +74,10 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void Soundcall();
 
+    float NormalizeAngle(float Angle);
+
+    bool IsAngleInRange(float Angle, float Start, float End);
+
 private:
     void UpdatePointer(float DeltaTime);
     void SpawnRandomSuccessZone();
