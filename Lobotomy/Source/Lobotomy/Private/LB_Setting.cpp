@@ -90,7 +90,7 @@ void ULB_Setting::ResetToDefaults()
 
     MouseSensitivite = 1.0f;
     MasterVolume = 1.0f;
-    Brightness = 0.66f;
+    Brightness = 0.5f;
 
     ApplySettings(false);
     SaveSettings();
