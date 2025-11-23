@@ -27,6 +27,15 @@ void ALB_PlayerController::BeginPlay()
 			}
 		}
 	}
+	if (ULB_Setting* Setting = ULB_Setting::Get())
+	{
+		Setting->ApplyCustomSettings();
+
+		if (MasterSoundClass)
+		{
+			Setting->MasterSoundClass = MasterSoundClass;
+		}
+	}
 }
 
 void ALB_PlayerController::SetMouseSensitivite(float NewSensitivie)

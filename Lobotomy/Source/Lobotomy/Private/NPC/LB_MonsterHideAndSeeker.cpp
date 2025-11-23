@@ -5,10 +5,22 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/SphereComponent.h"
 
 ALB_MonsterHideAndSeeker::ALB_MonsterHideAndSeeker()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	PlayerDetectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectSphere"));
+	PlayerDetectSphere->SetupAttachment(RootComponent);
+
+	PlayerDetectSphere->InitSphereRadius(300.f);
+	PlayerDetectSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	PlayerDetectSphere->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	PlayerDetectSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PlayerDetectSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	PlayerDetectSphere->OnComponentBeginOverlap.AddDynamic(this, &ALB_MonsterHideAndSeeker::OnSphereBeginOverlap);
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	AudioComp->SetupAttachment(RootComponent);
@@ -19,12 +31,15 @@ void ALB_MonsterHideAndSeeker::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+}
 
-	if (MusicSound && AudioComp)
+void ALB_MonsterHideAndSeeker::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!OtherActor) return;
+
+	if (OtherActor->ActorHasTag("Player"))
 	{
-		AudioComp->SetSound(MusicSound);
-		AudioComp->Play();
+		StartRandomSideMove();
 	}
 }
 
@@ -54,9 +69,52 @@ void ALB_MonsterHideAndSeeker::Tick(float DeltaTime)
 	}
 }
 
+void ALB_MonsterHideAndSeeker::StartLogic_DoorClose()
+{
+	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+	PlayKnockSound();
+
+	GetWorldTimerManager().SetTimer(BeginPlaySoundTimerHandle, this, &ALB_MonsterHideAndSeeker::PlayKnockSound, 10.0f, false);
+	GetWorldTimerManager().SetTimer(BeginPlayTimerHandle, this, &ALB_MonsterHideAndSeeker::StartRandomSideMove, 10.0f, false);
+}
+
+void ALB_MonsterHideAndSeeker::StartLogic_DoorOpen()
+{
+	bIsDoorOpen = true;
+
+	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+	int32 RandomIndex = FMath::RandRange(0, HelloSounds.Num() - 1);
+	if (HelloSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(HelloSounds[RandomIndex]);
+		AudioComp->Play();
+	}
+
+	StartRandomSideMove();
+}
+
+void ALB_MonsterHideAndSeeker::PlayKnockSound()
+{
+	int32 RandomIndex = FMath::RandRange(0, KnockSounds.Num() - 1);
+	if (KnockSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(KnockSounds[RandomIndex]);
+		AudioComp->Play();
+	}
+}
+
 void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 {
+	if (bShouldLogicStop) return;
+	if (bIsMovingSideways) return;
+	if (bIsAngry) return;
+
 	bIsMovingSideways = true;
+
+	GetWorldTimerManager().ClearTimer(BeginPlaySoundTimerHandle);
+	GetWorldTimerManager().ClearTimer(BeginPlayTimerHandle);
 
 	float RandomSide = FMath::RandBool() ? 1.0f : -1.0f;
 
@@ -67,8 +125,29 @@ void ALB_MonsterHideAndSeeker::StartRandomSideMove()
 
 void ALB_MonsterHideAndSeeker::StopRandomSideMove()
 {
+	if (bIsAngry) return;
+
+	bShouldLogicStop = true;
 	bIsMovingSideways = false;
 	MoveDirection = FVector::ZeroVector;
 
+	if (!bIsDoorOpen)
+	{
+		int32 RandomIndex = FMath::RandRange(0, LaghingSounds.Num() - 1);
+		if (LaghingSounds[RandomIndex] && AudioComp)
+		{
+			AudioComp->SetSound(LaghingSounds[RandomIndex]);
+			AudioComp->Play();
+		}
+	}
+
+	GetMesh()->SetVisibility(false);
+
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &ALB_MonsterHideAndSeeker::RealDestroy, 5.0f, false);
+	
+}
+
+void ALB_MonsterHideAndSeeker::RealDestroy()
+{
 	Destroy();
 }

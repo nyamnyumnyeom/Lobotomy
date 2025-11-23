@@ -35,6 +35,13 @@ protected:
 	// 숨바꼭질 장인의 다음 노크에 전기톱 살인마를 스폰시켜야 하는가?
 	bool ShouldChainSawManSpawn = false;
 
+	// 숨바꼭질 장인이 문을 해당 숫자 이상 인사하면 이후 스폰은 플레이어 공격
+	int32 HelloLimit = 2;
+	// 숨바꼭질 장인이 문을 두드린 횟수
+	int32 HelloCount = 0;
+	// 숨바꼭질 장인의 다음 스폰에 플레이어를 공격해야 하는가?
+	bool ShouldHASAttackMode = false;
+
 	// ---------- -------------------- ----------
 
 public:
@@ -48,9 +55,72 @@ protected:
 
 	// ---------- 플레이어 게임 오버 ----------
 public:
-	// 플레이어 사망 로직 (TargetLocation : 바라볼 액터의 위치)
-	void PlayerDeathLogic(FVector TargetLocation);
+	// 플레이어 사망 로직 (TargetLocation : 바라볼 액터의 위치, Num : 사망 종류)
+	// 0 : 전기톱
+	// 1 : 노커
+	// 10 : 낮에 시간초과
+	// 11 : 밤에 시간초과
+	UFUNCTION(BlueprintCallable)
+	void PlayerDeathLogic(FVector TargetLocation, int32 Num);
 
+	// ---------- -------------------- ----------
+
+	// ---------- 플레이어 방/복도 위치 확인 관련 함수 ----------
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsPlayerInRoom = false;
+
+	bool bShouldMusicBoxSpawn = false;
+
+	// 플레이어가 방에서 체류한 시간(초 단위).
+	//int32 AtRoomSecond = 0;
+	// 오르골이 등장하기 위해 방에 체류해야 하는 시간(초 단위).
+	//int32 AtRoomSecondForMusicBox = 80;
+
+	// 플레이어가 방에서 나갈 때 오르골이 등장하기 위해 방에 체류해야 하는 최소 시간.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 LobbyDurationForMusicBox_Min = 15;
+	// 플레이어가 방에서 나갈 때 오르골이 등장하기 위해 방에 체류해야 하는 최대 시간.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 LobbyDurationForMusicBox_Max = 25;
+
+	// 플레이어가 방에서 오래 있으면 숨바꼭질 장인이 등장하기까지 걸리는 최소 시간.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 RoomDurationForSpawnHAS_Min = 20;
+	// 플레이어가 방에서 오래 있으면 숨바꼭질 장인이 등장하기까지 걸리는 최대 시간.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 RoomDurationForSpawnHAS_Max = 30;
+
+	//// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최소 시간.
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//float LobbyDurationForSpawnHAS_Min = 55.0f;
+	//// 플레이어가 복도에서 오래 있으면 숨바꼭질 장인이 근처 방에서 등장하기까지 걸리는 최대 시간.
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//float LobbyDurationForSpawnHAS_Max = 85.0f;
+
+protected:
+	FTimerHandle AtRoomSecondTimerHandle;
+	FTimerHandle PlayerTimerHandle;
+
+public:
+	// 후반 일차에 갈 수록 스폰에 필요한 시간을 감소시키는 로직.
+	float CalculateSpawnDelay(int32 Min, int32 Max);
+
+	// 플레이어가 복도에서 나가 방에 도달했을 때 실행됨.
+	void PlayerIntoRoom();
+	// 플레이어가 방에서 나가 복도에 도달했을 때 실행됨.
+	void PlayerIntoLobby();
+
+	// 플레이어가 방에 있는 경우 매 초 AtRoomSecond를 올림.
+	//void AtRoomSecondTimer();
+
+	// 플레이어가 복도/방 체류시간 초과시 다음 실행을 블루프린트로 넘겨줌.
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnStayTimeOut();
+
+	// 플레이어가 방에서 나갈 때 오르골 스폰해야 하는 경우 다음 실행을 블루프린트로 넘겨줌.
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMusicBoxSpawnTime();
 	// ---------- -------------------- ----------
 
 	// ---------- 숨바꼭질 장인 관련 함수 ----------
@@ -60,6 +130,12 @@ public:
 
 	// 숨바꼭질 장인이 노크한 횟수 초기화
 	void ResetKnockCount();
+
+	// 숨바꼭질 장인이 인사한 횟수 증가
+	void AddHelloCount();
+
+	// 숨바꼭질 장인이 인사한 횟수 초기화
+	void ResetHelloCount();
 
 	// 숨바꼭질 장인 스폰 여부 설정
 	FORCEINLINE void SetIsHidAndSeekerSpawned(bool Value) { bIsHidAndSeekerSpawned = Value; }
@@ -82,6 +158,9 @@ public:
 
 	// 전기톱 살인마가 개빡친 상황인가?
 	FORCEINLINE bool GetShouldChainSawManSpawn() const { return ShouldChainSawManSpawn; }
+
+	// 노커가 개빡친 상황인가?
+	FORCEINLINE bool GetShouldHASAttackMode() const { return ShouldHASAttackMode; }
 
 	// 전기톱 살인마가 스폰되어 있는가?
 	FORCEINLINE bool GetIsChainSawManSpawned() const { return bIsChainSawManSpawned; }
@@ -199,4 +278,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	UDataTable* DialogueTable;
 
+	// ---------- 설정 관련 함수 ----------
+public:
+	UFUNCTION(BlueprintCallable, Category = "Save")
+	void SaveOtherSetting(int32 MasterVolume);
+
+	UFUNCTION(BlueprintCallable, Category = "Save")
+	void LoadOtherSetting(int32& MasterVolume);
+	// ---------- -------------------- ----------
 };

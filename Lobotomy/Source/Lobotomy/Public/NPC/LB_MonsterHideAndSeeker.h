@@ -15,26 +15,49 @@ class LOBOTOMY_API ALB_MonsterHideAndSeeker : public ALB_MonsterBase
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	class USphereComponent* PlayerDetectSphere;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music")
 	class UAudioComponent* AudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
-	class USoundBase* MusicSound;
+	TArray<class USoundBase*> KnockSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> LaghingSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> HelloSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	TArray<class USoundBase*> ScreamSounds;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "See")
 	float Threshold = 0.95f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float MoveDuration = 2.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float MoveSpeed = 0.3f;
+
+	bool bIsDoorOpen = false;
+
+	bool bIsAngry = false;
 
 protected:
 	ACharacter* PlayerCharacter;
 
 	FVector MoveDirection;
 	bool bIsMovingSideways = false;
+	bool bShouldLogicStop = false;
 
 protected:
 	FTimerHandle MoveTimerHandle;
+	FTimerHandle BeginPlayTimerHandle;
+	FTimerHandle BeginPlaySoundTimerHandle;
+	FTimerHandle DestroyTimerHandle;
 
 public:
 	ALB_MonsterHideAndSeeker();
@@ -42,11 +65,30 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnSphereBeginOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
 public:
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	void StartLogic_DoorClose();
+
+	void StartLogic_DoorOpen();
+
+	void PlayKnockSound();
 
 protected:
 	void StartRandomSideMove();
 
 	void StopRandomSideMove();
+
+	void RealDestroy();
 };

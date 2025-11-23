@@ -37,7 +37,7 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 	FRotator SpawnRotation = GetActorRotation();
 
 	FVector Start = SpawnLocation;
-	FVector End = Start - FVector(0, 0, 300.0f);
+	FVector End = Start - FVector(0, 0, 100.0f);
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
@@ -50,12 +50,17 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 
 	if (MusicBoxClass)
 	{
-		SpawnedMusicBox = GetWorld()->SpawnActor<ALB_MusicBox>(MusicBoxClass, SpawnLocation, SpawnRotation);
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		SpawnedMusicBox = GetWorld()->SpawnActor<ALB_MusicBox>(MusicBoxClass, SpawnLocation, SpawnRotation, SpawnParams);
 		if (SpawnedMusicBox)
 		{
 			SpawnedMusicBox->SetOwner(this);
 
-			GetWorldTimerManager().SetTimer(MusicBoxTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxTimeup, 20.0f, false);
+			GetWorldTimerManager().SetTimer(MusicBoxTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxTimeup, TimeupTime, false);
+			GetWorldTimerManager().SetTimer(MusicBoxStopTimerHandle, this, &ALB_TargetPoint_MusicBox::StopMusicBoxTimer, DespawnTime, false);
 		}
 	}
 }
@@ -64,7 +69,9 @@ void ALB_TargetPoint_MusicBox::StopMusicBoxTimer()
 {
 	GetWorld()->GetTimerManager().ClearTimer(MusicBoxTimerHandle);
 
-	GetWorldTimerManager().SetTimer(MusicBoxDestroyTimerHandle, this, &ALB_TargetPoint_MusicBox::TryMusicBoxDestroy, 2.0f, true);
+	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
+
+	GetWorldTimerManager().SetTimer(MusicBoxDestroyTimerHandle, this, &ALB_TargetPoint_MusicBox::TryMusicBoxDestroy, 0.7f, true);
 
 }
 
@@ -79,12 +86,22 @@ void ALB_TargetPoint_MusicBox::MusicBoxTimeup()
 			{
 				FVector SpawnLocation = ChainSawManSpawnPoint->GetComponentLocation();
 				FRotator SpawnRotation = ChainSawManSpawnPoint->GetComponentRotation();
+				
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-				GetWorld()->SpawnActor<AActor>(ChainSawManClass, SpawnLocation, SpawnRotation);
+				GetWorld()->SpawnActor<AActor>(ChainSawManClass, SpawnLocation, SpawnRotation, SpawnParams);
 			}
 			else
 			{
+				FVector SpawnLocation = ChainSawManSpawnPoint->GetComponentLocation();
+				FRotator SpawnRotation = ChainSawManSpawnPoint->GetComponentRotation();
+				FVector SpawnScale = FVector(1.0f, 1.0f, 1.0f);
 
+				FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation, SpawnScale);
+
+				GM->SetChainSawManTransform(SpawnTransform);
 			}
 		}
     }
@@ -102,7 +119,9 @@ void ALB_TargetPoint_MusicBox::TryMusicBoxDestroy()
 
 	if (Dot >= 0) return;
 
+	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
+
+	if(SpawnedMusicBox)
 	SpawnedMusicBox->Destroy();
 
-	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
 }

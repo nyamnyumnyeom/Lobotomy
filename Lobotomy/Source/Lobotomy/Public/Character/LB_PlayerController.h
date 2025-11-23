@@ -35,7 +35,11 @@ public:
 	void SetMouseSensitivite(float NewSensitivie);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float CurrentSensitivite = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ChartAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<USoundClass> MasterSoundClass;
 
 protected:
 	virtual void BeginPlay() override;

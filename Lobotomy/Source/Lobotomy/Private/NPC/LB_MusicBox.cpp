@@ -19,12 +19,29 @@ ALB_MusicBox::ALB_MusicBox()
 void ALB_MusicBox::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (MusicSound && AudioComp)
+
+	int32 RandomIndex = FMath::RandRange(0, MusicSounds.Num() - 1);
+	if (MusicSounds[RandomIndex] && AudioComp)
 	{
-		AudioComp->SetSound(MusicSound);
+		AudioComp->SetSound(MusicSounds[RandomIndex]);
 		AudioComp->Play();
 	}
+
+	GetWorldTimerManager().SetTimer(
+		NoiseTimerHandle,
+		this,
+		&ALB_MusicBox::MusicOff,
+		DestroyTime,
+		false
+	);
+
+	GetWorldTimerManager().SetTimer(
+		NoiseTimerHandle,
+		this,
+		&ALB_MusicBox::MakeNoiseForAI,
+		1.0f,    
+		true  
+	);
 }
 
 void ALB_MusicBox::MusicOff()
@@ -34,7 +51,7 @@ void ALB_MusicBox::MusicOff()
 		OwnerTargetPoint->StopMusicBoxTimer();
 	}
 
-	if (MusicSound && AudioComp)
+	if (AudioComp)
 	{
 		AudioComp->Stop();
 	}

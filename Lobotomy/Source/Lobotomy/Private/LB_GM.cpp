@@ -11,6 +11,7 @@
 #include "UI/LB_DialogueUI.h"
 #include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
+#include "Save/LB_SaveSetting.h"
 
 ALB_GM::ALB_GM()
 {
@@ -25,12 +26,35 @@ void ALB_GM::BeginPlay()
 	LoadPage(CurrentPage);
 }
 
-void ALB_GM::PlayerDeathLogic(FVector TargetLocation)
+void ALB_GM::PlayerDeathLogic(FVector TargetLocation, int32 Num)
 {
 	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!LB_Character) return;
 
-	LB_Character->PlayCameraDeathSequence(TargetLocation);
+	switch (Num)
+	{
+	case 0:
+		LB_Character->PlayCameraDeathSequence(TargetLocation);
+		break;
+
+	case 1:
+		LB_Character->PlayDeathSequence_Knocker();
+		break;
+
+	case 10:
+		LB_Character->OnDayDeathLogic();
+		break;
+
+	case 11:
+		LB_Character->OnNightDeathLogic();
+		break;
+
+	case 13:
+		LB_Character->Timeout();
+		break;
+	default:
+		break;
+	}
 }
 
 void ALB_GM::UpdateSet()
@@ -56,10 +80,92 @@ void ALB_GM::AddKnockCount()
 	}
 }
 
+float ALB_GM::CalculateSpawnDelay(int32 Min, int32 Max)
+{
+	float SpawnDelay = FMath::RandRange(Min, Max);
+	float DelayReduction = (CurrentDay - 1) * 5;
+	if (DelayReduction < 0) DelayReduction = 0;
+	if (DelayReduction > 40) DelayReduction = 40;
+
+	float NewDelay = SpawnDelay - ((SpawnDelay / 100) * DelayReduction);
+
+	UE_LOG(LogTemp, Log, TEXT("Day : %i"), CurrentDay);
+	UE_LOG(LogTemp, Log, TEXT("NewDelay : %f"), NewDelay);
+
+	return NewDelay;
+}
+
+void ALB_GM::PlayerIntoRoom()
+{
+	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+
+	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+
+	bIsPlayerInRoom = true;
+
+	float SpawnDelay = CalculateSpawnDelay(RoomDurationForSpawnHAS_Min, RoomDurationForSpawnHAS_Max);
+
+	GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
+
+}
+
+void ALB_GM::PlayerIntoLobby()
+{
+	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+
+	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+
+	//if (bShouldMusicBoxSpawn)
+	//{
+	//	OnMusicBoxSpawnTime();
+	//}
+
+	//AtRoomSecond = 0;
+	bShouldMusicBoxSpawn = false;
+
+	bIsPlayerInRoom = false;
+
+	//float SpawnDelay = FMath::FRandRange(LobbyDurationForSpawnHAS_Min, LobbyDurationForSpawnHAS_Max);
+	//
+	//GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
+
+	//AtRoomSecondForMusicBox = FMath::RandRange(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
+
+	float SpawnDelay = CalculateSpawnDelay(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
+
+	GetWorldTimerManager().SetTimer(AtRoomSecondTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, SpawnDelay, false);
+}
+
+//void ALB_GM::AtRoomSecondTimer()
+//{
+//	if (AtRoomSecond >= AtRoomSecondForMusicBox)
+//	{
+//		bShouldMusicBoxSpawn = true;
+//	}
+//
+//	AtRoomSecond++;
+//}
+
 void ALB_GM::ResetKnockCount()
 {
 	KnockCount = 0;
 	ShouldChainSawManSpawn = false;
+}
+
+void ALB_GM::AddHelloCount()
+{
+	HelloCount++;
+
+	if (HelloCount > HelloLimit)
+	{
+		ShouldHASAttackMode = true;
+	}
+}
+
+void ALB_GM::ResetHelloCount()
+{
+	KnockCount = 0;
+	ShouldHASAttackMode = false;
 }
 
 void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
@@ -140,7 +246,6 @@ void ALB_GM::ChangeToNight()
 void ALB_GM::ChangeToDay()
 {
 	bIsNight = false;
-	UpdateDate();
 }
 
 void ALB_GM::StartTimeCount()
@@ -307,4 +412,42 @@ void ALB_GM::StartDialogue(FName StartRow)
 			DialogueUI->InitDialogue(DialogueTable, StartRow);
 		}
 	}
+}
+
+void ALB_GM::SaveOtherSetting(int32 MasterVolume)
+{
+	FString SaveSlotName = FString("OtherSetting");
+
+	ULB_SaveSetting* NewSettingData = NewObject<ULB_SaveSetting>();
+
+	NewSettingData->Volume_Master = MasterVolume;
+
+	if (false == UGameplayStatics::SaveGameToSlot(NewSettingData, SaveSlotName, 0))
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Save Failed..."));
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Save Succeeded!!!"));
+	}
+}
+
+void ALB_GM::LoadOtherSetting(int32& MasterVolume)
+{
+	FString SaveSlotName = FString("OtherSetting");
+
+	ULB_SaveSetting* NewSettingData = Cast<ULB_SaveSetting>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
+	if (NewSettingData == nullptr)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("No Save Found. Creating New SaveGame Object."));
+
+		NewSettingData = Cast<ULB_SaveSetting>(UGameplayStatics::CreateSaveGameObject(ULB_SaveSetting::StaticClass()));
+		if (NewSettingData == nullptr)
+		{
+			//UE_LOG(LogTemp, Error, TEXT("SaveGame Object Creation Failed."));
+			return;
+		}
+	}
+
+	MasterVolume = NewSettingData->Volume_Master;
 }

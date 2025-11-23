@@ -3,6 +3,8 @@
 
 #include "Character/Component/LB_MusicBoxSpawnComp.h"
 #include "NPC/LB_TargetPoint_MusicBox.h"
+#include "Kismet/GameplayStatics.h"
+#include "LB_GM.h"
 
 ULB_MusicBoxSpawnComp::ULB_MusicBoxSpawnComp()
 {
@@ -18,6 +20,11 @@ void ULB_MusicBoxSpawnComp::BeginPlay()
 
 void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 {
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	if (GM->bIsNight == false) return;
+
 	AActor* MyOwnerPawn = GetOwner();
 	if (!MyOwnerPawn) return;
 
@@ -44,24 +51,48 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 		ALB_TargetPoint_MusicBox* NearestPoint = nullptr;
 		float MinDist = FLT_MAX;
 
+		AActor* NearestActor = nullptr;
+
 		for (const FHitResult& Hit : HitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && HitActor->ActorHasTag("MusicBoxPoint"))
 			{
-				float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
-				if (Dist < MinDist)
+				FVector PlayerForward = MyOwnerPawn->GetActorForwardVector().GetSafeNormal();
+				FVector ToPlayer = (HitActor->GetActorLocation() - Start).GetSafeNormal();
+
+				float Dot = FVector::DotProduct(PlayerForward, ToPlayer);
+
+				if (Dot <= Threshold)
 				{
-					MinDist = Dist;
-					NearestPoint = Cast<ALB_TargetPoint_MusicBox>(HitActor);
+					float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
+					if (Dist < MinDist)
+					{
+						MinDist = Dist;
+						NearestActor = HitActor;
+					}
 				}
 			}
 		}
 
-		if (NearestPoint)
+		if (NearestActor)
 		{
-			NearestPoint->MusicBoxSystemActivate();
+			NearestPoint = Cast<ALB_TargetPoint_MusicBox>(NearestActor);
+			if (NearestPoint)
+			{
+				NearestPoint->MusicBoxSystemActivate();
+				return;
+			}
 		}
+	}
+
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn, 10.0f, false);
 	}
 }
 
+void ULB_MusicBoxSpawnComp::TriggerLoopTimerClear()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TriggerLoopTimerHandle);
+}

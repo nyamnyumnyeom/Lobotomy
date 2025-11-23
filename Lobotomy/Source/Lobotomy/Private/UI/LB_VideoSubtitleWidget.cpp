@@ -6,34 +6,58 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "MediaSoundComponent.h"
+#include "Internationalization/Culture.h"
+#include "Internationalization/Internationalization.h"
 #include "Components/AudioComponent.h"
 
 void ULB_VideoSubtitleWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    // if (MediaPlayer)
-    // {
-    //     UWorld* World = GetWorld();
-    //     if (World)
-    //     {
-    //         UMediaSoundComponent* MediaSound = NewObject<UMediaSoundComponent>(World->GetWorldSettings());
-    //         if (MediaSound)
-    //         {
-    //             MediaSound->SetMediaPlayer(MediaPlayer);
-    //             MediaSound->RegisterComponent();
-    //             MediaSound->Activate(true);
-    //         }
-    //     }
-    // }
+    // 현재 언어 구하기
+    FString Lang = FInternationalization::Get().GetCurrentCulture()->GetName();
 
-    LoadSRTFile();
-
-    if (MediaPlayer && MediaSource)
+    // 언어에 맞는 테이블 선택
+    if (Lang.StartsWith("ko"))
     {
-        MediaPlayer->OpenSource(MediaSource);
-        MediaPlayer->Play();
+        ActiveSubtitleTable = SubtitleTable_KR;
     }
+    else if (Lang.StartsWith("en"))
+    {
+        ActiveSubtitleTable = SubtitleTable_EN;
+    }
+    else
+    {
+        ActiveSubtitleTable = SubtitleTable_EN;
+    }
+
+    SubtitleText->SetText(FText::GetEmpty());
+
+    if (MediaTexture && VideoImage && MediaPlayer)
+    {
+        MediaTexture->SetMediaPlayer(MediaPlayer);
+
+        FIntPoint Size = MediaPlayer->GetVideoTrackDimensions(0, 0);
+        FVector2D FinalSize(Size.X, Size.Y);
+
+        FSlateBrush Brush;
+        Brush.SetResourceObject(MediaTexture);
+
+        if (FinalSize.X <= 0 || FinalSize.Y <= 0)
+        {
+            FinalSize = FVector2D(1920, 1080);
+        }
+
+        Brush.ImageSize = FinalSize;
+
+        VideoImage->SetBrush(Brush);
+    }
+
+
+    LoadSubtitleTable();
+    SetupMediaSound();
+
+    PlayVideo();
 }
 
 void ULB_VideoSubtitleWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -55,13 +79,11 @@ void ULB_VideoSubtitleWidget::NativeTick(const FGeometry& MyGeometry, float InDe
 
     for (int32 i = 0; i < Subtitles.Num(); ++i)
     {
-        if (CurrentTime >= Subtitles[i].StartTime && CurrentTime <= Subtitles[i].EndTime)
+        if (CurrentTime >= Subtitles[i].StartTime &&
+            CurrentTime <= Subtitles[i].EndTime)
         {
-            if (i != CurrentIndex)
-            {
-                CurrentIndex = i;
-                SubtitleText->SetText(FText::FromString(Subtitles[i].Text));
-            }
+            CurrentIndex = i;
+            SubtitleText->SetText(Subtitles[i].Subtitle);
             return;
         }
     }
@@ -73,73 +95,95 @@ void ULB_VideoSubtitleWidget::NativeTick(const FGeometry& MyGeometry, float InDe
     }
 }
 
-void ULB_VideoSubtitleWidget::LoadSRTFile()
+void ULB_VideoSubtitleWidget::SetupMediaSound()
 {
-    FString FullPath = FPaths::ProjectContentDir() / SubtitleFilePath;
-    TArray<FString> Lines;
+    if (!MediaPlayer) return;
 
-    if (!FFileHelper::LoadFileToStringArray(Lines, *FullPath))
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    MediaSoundComp = NewObject<UMediaSoundComponent>(World->GetWorldSettings());
+
+    if (MediaSoundComp)
     {
-        UE_LOG(LogTemp, Warning, TEXT("자막 로드 실패: %s"), *FullPath);
-        return;
+        MediaSoundComp->SetMediaPlayer(MediaPlayer);
+        MediaSoundComp->RegisterComponent();
+        MediaSoundComp->Activate(true);
     }
+}
 
+void ULB_VideoSubtitleWidget::LoadSubtitleTable()
+{
     Subtitles.Empty();
-    FLB_SubtitleData Current;
+    CurrentIndex = -1;
 
-    for (int32 i = 0; i < Lines.Num(); ++i)
+    if (!ActiveSubtitleTable) return;
+
+    TArray<FName> RowNames = ActiveSubtitleTable->GetRowNames();
+
+    for (auto& RowName : RowNames)
     {
-        FString Line = Lines[i].TrimStartAndEnd();
-        if (Line.IsEmpty())
+        FLB_SubtitleData* Row = ActiveSubtitleTable->FindRow<FLB_SubtitleData>(RowName, TEXT("SubLoad"));
+        if (Row)
         {
-            if (!Current.Text.IsEmpty())
-            {
-                Subtitles.Add(Current);
-                Current = FLB_SubtitleData();
-            }
-            continue;
-        }
+            FLB_SubtitleData Data;
+            Data.StartTime = Row->StartTime;
+            Data.EndTime = Row->EndTime;
+            Data.Subtitle = Row->Subtitle;
 
-        if (Line.Contains("-->"))
-        {
-            FString Left, Right;
-            Line.Split(TEXT("-->"), &Left, &Right);
-
-            auto ParseTime = [](const FString& TimeString)
-                {
-                    FString Clean = TimeString.TrimStartAndEnd().Replace(TEXT(","), TEXT("."), ESearchCase::IgnoreCase);
-                    TArray<FString> Parts;
-                    Clean.ParseIntoArray(Parts, TEXT(":"), true);
-                    if (Parts.Num() == 3)
-                    {
-                        float H = FCString::Atof(*Parts[0]);
-                        float M = FCString::Atof(*Parts[1]);
-                        float S = FCString::Atof(*Parts[2]);
-                        return H * 3600.f + M * 60.f + S;
-                    }
-                    return 0.f;
-                };
-
-            Current.StartTime = ParseTime(Left);
-            Current.EndTime = ParseTime(Right);
-        }
-        else if (!Line.IsNumeric())
-        {
-            if (!Current.Text.IsEmpty())
-                Current.Text.Append(TEXT("\n"));
-            Current.Text.Append(Line);
+            Subtitles.Add(Data);
         }
     }
 
+    Subtitles.Sort([](const FLB_SubtitleData& A, const FLB_SubtitleData& B)
+        {
+            return A.StartTime < B.StartTime;
+        });
 }
 
-void ULB_VideoSubtitleWidget::ChangeSubtitleFile(const FString& NewSubtitlePath)
+
+
+void ULB_VideoSubtitleWidget::PlayVideo()
 {
-    SubtitleFilePath = NewSubtitlePath;
-    LoadSRTFile();
+    if (!MediaPlayer || !MediaSource) return;
 
-    CurrentIndex = -1;
-    SubtitleText->SetText(FText::GetEmpty());
+    if (!MediaPlayer->IsReady())
+    {
+        MediaPlayer->OpenSource(MediaSource);
+    }
 
-    UE_LOG(LogTemp, Log, TEXT("Subtitle file changed to: %s"), *SubtitleFilePath);
+    MediaPlayer->Play();
+
+    if (MediaSoundComp)
+    {
+        MediaSoundComp->Activate(true);
+    }
 }
+
+
+void ULB_VideoSubtitleWidget::PauseVideo()
+{
+    if (!MediaPlayer) return;
+
+    MediaPlayer->Pause();
+
+    if (MediaSoundComp)
+    {
+        MediaSoundComp->Deactivate();
+    }
+}
+
+void ULB_VideoSubtitleWidget::StopVideo()
+{
+    if (!MediaPlayer) return;
+
+    MediaPlayer->Close();
+    CurrentIndex = -1;
+
+    if (SubtitleText)
+        SubtitleText->SetText(FText::GetEmpty());
+
+    if (MediaSoundComp)
+        MediaSoundComp->Deactivate();
+}
+

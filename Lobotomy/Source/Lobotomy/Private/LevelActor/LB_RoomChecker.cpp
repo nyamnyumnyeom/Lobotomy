@@ -5,6 +5,9 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "LB_GM.h"
+#include "Character/Component/LB_HideAndSeekComp.h"
+#include "Character/Component/LB_MusicBoxSpawnComp.h"
+
 
 ALB_RoomChecker::ALB_RoomChecker()
 {
@@ -27,6 +30,8 @@ void ALB_RoomChecker::BeginPlay()
 	Super::BeginPlay();
 
 	GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	GetWorldTimerManager().SetTimer(StartCheckTimerHandle, this, &ALB_RoomChecker::CheckPlayerOverlap, 2.0f, false);
 }
 
 void ALB_RoomChecker::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -35,7 +40,15 @@ void ALB_RoomChecker::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 
 	if (OtherActor->ActorHasTag("Player"))
 	{
-		GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_RoomChecker::OnPlayerStay, StayDurationForSpawnHAS, false);
+		if (!GM) return;
+
+		GM->PlayerIntoRoom();
+
+		ULB_MusicBoxSpawnComp* MBComp = OtherActor->FindComponentByClass<ULB_MusicBoxSpawnComp>();
+		if (MBComp)
+		{
+			MBComp->TriggerLoopTimerClear();
+		}
 	}
 }
 
@@ -45,16 +58,29 @@ void ALB_RoomChecker::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 
 	if (OtherActor->ActorHasTag("Player"))
 	{
-		GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
-
 		if (!GM) return;
-		//
+		
+		GM->PlayerIntoLobby();
+
+		ULB_HideAndSeekComp* HASComp = OtherActor->FindComponentByClass<ULB_HideAndSeekComp>();
+		if (HASComp)
+		{
+			HASComp->TriggerLoopTimerClear();
+		}
 	}
 }
 
-void ALB_RoomChecker::OnPlayerStay()
+void ALB_RoomChecker::CheckPlayerOverlap()
 {
-	if (!GM) return;
-	//
+	TArray<AActor*> OverlappingActors;
+	BoxCollision->GetOverlappingActors(OverlappingActors);
 
+	for (AActor* Actor : OverlappingActors)
+	{
+		if (Actor && Actor->ActorHasTag("Player"))
+		{
+			GM->PlayerIntoRoom();
+			return;
+		}
+	}
 }

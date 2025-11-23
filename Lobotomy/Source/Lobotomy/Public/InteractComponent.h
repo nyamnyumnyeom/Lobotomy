@@ -21,6 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void Interact(AActor* InteractingActor);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interact")
+	void OnInteractBPevent();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void InteractFunction(AActor* InteractingActor);
 
@@ -54,4 +57,24 @@ private:
 	void UpdateWidgetTransform();
 
 	void UpdateWidgetSize();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Overlay")
+	UMaterialInterface* OverlayMaterial;
+
+	UPROPERTY()
+	TArray<UMeshComponent*> Meshes;
+
+	UPROPERTY()
+	TArray<UMaterialInterface*> OriginalOverlayMaterials;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Overlayui")
+	bool isoverlayok = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "interact")
+	bool interactbp = false;
+
+private:
+	void CollectAllMeshes(AActor* Actor);
+	void SetOverlayVisible(bool bVisible);
 };

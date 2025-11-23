@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BillboardComponent.h"
+#include "Components/ArrowComponent.h"
 #include "LB_MusicBox.generated.h"
 
 UCLASS()
@@ -17,7 +19,13 @@ public:
 
 	// 오르골 소리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
-	class USoundBase* MusicSound;
+	TArray<class USoundBase*> MusicSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Music")
+	float DestroyTime = 30.0f;
+
+protected:
+	FTimerHandle NoiseTimerHandle;
 
 public:	
 	ALB_MusicBox();
@@ -29,5 +37,8 @@ public:
 	// 상호작용으로 음악 종료
 	UFUNCTION(BlueprintCallable)
 	void MusicOff();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void MakeNoiseForAI();
 
 };

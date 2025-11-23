@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "NPC/LB_MonsterBase.h"
+#include "Sound/SoundCue.h"
 #include "LB_Monster_Manequin.generated.h"
 
 /**

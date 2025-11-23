@@ -48,9 +48,12 @@ public:
     void StopSprint();
 
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void HandleChart();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void OnEscapeToggle();
 
-    UFUNCTION()
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void HandleEscape(const FInputActionValue& Value);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
@@ -76,10 +79,10 @@ public:
 
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-    float InteractionTraceDistance;
+    float InteractionTraceDistance = 0;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-    float InteractionSphereRadius;
+    float InteractionSphereRadius = 0;
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Interaction")
     TObjectPtr<AActor> CurrentInteractActor;
@@ -101,6 +104,7 @@ public:
     void StartHeartbeat();
     void StopHeartbeat();
     void SetHeartbeatTarget(AActor* NewTarget);
+	void ResetHeartbeatTarget();
 
 protected:
 
@@ -108,28 +112,28 @@ protected:
     USoundBase* HeartbeatSound;
 
     UPROPERTY()
-    TObjectPtr<UAudioComponent> HeartbeatAudioComponent;
+    TObjectPtr<UAudioComponent> HeartbeatAudioComponent = nullptr;
 
     UPROPERTY()
     TObjectPtr<AActor> HeartbeatTarget;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MinDistance = 10.f;
+    float MinDistance = 300.0f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxDistance = 250.f;
+    float MaxDistance = 2500.0f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MinVolume = 0.2f;
+    float MinVolume = 0.8f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxVolume = 1.0f;
+    float MaxVolume = 2.0f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     float MinPitch = 0.5f;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
-    float MaxPitch = 2.0f;
+    float MaxPitch = 1.5f;
 
     UFUNCTION(BlueprintImplementableEvent, Category = "Flashlight")
     void ToggleFlashlight_BP();
@@ -154,7 +158,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void HideHUDUI();
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
     FName CurrentItem;
 
     UFUNCTION(BlueprintCallable, Category = "Inventory")
@@ -169,17 +173,35 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void ShowNoPickup();
 
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void Noitemuse();
+
 private:
     bool bIsHUDVisible;
 
 	// ---------- 플레이어 게임 오버 ----------
 public:
-	// 플레이어 사망시의 카메라 시퀀스 재생 (TargetLocation : 바라볼 액터의 위치)
+	// 전기톱에게 사망시의 카메라 시퀀스 재생 (TargetLocation : 바라볼 액터의 위치)
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCameraDeathSequence(FVector TargetLocation);
 
+	// 노커에게 사망시의 카메라 시퀀스 재생
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDeathSequence_Knocker();
+
+	// 낮에 시간 초과 사망시의 로직
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDayDeathLogic();
+
+	// 밤에 시간 초과 사망시의 로직
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnNightDeathLogic();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateDeathUI();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void Timeout();
 
 	// ---------- -------------------- ----------
 

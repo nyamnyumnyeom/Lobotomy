@@ -2,14 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MediaPlayer.h"
-#include "UI/LB_SubtitleManager.h"
+#include "Components/TextBlock.h"
+#include "Components/Image.h"
+#include "UI/LB_SubtitleData.h"
 #include "LB_VideoSubtitleWidget.generated.h"
-
-class UTextBlock;
-class UImage;
-class UMediaTexture;
-class UMediaSource;
 
 UCLASS()
 class LOBOTOMY_API ULB_VideoSubtitleWidget : public UUserWidget
@@ -20,32 +16,51 @@ public:
     virtual void NativeConstruct() override;
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-protected:
-    /** UI 요소 **/
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* SubtitleText;
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video")
+    class UMediaPlayer* MediaPlayer;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video")
+    class UMediaSource* MediaSource;
 
     UPROPERTY(meta = (BindWidget))
     UImage* VideoImage;
 
-    /** 미디어 관련 **/
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video")
-    UMediaPlayer* MediaPlayer;
+    class UMediaTexture* MediaTexture;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video")
-    UMediaSource* MediaSource;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SubtitleText;
 
-    /** 자막 관련 **/
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subtitle")
-    FString SubtitleFilePath;
+    UDataTable* SubtitleTable_KR;
 
-    UFUNCTION(BlueprintCallable, Category = "Subtitle")
-    void ChangeSubtitleFile(const FString& NewSubtitlePath);
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subtitle")
+    UDataTable* SubtitleTable_EN;
 
+    UPROPERTY()
+    UDataTable* ActiveSubtitleTable;
 
 private:
+    UPROPERTY()
     TArray<FLB_SubtitleData> Subtitles;
+
     int32 CurrentIndex = -1;
 
-    void LoadSRTFile();
+    UPROPERTY()
+    class UMediaSoundComponent* MediaSoundComp;
+
+private:
+    void LoadSubtitleTable();
+    void SetupMediaSound();
+
+public:
+    UFUNCTION(BlueprintCallable)
+    void PlayVideo();
+
+    UFUNCTION(BlueprintCallable)
+    void PauseVideo();
+
+    UFUNCTION(BlueprintCallable)
+    void StopVideo();
 };

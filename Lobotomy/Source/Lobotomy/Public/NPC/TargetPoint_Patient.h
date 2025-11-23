@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,11 +15,11 @@ class LOBOTOMY_API ATargetPoint_Patient : public ATargetPoint
 	GENERATED_BODY()
 
 public:
-	// È¯ÀÚ Å¬·¡½º
+	// í™˜ì í´ë˜ìŠ¤
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	TSubclassOf<AActor> PatientClass;
 
-	// [0:¼­ÀÖ±â - Stand] , [1:¹èÈ¸ÇÏ±â - Strafe], [2:¾É¾ÆÀÖ±â - Sit], [3:´©¿öÀÖ±â - Lay], [4:ÀáÀÚ±â - Sleep]
+	// [0:ì„œìˆê¸° - Stand] , [1:ë°°íšŒí•˜ê¸° - Strafe], [2:ì•‰ì•„ìˆê¸° - Sit], [3:ëˆ„ì›Œìˆê¸° - Lay], [4:ì ìê¸° - Sleep]
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	int32 BehaviorModeChoose = 0;
 
@@ -28,6 +28,9 @@ protected:
 
 public:
 	ATargetPoint_Patient();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float upscale = 0;
 
 protected:
 	virtual void BeginPlay() override;

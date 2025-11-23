@@ -10,6 +10,8 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NPC/LB_NPCData.h"
+#include "Components/AudioComponent.h"
+#include "Character/LB_Character.h"
 
 ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 {
@@ -24,6 +26,10 @@ ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ALB_Monster_ChainSawMan::OnOverlapBegin);
+
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	AudioComp->SetupAttachment(RootComponent);
+	AudioComp->bAutoActivate = false;
 }
 
 void ALB_Monster_ChainSawMan::BeginPlay()
@@ -36,6 +42,8 @@ void ALB_Monster_ChainSawMan::BeginPlay()
 	{
 		GetWorldTimerManager().SetTimer(SpeedSettingTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedSettingTimer, 2.0f, true);
 	}
+
+	HeartbeatToggle(true);
 }
 
 void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -49,8 +57,22 @@ void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 			{
 				OnWeaponUp();
 
+				HeartbeatToggle(false);
+
 				CachedPlayerCharacter = OtherActor;
 				AIC->SetState_Attack();
+
+				if (AudioComp && AudioComp->IsPlaying())
+				{
+					AudioComp->Stop();
+				}
+
+				int32 RandomIndex = FMath::RandRange(0, FinishSounds.Num() - 1);
+				if (FinishSounds[RandomIndex] && AudioComp)
+				{
+					AudioComp->SetSound(FinishSounds[RandomIndex]);
+					AudioComp->Play();
+				}
 
 			}
 		}
@@ -92,6 +114,15 @@ void ALB_Monster_ChainSawMan::SpawnLogic()
 		GetWorldTimerManager().ClearTimer(SpawnDurationTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_ChainSawMan::TimeupSpawnDuration, SpawnDuration, false);
 	}
+
+	int32 RandomIndex = FMath::RandRange(0, SpawnSounds.Num() - 1);
+	if (SpawnSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(SpawnSounds[RandomIndex]);
+		AudioComp->Play();
+	}
+
+	GetWorldTimerManager().SetTimer(SoundPlayTimerHandle, this, &ALB_Monster_ChainSawMan::SoundPlay, SoundPlayDelay, true);
 }
 
 void ALB_Monster_ChainSawMan::SetActorRotationToPlayer()
@@ -111,6 +142,15 @@ void ALB_Monster_ChainSawMan::SetActorRotationToPlayer()
 void ALB_Monster_ChainSawMan::DisappearLogic()
 {
 	SetSpawnWhetherToGM(false);
+
+	GetWorldTimerManager().ClearTimer(SoundPlayTimerHandle);
+
+	if (AudioComp && AudioComp->IsPlaying())
+	{
+		AudioComp->Stop();
+	}
+	
+	HeartbeatToggle(false);
 
 	Destroy();
 }
@@ -153,7 +193,7 @@ void ALB_Monster_ChainSawMan::SpeedSettingTimer()
 
 	if (!bIsChasing)
 	{
-		CurrentSpeed = 150.0f;
+		CurrentSpeed = DefaultSpeed;
 		SpeedApply();
 		return;
 	}
@@ -164,12 +204,15 @@ void ALB_Monster_ChainSawMan::SpeedSettingTimer()
 	if (Rand <= 10)
 	{
 		bIsRunning = true;
-		CurrentSpeed = 225.0f;
+		CurrentSpeed = DashSpeed;
 		SpeedApply();
 
 		if (GetWorld())
 		{
-			GetWorldTimerManager().SetTimer(RunModeTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedReset, 10.5f, false);
+			GetWorldTimerManager().ClearTimer(RunModeTimerHandle);
+
+			int32 DashTime = FMath::RandRange(5, 10);
+			GetWorldTimerManager().SetTimer(RunModeTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedReset, DashTime, false);
 		}
 	}
 
@@ -183,6 +226,36 @@ void ALB_Monster_ChainSawMan::SpeedApply()
 void ALB_Monster_ChainSawMan::SpeedReset()
 {
 	bIsRunning = false;
-	CurrentSpeed = 150.0f;
+	CurrentSpeed = DefaultSpeed;
 	SpeedApply();
+}
+
+void ALB_Monster_ChainSawMan::SoundPlay()
+{
+	if (AudioComp && AudioComp->IsPlaying()) return;
+
+	int32 RandomIndex = FMath::RandRange(0, NormalSounds.Num() - 1);
+	if (NormalSounds[RandomIndex] && AudioComp)
+	{
+		AudioComp->SetSound(NormalSounds[RandomIndex]);
+		AudioComp->Play();
+	}
+}
+
+void ALB_Monster_ChainSawMan::HeartbeatToggle(bool Value)
+{
+	ALB_Character* Player = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Player)
+	{
+		if (Value)
+		{
+			Player->SetHeartbeatTarget(this);
+			Player->StartHeartbeat();
+		}
+		else
+		{
+			Player->ResetHeartbeatTarget();
+			Player->StopHeartbeat();
+		}
+	}
 }

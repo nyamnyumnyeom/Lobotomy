@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "NPC/BTT/BTT_TryKillPlayer.h"
@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTT_TryKillPlayer::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	Monster_ChainSawMan->SetActorRotationToPlayer();
 
-	GM->PlayerDeathLogic(Monster_ChainSawMan->GetActorLocation());
+	GM->PlayerDeathLogic(Monster_ChainSawMan->GetActorLocation(), DeathNumber);
 
 	return EBTNodeResult::Succeeded;
 }

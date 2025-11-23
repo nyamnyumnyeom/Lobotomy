@@ -15,15 +15,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class UBoxComponent* BoxCollision;
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float StayDurationForSpawnHAS = 30.0f;
-
 protected:
 	class ALB_GM* GM;
 
 protected:
-	FTimerHandle PlayerTimerHandle;
+	FTimerHandle StartCheckTimerHandle;
 
 public:
 	ALB_RoomChecker();
@@ -48,5 +44,5 @@ protected:
 		int32 OtherBodyIndex);
 
 protected:
-	void OnPlayerStay();
+	void CheckPlayerOverlap();
 };

@@ -51,13 +51,13 @@ ALB_Character::ALB_Character()
     bWasWalking = false;
     bWasRunning = false;
 
-    InteractionTraceDistance = 400.0f;
-    InteractionSphereRadius = 200.0f;
     CurrentInteractActor = nullptr;
 
     BatteryLevel = 1.0f;
 
     bIsHUDVisible = false;
+
+    CurrentItem = NAME_None;
 }
 
 void ALB_Character::BeginPlay()
@@ -138,20 +138,18 @@ void ALB_Character::Tick(float DeltaTime)
     );
 
     // Debug// 디버그 라인 & 스피어 표시
-    /*FColor LineColor = bHit ? FColor::Green : FColor::Red;
-    DrawDebugLine(GetWorld(), Start, End, LineColor, false, 0.f, 0, 1.f);
-    DrawDebugSphere(GetWorld(), End, InteractionSphereRadius, 12, LineColor, false, 0.f);*/
+    //DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, 0, 1.0f);
 
-    /*if (bHit)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SphereTrace Hit: %s at location %s"),
-            *HitResult.GetActor()->GetName(),
-            *HitResult.ImpactPoint.ToString());
-    }*/
-    /*else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SphereTrace No Hit"));
-    }*/
+    //if (bHit)
+    //{
+    //    // 무언가에 부딪혔다면, 부딪힌 지점에 초록색 구체
+    //    DrawDebugSphere(GetWorld(), HitResult.Location, 20.0f, 12, FColor::Green, false, -1.0f);
+    //}
+    //else
+    //{
+    //    // 아무것도 안 부딪혔으면 끝지점에 빨간 구체
+    //    DrawDebugSphere(GetWorld(), End, 20.0f, 12, FColor::Red, false, -1.0f);
+    //}
 // Debug
     AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
 
@@ -230,6 +228,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             if (PlayerController->UseItemAction)
             {
                 EnhancedInput->BindAction(PlayerController->UseItemAction, ETriggerEvent::Started, this, &ALB_Character::HandleUseItem);
+            }
+            if (PlayerController->ChartAction)
+            {
+                EnhancedInput->BindAction(PlayerController->ChartAction, ETriggerEvent::Started, this, &ALB_Character::HandleChart);
             }
         }
     }
@@ -361,9 +363,9 @@ void ALB_Character::SetHeartbeatTarget(AActor* NewTarget)
     HeartbeatTarget = NewTarget;
 }
 
-void ALB_Character::HandleEscape(const FInputActionValue& Value)
+void ALB_Character::ResetHeartbeatTarget()
 {
-    OnEscapeToggle();
+	HeartbeatTarget = nullptr;
 }
 
 void ALB_Character::ShowHUDUI()
@@ -387,14 +389,17 @@ void ALB_Character::HideHUDUI()
 
 void ALB_Character::PickupItem(FName ItemName)
 {
-    if (CurrentItem != NAME_None)
+
+    if (!CurrentItem.IsNone())
     {
-        UE_LOG(LogTemp, Warning, TEXT("Cannot pick up %s: already holding %s"), *ItemName.ToString(), *CurrentItem.ToString());
+        UE_LOG(LogTemp, Error, TEXT("이미 아이템이 있어서 줍기 실패! (ShowNoPickup 호출)"));
+
         ShowNoPickup();
         return;
     }
 
     CurrentItem = ItemName;
+
 
     if (ItemData)
     {
@@ -412,92 +417,60 @@ void ALB_Character::PickupItem(FName ItemName)
             }
         }
     }
-
-    OnInventoryUpdated(CurrentItem);
 }
 
 void ALB_Character::AddBattery(float Amount)
 {
     BatteryLevel = FMath::Clamp(BatteryLevel + Amount, 0.0f, 1.0f);
     UE_LOG(LogTemp, Warning, TEXT("Battery Level: %f"), BatteryLevel);
-
-    OnInventoryUpdated(CurrentItem);
 }
 
 void ALB_Character::UseItem()
 {
     if (CurrentItem == NAME_None)
     {
-        UE_LOG(LogTemp, Warning, TEXT("No item equipped to use."));
         return;
     }
     if (!ItemData)
     {
-        UE_LOG(LogTemp, Warning, TEXT("ItemDataTable is missing."));
         return;
     }
+
     static const FString Context(TEXT("UseItem"));
     FItemRow* ItemRow = ItemData->FindRow<FItemRow>(CurrentItem, Context);
+
     if (!ItemRow)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Item not found in DataTable: %s"), *CurrentItem.ToString());
         return;
     }
+
     bool bConsumed = false;
+
     switch (ItemRow->ItemType)
     {
     case EItemType::Battery:
-    {
+        {
+
         AddBattery(0.2f);
-        UE_LOG(LogTemp, Warning, TEXT("빠떼리충전용~"));
+        UE_LOG(LogTemp, Warning, TEXT("배터리 사용: 충전 완료"));
+
         bConsumed = true;
         break;
-    }
-    case EItemType::Key:
-    {
-        ALB_LockDoor* Door = Cast<ALB_LockDoor>(CurrentInteractActor);
-        if (!Door)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("UseItem: No door in front of player."));
-            break;
         }
 
-        if (Door->bIsOpen)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("UseItem: Door already open."));
-            break;
-        }
-
-        if (Door->RequiredKey.ToString().Equals(CurrentItem.ToString(), ESearchCase::IgnoreCase))
-        {
-            Door->OpenDoor();
-            UE_LOG(LogTemp, Warning, TEXT("문이 열렸습니다! (Key: %s)"), *CurrentItem.ToString());
-            bConsumed = true;
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("열쇠 불일치: Door needs [%s], Player has [%s]"),
-                *Door->RequiredKey.ToString(), *CurrentItem.ToString());
-            OnDoorUnlockFailed();
-        }
-
-        break;
-    }
-
-    case EItemType::Tool:
-    {
-        UE_LOG(LogTemp, Warning, TEXT("탬쓰긴함"));
-        break;
-    }
     default:
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Item type has no effect."));
+        {
+        UE_LOG(LogTemp, Warning, TEXT("이 아이템은 바로 사용할 수 없습니다. (Interaction 필요 등)"));
+        bConsumed = false;
+        Noitemuse();
         break;
         }
     }
+
     if (bConsumed)
     {
         CurrentItem = NAME_None;
+
         if (HUDUIInstance)
         {
             if (ULB_InGameHud* HUD = Cast<ULB_InGameHud>(HUDUIInstance))
