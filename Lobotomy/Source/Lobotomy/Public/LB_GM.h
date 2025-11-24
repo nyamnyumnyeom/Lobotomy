@@ -99,8 +99,8 @@ public:
 	//float LobbyDurationForSpawnHAS_Max = 85.0f;
 
 protected:
-	FTimerHandle AtRoomSecondTimerHandle;
-	FTimerHandle PlayerTimerHandle;
+	FTimerHandle AtLobbyTimerHandle;
+	FTimerHandle AtRoomTimerHandle;
 
 public:
 	// 후반 일차에 갈 수록 스폰에 필요한 시간을 감소시키는 로직.
@@ -238,6 +238,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Chart")
 	TMap<int32, FChartData> RuntimeCharts;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Chart")
+	TArray<FName> NameOfPatients;
 
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void LoadPage(int32 NewPage);

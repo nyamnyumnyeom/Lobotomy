@@ -3,6 +3,7 @@
 #include "Components/Button.h"
 #include "Character/LB_Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void ULB_DialogueUI::NativeConstruct()
 {
@@ -54,6 +55,7 @@ void ULB_DialogueUI::ShowNextDialogue()
             if (ALB_Character* Player = Cast<ALB_Character>(PC->GetPawn()))
             {
                 Player->ShowHUDUI();
+				Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
             }
         }
     }

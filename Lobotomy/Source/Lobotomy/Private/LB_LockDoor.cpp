@@ -49,10 +49,10 @@ void ALB_LockDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	if (!OtherActor) return;
 
-	if (OtherActor->ActorHasTag("Player"))
+	/*if (OtherActor->ActorHasTag("Player"))
 	{
 		OnDoorHandleWidgetFadeIn();
-	}
+	}*/
 
 	if (OtherActor->ActorHasTag("DoorPass"))
 	{
@@ -67,10 +67,10 @@ void ALB_LockDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	if (!OtherActor) return;
 
-	if (OtherActor->ActorHasTag("Player"))
+	/*if (OtherActor->ActorHasTag("Player"))
 	{
 		OnDoorHandleWidgetFadeOut();
-	}
+	}*/
 
 	if (OtherActor->ActorHasTag("DoorPass"))
 	{
