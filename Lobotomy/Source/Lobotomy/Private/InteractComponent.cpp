@@ -104,6 +104,7 @@ void UInteractComponent::HideWidget()
 
 		SetOverlayVisible(false);
 	}
+	OnHideWidget();
 }
 
 

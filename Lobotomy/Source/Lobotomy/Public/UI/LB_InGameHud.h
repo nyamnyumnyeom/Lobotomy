@@ -5,11 +5,12 @@
 #include "Engine/DataTable.h"
 #include "LB_ItemData.h"
 #include "LB_GM.h"
+#include "Character/LB_Character.h"
 #include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
 #include "LB_InGameHud.generated.h"
 
 class UImage;
-class ALB_Character;
 class UInventoryComponent;
 
 UCLASS()
@@ -25,6 +26,18 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     void UpdateInventory();
+
+    UPROPERTY(meta = (BindWidget))
+    UProgressBar* StaminaBar;
+
+    UFUNCTION(BlueprintCallable, Category = "Stamina")
+    void UpdateStamina(float CurrentStamina);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+    USoundBase* LowStaminaSound;
+
+    bool bIsLowStaminaSoundPlayed = false;
+    float StaminaBlinkTimer = 0.0f;
 
 
 protected:

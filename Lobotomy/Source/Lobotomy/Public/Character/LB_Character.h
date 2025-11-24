@@ -89,6 +89,22 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
     float Sensitive = 1.f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float Stamina;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float MaxStamina;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float StaminaDrainRate;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float StaminaRecoverRate;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float MinSprintStamina;
+
+    bool bWantsToSprint;
 
 
 private:

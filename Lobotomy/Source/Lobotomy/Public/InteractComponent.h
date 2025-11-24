@@ -25,6 +25,9 @@ public:
 	void OnInteractBPevent();
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void OnHideWidget();
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void InteractFunction(AActor* InteractingActor);
 
 protected:

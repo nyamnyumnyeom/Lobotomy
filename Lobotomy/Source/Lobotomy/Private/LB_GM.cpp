@@ -12,6 +12,7 @@
 #include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
 #include "Save/LB_SaveSetting.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ALB_GM::ALB_GM()
 {
@@ -97,23 +98,23 @@ float ALB_GM::CalculateSpawnDelay(int32 Min, int32 Max)
 
 void ALB_GM::PlayerIntoRoom()
 {
-	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtRoomTimerHandle);
 
-	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtLobbyTimerHandle);
 
 	bIsPlayerInRoom = true;
 
 	float SpawnDelay = CalculateSpawnDelay(RoomDurationForSpawnHAS_Min, RoomDurationForSpawnHAS_Max);
 
-	GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
+	GetWorldTimerManager().SetTimer(AtRoomTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
 
 }
 
 void ALB_GM::PlayerIntoLobby()
 {
-	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtRoomTimerHandle);
 
-	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtLobbyTimerHandle);
 
 	//if (bShouldMusicBoxSpawn)
 	//{
@@ -133,7 +134,7 @@ void ALB_GM::PlayerIntoLobby()
 
 	float SpawnDelay = CalculateSpawnDelay(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
 
-	GetWorldTimerManager().SetTimer(AtRoomSecondTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, SpawnDelay, false);
+	GetWorldTimerManager().SetTimer(AtLobbyTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, SpawnDelay, false);
 }
 
 //void ALB_GM::AtRoomSecondTimer()
@@ -395,6 +396,7 @@ void ALB_GM::StartDialogue(FName StartRow)
 		if (Player)
 		{
 			Player->HideHUDUI();
+			Player->GetCharacterMovement()->SetMovementMode(MOVE_None);
 		}
 
 		FInputModeUIOnly InputMode;

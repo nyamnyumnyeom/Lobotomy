@@ -58,6 +58,13 @@ ALB_Character::ALB_Character()
     bIsHUDVisible = false;
 
     CurrentItem = NAME_None;
+
+    Stamina = 1.0f;
+    MaxStamina = 1.0f;
+    StaminaDrainRate = 0.1f;
+    StaminaRecoverRate = 0.15f;
+    MinSprintStamina = 0.1f;
+    bWantsToSprint = false;
 }
 
 void ALB_Character::BeginPlay()
@@ -188,6 +195,28 @@ void ALB_Character::Tick(float DeltaTime)
         float NewPitch = FMath::Lerp(MinPitch, MaxPitch, CurveAlpha);
         HeartbeatAudioComponent->SetPitchMultiplier(NewPitch);
     }
+
+    if (bWantsToSprint && Stamina > 0.0f)
+    {
+        // 소모
+        Stamina -= StaminaDrainRate * DeltaTime;
+        Stamina = FMath::Clamp(Stamina, 0.0f, MaxStamina);
+
+        if (Stamina <= 0.0f)
+        {
+            // 스태미너 바닥 -> 강제로 걷기
+            StopSprint();
+        }
+    }
+    else
+    {
+        // 회복 (달리는 중 아니거나 바닥임)
+        if (Stamina < MaxStamina)
+        {
+            Stamina += StaminaRecoverRate * DeltaTime;
+            Stamina = FMath::Clamp(Stamina, 0.0f, MaxStamina);
+        }
+    }
 }
 
 void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -282,6 +311,13 @@ void ALB_Character::Interact(const FInputActionValue& Value)
 
 void ALB_Character::StartSprint()
 {
+    if (Stamina <= MinSprintStamina)
+    {
+        return;
+    }
+
+    bWantsToSprint = true;
+
     if (GetCharacterMovement())
     {
         GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
@@ -289,8 +325,11 @@ void ALB_Character::StartSprint()
     }
 }
 
+
 void ALB_Character::StopSprint()
 {
+    bWantsToSprint = false;
+
     if (GetCharacterMovement())
     {
         GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
