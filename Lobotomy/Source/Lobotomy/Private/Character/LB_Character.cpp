@@ -597,7 +597,7 @@ AActor* ALB_Character::SpawnCurrentItem()
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = this;
     SpawnParams.Instigator = GetInstigator();
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
     FVector SpawnLocation = GetActorLocation();
     SpawnLocation.Z += 20.0f;
