@@ -17,6 +17,9 @@ public:
     FText Symptom;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FText Room;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText Remark;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

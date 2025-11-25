@@ -61,9 +61,9 @@ ALB_Character::ALB_Character()
 
     Stamina = 1.0f;
     MaxStamina = 1.0f;
-    StaminaDrainRate = 0.1f;
-    StaminaRecoverRate = 0.15f;
-    MinSprintStamina = 0.1f;
+    StaminaDrainRate = 0.15f;
+    StaminaRecoverRate = 0.2f;
+    MinSprintStamina = 0.5f;
     bWantsToSprint = false;
 }
 
