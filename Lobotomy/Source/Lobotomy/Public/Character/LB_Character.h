@@ -56,6 +56,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void HandleEscape(const FInputActionValue& Value);
 
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void Dropaction();
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     TArray<TObjectPtr<USoundBase>> FootstepSounds;
 
@@ -235,6 +238,15 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Item")
     void ClearCurrentItem();
+
+    UFUNCTION(BlueprintCallable, Category = "Item")
+    AActor* SpawnCurrentItem();
+
+public:
+    UFUNCTION(BlueprintCallable, Category = "Item")
+    UClass* GetCurrentItemClass() const;
+
+    const FItemRow* GetCurrentItemData() const;
 
 private:
    // bool TryUseKeyOnCurrentDoor();

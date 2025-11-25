@@ -262,6 +262,10 @@ void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             {
                 EnhancedInput->BindAction(PlayerController->ChartAction, ETriggerEvent::Started, this, &ALB_Character::HandleChart);
             }
+            if (PlayerController->Dropaction)
+            {
+                EnhancedInput->BindAction(PlayerController->Dropaction, ETriggerEvent::Started, this, &ALB_Character::Dropaction);
+            }
         }
     }
 }
@@ -547,4 +551,96 @@ void ALB_Character::ClearCurrentItem()
     {
         UE_LOG(LogTemp, Warning, TEXT("No item to clear."));
     }
+}
+
+const FItemRow* ALB_Character::GetCurrentItemData() const
+{
+    if (!ItemData || CurrentItem.IsNone())
+        return nullptr;
+
+    static const FString Context(TEXT("GetCurrentItemData"));
+    return ItemData->FindRow<FItemRow>(CurrentItem, Context);
+}
+
+UClass* ALB_Character::GetCurrentItemClass() const
+{
+    if (!ItemData || CurrentItem.IsNone())
+        return nullptr;
+
+    static const FString Context(TEXT("GetCurrentItemClass"));
+    if (const FItemRow* Row = ItemData->FindRow<FItemRow>(CurrentItem, Context))
+    {
+        UClass* LoadedClass = Row->ItemClass.LoadSynchronous();
+        if (LoadedClass && LoadedClass->IsChildOf(AActor::StaticClass()))
+        {
+            return LoadedClass;
+        }
+    }
+
+    return nullptr;
+}
+
+AActor* ALB_Character::SpawnCurrentItem()
+{
+    const FItemRow* CurrentRow = GetCurrentItemData();
+    UClass* ItemClassToSpawn = GetCurrentItemClass();
+
+    if (!ItemClassToSpawn)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnCurrentItem: Item Class is invalid or None."));
+        return nullptr;
+    }
+
+    UWorld* World = GetWorld();
+    if (!World) return nullptr;
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = GetInstigator();
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    FVector SpawnLocation = GetActorLocation();
+    SpawnLocation.Z += 20.0f;
+    FRotator SpawnRotation = GetActorRotation();
+
+    AActor* SpawnedActor = World->SpawnActor<AActor>(ItemClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+
+    if (SpawnedActor)
+    {
+        if (CurrentRow && CurrentRow->ItemCode == FName("Battery"))
+        {
+            SpawnedActor->SetActorScale3D(FVector(5.f));
+        }
+        else if (CurrentRow && CurrentRow->ItemCode == FName("Key_Storage01"))
+        {
+            SpawnedActor->SetActorScale3D(FVector(2.f));
+        }
+        else if (CurrentRow && CurrentRow->ItemCode == FName("Key_Medi01"))
+        {
+            SpawnedActor->SetActorScale3D(FVector(2.f));
+        }
+        UPrimitiveComponent* MeshComp = nullptr;
+
+        if (UStaticMeshComponent* StaticMesh = SpawnedActor->FindComponentByClass<UStaticMeshComponent>())
+        {
+            MeshComp = StaticMesh;
+        }
+        else if (USkeletalMeshComponent* SkeletalMesh = SpawnedActor->FindComponentByClass<USkeletalMeshComponent>())
+        {
+            MeshComp = SkeletalMesh;
+        }
+
+        if (MeshComp)
+        {
+            MeshComp->SetMobility(EComponentMobility::Movable);
+            MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            MeshComp->SetSimulatePhysics(true);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("SpawnedActor has no mesh component! %s"), *SpawnedActor->GetName());
+        }
+    }
+
+    return SpawnedActor;
 }

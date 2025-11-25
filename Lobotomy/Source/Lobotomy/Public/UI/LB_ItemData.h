@@ -31,4 +31,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     EItemType ItemType = EItemType::None;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftClassPtr<AActor> ItemClass;
 };
