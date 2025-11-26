@@ -308,6 +308,7 @@ bool ALB_GM::EnsurePageInCache(int32 Page)
 		FChartData Copy = *Row;
 		// 안전장치: 체크박스 크기 보정(필요시)
 		if (Copy.DayChecks.Num() < 7) { Copy.DayChecks.SetNum(7, /*bAllowShrinking*/false); }
+		if (Copy.NightChecks.Num() < 7) { Copy.NightChecks.SetNum(7, /*bAllowShrinking*/false); }
 		Copy.PageNumber = Page; // 보정
 		RuntimeCharts.Add(Page, Copy);
 		return true;
@@ -334,6 +335,7 @@ void ALB_GM::LoadPage(int32 NewPage)
 		FChartData Blank;
 		Blank.PageNumber = CurrentPage;
 		Blank.DayChecks.SetNum(7);
+		Blank.NightChecks.SetNum(7);
 		RuntimeCharts.Add(CurrentPage, Blank);
 	}
 	SyncCurrentFromCacheAndBroadcast();
@@ -351,7 +353,7 @@ FChartData ALB_GM::GetChartCopy(int32 Page) const
 		if (const FChartData* Row = ChartDataTable->FindRow<FChartData>(FName(*RowName), TEXT("LB_GM")))
 			return *Row;
 	}
-	FChartData Empty; Empty.PageNumber = Page; Empty.DayChecks.SetNum(7);
+	FChartData Empty; Empty.PageNumber = Page; Empty.DayChecks.SetNum(7); Empty.NightChecks.SetNum(7);
 	return Empty;
 }
 
@@ -384,6 +386,17 @@ void ALB_GM::SetDayCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
 	if (RuntimeCharts[Page].DayChecks.IsValidIndex(DayIndex))
 	{
 		RuntimeCharts[Page].DayChecks[DayIndex] = bChecked;
+		if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+	}
+}
+
+void ALB_GM::SetNightCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
+{
+	if (!EnsurePageInCache(Page)) return;
+	if (RuntimeCharts[Page].NightChecks.Num() < 7) RuntimeCharts[Page].NightChecks.SetNum(7);
+	if (RuntimeCharts[Page].NightChecks.IsValidIndex(DayIndex))
+	{
+		RuntimeCharts[Page].NightChecks[DayIndex] = bChecked;
 		if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
 	}
 }

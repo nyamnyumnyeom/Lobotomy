@@ -27,4 +27,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<bool> DayChecks;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<bool> NightChecks;
 };

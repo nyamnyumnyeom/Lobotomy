@@ -261,6 +261,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void SetDayCheckForPage(int32 Page, int32 DayIndex /*0~6*/, bool bChecked);
 
+	UFUNCTION(BlueprintCallable, Category = "Chart")
+	void SetNightCheckForPage(int32 Page, int32 DayIndex /*0~6*/, bool bChecked);
+
 	UPROPERTY(BlueprintAssignable, Category = "Chart")
 	FOnChartUpdated OnChartUpdated;
 
