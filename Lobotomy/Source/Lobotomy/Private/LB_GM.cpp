@@ -379,6 +379,13 @@ void ALB_GM::SetRemarkForPage(int32 Page, const FText& NewRemark)
 	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
 }
 
+void ALB_GM::SetRoomNumberForPage(int32 Page, const FText& NewRemark)
+{
+	if (!EnsurePageInCache(Page)) return;
+	RuntimeCharts[Page].RoomNumber = NewRemark;
+	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+}
+
 void ALB_GM::SetDayCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
 {
 	if (!EnsurePageInCache(Page)) return;

@@ -257,6 +257,8 @@ public:
 	void SetSymptomForPage(int32 Page, const FText& NewSymptom);
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void SetRemarkForPage(int32 Page, const FText& NewRemark);
+	UFUNCTION(BlueprintCallable, Category = "Chart")
+	void SetRoomNumberForPage(int32 Page, const FText& NewRemark);
 
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void SetDayCheckForPage(int32 Page, int32 DayIndex /*0~6*/, bool bChecked);

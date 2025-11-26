@@ -72,6 +72,7 @@ void ULB_NoteUi::RefreshFromGameMode()
         if (SymptomText)    SymptomText->SetText(Data.Symptom);
         if (RemarkText)     RemarkText->SetText(Data.Remark);
         if (PageNumberText) PageNumberText->SetText(FText::AsNumber(Data.PageNumber));
+		if (RoomText) RoomText->SetText(Data.RoomNumber);
 
         // 체크박스들 반영 (0~6)
         auto GetDay = [&](int32 I)->bool { return Data.DayChecks.IsValidIndex(I) ? Data.DayChecks[I] : false; };

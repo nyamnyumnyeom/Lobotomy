@@ -30,6 +30,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UTextBlock* PageNumberText;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* RoomText; 
+
     /** 체크박스들 (Day01 ~ Day07) */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UCheckBox* Day01;
