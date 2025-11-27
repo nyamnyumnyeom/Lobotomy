@@ -419,19 +419,20 @@ void ALB_GM::StartDialogue(FName StartRow)
 			Player->GetCharacterMovement()->SetMovementMode(MOVE_None);
 		}
 
-		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		PC->SetInputMode(InputMode);
-		PC->bShowMouseCursor = true;
-	}
-
-	if (DialogueWidgetClass && DialogueTable)
-	{
-		ULB_DialogueUI* DialogueUI = CreateWidget<ULB_DialogueUI>(GetWorld(), DialogueWidgetClass);
-		if (DialogueUI)
+		if (DialogueWidgetClass && DialogueTable)
 		{
-			DialogueUI->AddToViewport(10);
-			DialogueUI->InitDialogue(DialogueTable, StartRow);
+			ULB_DialogueUI* DialogueUI = CreateWidget<ULB_DialogueUI>(GetWorld(), DialogueWidgetClass);
+			if (DialogueUI)
+			{
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(DialogueUI->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				PC->SetInputMode(InputMode);
+				PC->bShowMouseCursor = true;
+
+				DialogueUI->AddToViewport(10);
+				DialogueUI->InitDialogue(DialogueTable, StartRow);
+			}
 		}
 	}
 }

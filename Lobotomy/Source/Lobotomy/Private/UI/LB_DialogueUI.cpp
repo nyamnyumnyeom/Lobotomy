@@ -36,6 +36,11 @@ void ULB_DialogueUI::ShowNextDialogue()
             ULB_DialogueUI* NewUI = CreateWidget<ULB_DialogueUI>(PC, GetClass());
             if (NewUI)
             {
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(NewUI->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				PC->SetInputMode(InputMode);
+
                 NewUI->AddToViewport(1000);
                 NewUI->InitDialogue(DialogueTable, NextRow->DialogueID);
             }
