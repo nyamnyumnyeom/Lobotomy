@@ -348,6 +348,7 @@ void ALB_Character::StartWalking()
     {
         if (PC->PlayerCameraManager && WalkShakeClass)
         {
+			PC->PlayerCameraManager->StopAllCameraShakes();
             PC->PlayerCameraManager->StartCameraShake(WalkShakeClass, 1.0f);
         }
     }
@@ -359,6 +360,7 @@ void ALB_Character::StartRunning()
     {
         if (PC->PlayerCameraManager && RunShakeClass)
         {
+			PC->PlayerCameraManager->StopAllCameraShakes();
             PC->PlayerCameraManager->StartCameraShake(RunShakeClass, 1.0f);
         }
     }

@@ -25,6 +25,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 PageNumber = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText RoomNumber;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<bool> DayChecks;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<bool> NightChecks;
 };
