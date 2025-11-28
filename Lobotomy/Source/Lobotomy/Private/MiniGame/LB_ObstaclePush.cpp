@@ -9,6 +9,9 @@ void ALB_ObstaclePush::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!bMiniGameActive)
+		return;
+
 	if (bMiniGameActive)
 	{
 		MiniGameElapsed += DeltaTime;
@@ -25,10 +28,17 @@ void ALB_ObstaclePush::Tick(float DeltaTime)
 
 		if (HoveredTime >= TimeRequired)
 		{
+			HoveredTime = TimeRequired;
 			TimeOver();
 			bHoverActive = false;
 		}
 	}
+	else
+	{
+		HoveredTime -= DeltaTime;
+	}
+
+	HoveredTime = FMath::Clamp(HoveredTime, 0.f, TimeRequired);
 
 	if (bMoveUActive)
 	{

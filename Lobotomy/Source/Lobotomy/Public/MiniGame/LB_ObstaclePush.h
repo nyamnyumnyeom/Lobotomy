@@ -37,14 +37,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game")
     float TimerDelay = 0.016f;
 
+    float HoveredTime = 0.f;
+    bool bHoverActive = false;
 protected:
     // 미니게임 상태
     bool bMiniGameActive = false;
     float MiniGameElapsed = 0.f;
-
-    // Hover 시간
-    bool bHoverActive = false;
-    float HoveredTime = 0.f;
 
     // U 이동
     bool bMoveUActive = false;
