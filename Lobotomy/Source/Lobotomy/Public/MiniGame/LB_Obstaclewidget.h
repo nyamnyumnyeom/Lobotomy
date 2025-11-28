@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/ProgressBar.h"
 #include "LB_Obstaclewidget.generated.h"
 
 class UTextBlock;
@@ -18,8 +19,8 @@ public:
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
-    /*UPROPERTY(meta = (BindWidget))
-    UImage* CursorImage;*/
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    UProgressBar* HoverBar;
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* TimeText;
@@ -32,6 +33,4 @@ public:
 
 protected:
     float FlashTimer = 0.f;
-
-   // void UpdateCursor(float DeltaTime);
 };
