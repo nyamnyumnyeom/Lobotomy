@@ -29,14 +29,16 @@ protected:
 	bool bIsChainSawManSpawned = false;
 
 	// 숨바꼭질 장인이 문을 해당 숫자 이상 두드릴 때부터 전기톱 스폰 확률 생김
-	int32 PatienceLimit = 3;
+	int32 PatienceLimit = 1;
 	// 숨바꼭질 장인이 문을 두드린 횟수
 	int32 KnockCount = 0;
 	// 숨바꼭질 장인의 다음 노크에 전기톱 살인마를 스폰시켜야 하는가?
-	bool ShouldChainSawManSpawn = false;
+	//bool ShouldChainSawManSpawn = false;
+	// 다음 노크에 문을 열어야 하는가?
+	bool ShouldOpenDoor = false;
 
 	// 숨바꼭질 장인이 문을 해당 숫자 이상 인사하면 이후 스폰은 플레이어 공격
-	int32 HelloLimit = 2;
+	int32 HelloLimit = 1;
 	// 숨바꼭질 장인이 문을 두드린 횟수
 	int32 HelloCount = 0;
 	// 숨바꼭질 장인의 다음 스폰에 플레이어를 공격해야 하는가?
@@ -154,10 +156,13 @@ public:
 
 	// 전기톱 살인마 위치 재설정
 	void SetChainSawManTransform(FTransform NewTransform);
+	
 
+	// 전기톱 살인마가 노커 때문에 개빡친 상황인가?
+	//FORCEINLINE bool GetShouldChainSawManSpawn() const { return ShouldChainSawManSpawn; }
 
-	// 전기톱 살인마가 개빡친 상황인가?
-	FORCEINLINE bool GetShouldChainSawManSpawn() const { return ShouldChainSawManSpawn; }
+	// 노커가 문을 열 차례인가?
+	FORCEINLINE bool GetShouldOpenDoor() const { return ShouldOpenDoor; }
 
 	// 노커가 개빡친 상황인가?
 	FORCEINLINE bool GetShouldHASAttackMode() const { return ShouldHASAttackMode; }

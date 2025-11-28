@@ -37,7 +37,7 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsPlayerInRoom)
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GM)
 	{
-		if (GM->GetShouldChainSawManSpawn())
+		/*if (GM->GetShouldChainSawManSpawn())
 		{
 			if (GM->GetIsChainSawManSpawned())
 			{
@@ -61,11 +61,11 @@ void ALB_TargetPoint_HAS::HASSystemActivate(bool bIsPlayerInRoom)
 			}	
 
 			GM->ResetKnockCount();
-		}
-		else
-		{
+		}*/
+		//else
+		//{
 			SpawnLogic(HideAndSeekerClass, bIsPlayerInRoom);
-		}
+		//}
 	}
 }
 
@@ -78,39 +78,42 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 
 	if (GM->GetShouldHASAttackMode())
 	{
-		UWorld* World = GetWorld();
-		if (!World) return;
-
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
-		if (!Player) return;
-
-		FVector PlayerLocation = Player->GetActorLocation();
-
-		FVector Forward = Player->GetActorForwardVector();
-
-		FVector SpawnLocation = PlayerLocation - (Forward * AnglyKnockerDistanceOffset);
-
-		SpawnLocation.Z += AnglyKnockerZOffset;
-
-		FRotator SpawnRotation = (PlayerLocation - SpawnLocation).Rotation();
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		if (SpawnClass == HideAndSeekerClass)
+		if (CheckNearbyDoorOpened())
 		{
-			SpawnedHideAndSeeker = GetWorld()->SpawnActor<ALB_MonsterHideAndSeeker>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
-			if (SpawnedHideAndSeeker)
+			UWorld* World = GetWorld();
+			if (!World) return;
+
+			ACharacter* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
+			if (!Player) return;
+
+			FVector PlayerLocation = Player->GetActorLocation();
+
+			FVector Forward = Player->GetActorForwardVector();
+
+			FVector SpawnLocation = PlayerLocation - (Forward * AnglyKnockerDistanceOffset);
+
+			SpawnLocation.Z += AnglyKnockerZOffset;
+
+			FRotator SpawnRotation = (PlayerLocation - SpawnLocation).Rotation();
+
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			if (SpawnClass == HideAndSeekerClass)
 			{
-				SpawnedHideAndSeeker->SetOwner(this);
-				SpawnedHideAndSeeker->bIsAngry = true;
+				SpawnedHideAndSeeker = GetWorld()->SpawnActor<ALB_MonsterHideAndSeeker>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+				if (SpawnedHideAndSeeker)
+				{
+					SpawnedHideAndSeeker->SetOwner(this);
+					SpawnedHideAndSeeker->bIsAngry = true;
 
-				GM->PlayerDeathLogic(FVector(0, 0, 0), 1);
+					GM->PlayerDeathLogic(FVector(0, 0, 0), 1);
+				}
 			}
-		}
 
-		return;
+			return;
+		}
 	}
 
 	FVector SpawnLocation = GetActorLocation();
@@ -151,18 +154,20 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 				{
 					SpawnedHideAndSeeker->StartLogic_DoorOpen();
 
+					GM->ResetKnockCount();
 					GM->AddHelloCount();
 				}
 				else
 				{
 					SpawnedHideAndSeeker->StartLogic_DoorClose();
 
+					GM->ResetHelloCount();
 					GM->AddKnockCount();
 				}
 			}
 		}
 		
-		if (SpawnClass == ChainSawManClass)
+		/*if (SpawnClass == ChainSawManClass)
 		{
 			SpawnedChainSawMan = GetWorld()->SpawnActor<ALB_Monster_ChainSawMan>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (SpawnedChainSawMan)
@@ -170,7 +175,7 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 				SpawnedChainSawMan->SetOwner(this);
 
 			}
-		}
+		}*/
 	}
 }
 
@@ -224,6 +229,18 @@ bool ALB_TargetPoint_HAS::CheckNearbyDoorOpened()
 		if (Door->bIsOpen)
 		{
 			return true;
+		}
+		else
+		{
+			ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+			if (!GM) return false;
+
+			if (GM->GetShouldOpenDoor())
+			{
+				Door->OnWalkerBeginOverlap();
+			}
+
+			return false;
 		}
 	}
 

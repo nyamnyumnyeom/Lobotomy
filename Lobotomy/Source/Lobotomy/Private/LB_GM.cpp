@@ -77,7 +77,7 @@ void ALB_GM::AddKnockCount()
 
 	if (KnockCount >= PatienceLimit)
 	{
-		ShouldChainSawManSpawn = FMath::RandBool();
+		ShouldOpenDoor = true;
 	}
 }
 
@@ -126,6 +126,9 @@ void ALB_GM::PlayerIntoLobby()
 
 	bIsPlayerInRoom = false;
 
+	ResetKnockCount();
+	ResetHelloCount();
+
 	//float SpawnDelay = FMath::FRandRange(LobbyDurationForSpawnHAS_Min, LobbyDurationForSpawnHAS_Max);
 	//
 	//GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
@@ -150,14 +153,15 @@ void ALB_GM::PlayerIntoLobby()
 void ALB_GM::ResetKnockCount()
 {
 	KnockCount = 0;
-	ShouldChainSawManSpawn = false;
+	//ShouldChainSawManSpawn = false;
+	ShouldOpenDoor = false;
 }
 
 void ALB_GM::AddHelloCount()
 {
 	HelloCount++;
 
-	if (HelloCount > HelloLimit)
+	if (HelloCount >= HelloLimit)
 	{
 		ShouldHASAttackMode = true;
 	}
