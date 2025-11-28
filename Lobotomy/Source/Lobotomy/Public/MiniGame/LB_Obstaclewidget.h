@@ -18,8 +18,8 @@ public:
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
-    UPROPERTY(meta = (BindWidget))
-    UImage* CursorImage;
+    /*UPROPERTY(meta = (BindWidget))
+    UImage* CursorImage;*/
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* TimeText;
@@ -33,5 +33,5 @@ public:
 protected:
     float FlashTimer = 0.f;
 
-    void UpdateCursor(float DeltaTime);
+   // void UpdateCursor(float DeltaTime);
 };

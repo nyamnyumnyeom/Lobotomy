@@ -12,7 +12,7 @@ void ULB_Obstaclewidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
     if (TargetActor == nullptr || TimeText == nullptr)
         return;
 
-    UpdateCursor(InDeltaTime);
+    //UpdateCursor(InDeltaTime);
     float Remaining = TargetActor->GetRemainingTime();
 
     int32 Seconds = FMath::FloorToInt(Remaining);
