@@ -62,7 +62,7 @@ protected:
 	void OnDoorHandleWidgetFadeOut();
 
 	// 전기톱, 걷는 환자 관련 코드.
-protected:
+public:
 	FTimerHandle OpenLoopTimerHandle;
 
 	// 전기톱, 걷는 환자가 비긴오버랩되면 문 열기.
