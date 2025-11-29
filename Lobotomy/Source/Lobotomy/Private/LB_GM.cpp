@@ -173,6 +173,22 @@ void ALB_GM::ResetHelloCount()
 	ShouldHASAttackMode = false;
 }
 
+void ALB_GM::SafeBoxAlertCountUp()
+{
+	SafeBoxAlertCount++;
+
+	if (SafeBoxAlertCount >= SafeBoxAlertLimit)
+	{
+		ShouldChainSawSpawnForSB = true;
+	}
+}
+
+void ALB_GM::SafeBoxAlertCountReset()
+{
+	SafeBoxAlertCount = 0;
+	ShouldChainSawSpawnForSB = false;
+}
+
 void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 {
 	if (!ChainSawManRef.IsValid()) return;
@@ -183,6 +199,11 @@ void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 		CurrentChainSawMan->SetActorTransform(NewTransform);
 		CurrentChainSawMan->SpawnLogic();
 	}
+}
+
+bool ALB_GM::GetShouldChainSawSpawnForSB()
+{
+	return ShouldChainSawSpawnForSB;
 }
 
 float ALB_GM::GetChainSawManToPlayerDistance()
@@ -251,6 +272,8 @@ void ALB_GM::ChangeToNight()
 void ALB_GM::ChangeToDay()
 {
 	bIsNight = false;
+
+	SafeBoxAlertCountReset();
 }
 
 void ALB_GM::StartTimeCount()

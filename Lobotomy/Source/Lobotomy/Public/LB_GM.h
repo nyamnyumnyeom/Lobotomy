@@ -44,6 +44,13 @@ protected:
 	// 숨바꼭질 장인의 다음 스폰에 플레이어를 공격해야 하는가?
 	bool ShouldHASAttackMode = false;
 
+	// 금고 실패시 경보가 해당 횟수 이상 울리면 전기톱 스폰.
+	int32 SafeBoxAlertLimit = 2;
+	// 금고 실패시 경보가 울린 횟수.
+	int32 SafeBoxAlertCount = 0;
+	// 다음 금고 실패시 경보가 울리고 전기톱을 스폰시킬 것인가?
+	bool ShouldChainSawSpawnForSB = false;
+
 	// ---------- -------------------- ----------
 
 public:
@@ -148,6 +155,12 @@ public:
 	
 	// ---------- 전기톱 살인마 관련 함수 ----------
 public:
+	UFUNCTION(BlueprintCallable)
+	void SafeBoxAlertCountUp();
+
+	UFUNCTION(BlueprintCallable)
+	void SafeBoxAlertCountReset();
+
 	// 전기톱 살인마 스폰 여부 설정
 	FORCEINLINE void SetIsChainSawManSpawned(bool Value) { bIsChainSawManSpawned = Value; }
 
@@ -155,6 +168,7 @@ public:
 	FORCEINLINE void SetChainSawManRef(TWeakObjectPtr<ALB_Monster_ChainSawMan> CSM) { ChainSawManRef = CSM; }
 
 	// 전기톱 살인마 위치 재설정
+	UFUNCTION(BlueprintCallable)
 	void SetChainSawManTransform(FTransform NewTransform);
 	
 
@@ -168,9 +182,15 @@ public:
 	FORCEINLINE bool GetShouldHASAttackMode() const { return ShouldHASAttackMode; }
 
 	// 전기톱 살인마가 스폰되어 있는가?
-	FORCEINLINE bool GetIsChainSawManSpawned() const { return bIsChainSawManSpawned; }
+	UFUNCTION(BlueprintPure)
+	bool GetIsChainSawManSpawned() const { return bIsChainSawManSpawned; }
+
+	// 금고때문에 전기톱 살인마가 개빡친 상황인가?
+	UFUNCTION(BlueprintPure)
+	bool GetShouldChainSawSpawnForSB();
 
 	// 전기톱 살인마가 플레이어와 내비메시 길찾기 경로상 얼만큼 떨어져 있는가?
+	UFUNCTION(BlueprintPure)
 	float GetChainSawManToPlayerDistance();
 	// ---------- -------------------- ----------
 
