@@ -70,6 +70,24 @@ void ALB_PatientBase::OnNightBehavior()
 	}
 }
 
+void ALB_PatientBase::OnNightBehaviorHint()
+{
+	ApplyAnimBlueprint(Behnum);
+
+	USkeletalMeshComponent* MeshComp = GetMesh();
+	if (MeshComp)
+	{
+		CachedActorLocation = GetActorLocation();
+		CachedActorRotator = GetActorRotation();
+
+		SetActorLocation(BedLocation + FVector(0.0f, 0.0f, 98.0f));
+		SetActorRotation(BedRotation);
+
+		MeshComp->SetWorldLocation(BedLocation);
+		MeshComp->SetWorldRotation(BedRotation);
+	}
+}
+
 void ALB_PatientBase::OnDayBehavior(bool bIsWalker)
 {
 	ApplyAnimBlueprint(BehaviorMode);

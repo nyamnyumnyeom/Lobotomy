@@ -59,6 +59,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnNightBehavior();
 
+	UFUNCTION(BlueprintCallable)
+	void OnNightBehaviorHint();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	int32 Behnum;
+
 	// 낮이 되었을 때 실행시킬 함수. 기존 위치로 이동 + 애니메이션 프리셋을 초기 값으로 변경함.
 	UFUNCTION(BlueprintCallable)
 	void OnDayBehavior(bool bIsWalker);
