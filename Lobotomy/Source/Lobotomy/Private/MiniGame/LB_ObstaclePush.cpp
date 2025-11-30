@@ -35,7 +35,7 @@ void ALB_ObstaclePush::Tick(float DeltaTime)
 	}
 	else
 	{
-		HoveredTime -= DeltaTime;
+		HoveredTime -= DeltaTime*2;
 	}
 
 	HoveredTime = FMath::Clamp(HoveredTime, 0.f, TimeRequired);
