@@ -46,6 +46,9 @@ public:
 	float AnglyKnockerZOffset = 0.0f;
 
 protected:
+	bool bIsAttack = false;
+
+protected:
 	FTimerHandle HASTimerHandle;
 	FTimerHandle HASDestroyTimerHandle;
 
