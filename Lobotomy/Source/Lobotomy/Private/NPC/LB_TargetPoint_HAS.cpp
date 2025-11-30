@@ -73,6 +73,8 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 {
 	if (!SpawnClass) return;
 
+	if (bIsAttack) return;
+
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 
@@ -109,6 +111,8 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 					SpawnedHideAndSeeker->bIsAngry = true;
 
 					GM->PlayerDeathLogic(FVector(0, 0, 0), 1);
+
+					bIsAttack = true;
 				}
 			}
 
