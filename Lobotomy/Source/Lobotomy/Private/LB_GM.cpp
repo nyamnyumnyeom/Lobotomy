@@ -189,15 +189,28 @@ void ALB_GM::SafeBoxAlertCountReset()
 	ShouldChainSawSpawnForSB = false;
 }
 
+void ALB_GM::SetChainSawManRef(ALB_Monster_ChainSawMan* CSM)
+{
+	ChainSawManRef = CSM;
+}
+
 void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 {
-	if (!ChainSawManRef.IsValid()) return;
+	if (!ChainSawManRef) return;
 
-	ALB_Monster_ChainSawMan* CurrentChainSawMan = Cast<ALB_Monster_ChainSawMan>(ChainSawManRef.Get());
+	ALB_Monster_ChainSawMan* CurrentChainSawMan = Cast<ALB_Monster_ChainSawMan>(ChainSawManRef);
 	if (CurrentChainSawMan)
 	{
 		CurrentChainSawMan->SetActorTransform(NewTransform);
 		CurrentChainSawMan->SpawnLogic();
+	}
+}
+
+void ALB_GM::ChainSawManDestroy()
+{
+	if (ChainSawManRef)
+	{
+		ChainSawManRef->DisappearLogic();
 	}
 }
 
@@ -208,7 +221,7 @@ bool ALB_GM::GetShouldChainSawSpawnForSB()
 
 float ALB_GM::GetChainSawManToPlayerDistance()
 {
-	if (ChainSawManRef.IsValid())
+	if (ChainSawManRef)
 	{
 		FVector PlayerLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
 		FVector ChainSawManLocation = ChainSawManRef->GetActorLocation();
@@ -274,6 +287,7 @@ void ALB_GM::ChangeToDay()
 	bIsNight = false;
 
 	SafeBoxAlertCountReset();
+	ChainSawManDestroy();
 }
 
 void ALB_GM::StartTimeCount()

@@ -91,7 +91,7 @@ void ALB_TargetPoint_MusicBox::MusicBoxTimeup()
 				SpawnParams.Owner = this;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-				GetWorld()->SpawnActor<AActor>(ChainSawManClass, SpawnLocation, SpawnRotation, SpawnParams);
+				ALB_Monster_ChainSawMan* CSM = GetWorld()->SpawnActor<ALB_Monster_ChainSawMan>(ChainSawManClass, SpawnLocation, SpawnRotation, SpawnParams);
 			}
 			else
 			{

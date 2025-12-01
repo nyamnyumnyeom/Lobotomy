@@ -15,7 +15,7 @@ class LOBOTOMY_API ULB_MusicBoxSpawnComp : public UActorComponent
 public:
 	// 플레이어 캐릭터 기준 타겟 포인트를 검사할 범위
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
-	float SphereTraceRadius = 1000.0f;
+	float SphereTraceRadius = 500.0f;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")

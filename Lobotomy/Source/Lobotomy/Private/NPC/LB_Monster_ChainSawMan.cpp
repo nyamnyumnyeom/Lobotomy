@@ -152,6 +152,11 @@ void ALB_Monster_ChainSawMan::DisappearLogic()
 	
 	HeartbeatToggle(false);
 
+	if (Owner)
+	{
+		Owner->Destroy();
+	}
+
 	Destroy();
 }
 
@@ -161,6 +166,14 @@ void ALB_Monster_ChainSawMan::SetSpawnWhetherToGM(bool Value)
 	if (GM)
 	{
 		GM->SetIsChainSawManSpawned(Value);
+		if (Value)
+		{
+			GM->SetChainSawManRef(this);
+		}
+		else
+		{
+			GM->SetChainSawManRef(nullptr);
+		}
 	}
 }
 

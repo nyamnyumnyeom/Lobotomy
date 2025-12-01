@@ -4,9 +4,9 @@
 #include "GameFramework/GameMode.h"
 #include "Engine/DataTable.h"
 #include "UI/LB_ChartData.h"
+#include "NPC/LB_Monster_ChainSawMan.h"
 #include "LB_GM.generated.h"
 
-class ALB_Monster_ChainSawMan;
 class ULB_DialogueUI;
 class UDataTable;
 
@@ -20,7 +20,7 @@ class LOBOTOMY_API ALB_GM : public AGameMode
 	// ---------- 몬스터 스폰 상태 ----------
 protected:
 	// 스폰중인 전기톱 살인마 레퍼런스
-	TWeakObjectPtr<ALB_Monster_ChainSawMan> ChainSawManRef;
+	ALB_Monster_ChainSawMan* ChainSawManRef;
 
 	// 숨바꼭질 장인이 스폰되어 있는가?
 	bool bIsHidAndSeekerSpawned = false;
@@ -165,11 +165,15 @@ public:
 	FORCEINLINE void SetIsChainSawManSpawned(bool Value) { bIsChainSawManSpawned = Value; }
 
 	// 전기톱 살인마 레퍼런스 등록
-	FORCEINLINE void SetChainSawManRef(TWeakObjectPtr<ALB_Monster_ChainSawMan> CSM) { ChainSawManRef = CSM; }
+	void SetChainSawManRef(ALB_Monster_ChainSawMan* CSM);
 
 	// 전기톱 살인마 위치 재설정
 	UFUNCTION(BlueprintCallable)
 	void SetChainSawManTransform(FTransform NewTransform);
+
+	// 전기톱 살인마 제거 + 오르골도
+	UFUNCTION(BlueprintCallable)
+	void ChainSawManDestroy();
 	
 
 	// 전기톱 살인마가 노커 때문에 개빡친 상황인가?
