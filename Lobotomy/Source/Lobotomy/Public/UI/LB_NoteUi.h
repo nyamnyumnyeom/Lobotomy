@@ -30,6 +30,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UTextBlock* PageNumberText;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* RoomText; 
+
     /** 체크박스들 (Day01 ~ Day07) */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UCheckBox* Day01;
@@ -51,6 +54,28 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UCheckBox* Day07;
+
+	/** 체크박스들 (Night01 ~ Night07) */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night01;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night02;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night03;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night04;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night05;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night06;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Night07;
 
     /** 데이터 업데이트 함수들 */
     UFUNCTION(BlueprintCallable, Category = "Medical Record")

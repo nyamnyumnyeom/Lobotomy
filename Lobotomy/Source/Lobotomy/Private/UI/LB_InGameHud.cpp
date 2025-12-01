@@ -13,6 +13,7 @@ void ULB_InGameHud::NativeConstruct()
     if (PlayerCharacter)
     {
         UpdateBattery(PlayerCharacter->BatteryLevel);
+        UpdateStamina(PlayerCharacter->Stamina);
         PlayerCharacter->OnInventoryUpdated(PlayerCharacter->CurrentItem);
         UpdateInventory();
     }
@@ -34,8 +35,10 @@ void ULB_InGameHud::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
     {
         UpdateBattery(PlayerCharacter->BatteryLevel);
         UpdateGameTime();
+        UpdateStamina(PlayerCharacter->Stamina);
         UpdateInventory();
     }
+
 }
 
 void ULB_InGameHud::UpdateBattery(float BatteryLevel)
@@ -94,4 +97,48 @@ void ULB_InGameHud::UpdateGameTime()
 
     FString TimeString = FString::Printf(TEXT("%02d : %02d"), Hours, Minutes);
     GameTimeText->SetText(FText::FromString(TimeString));
+}
+
+void ULB_InGameHud::UpdateStamina(float CurrentStamina)
+{
+    if (!StaminaBar || !PlayerCharacter) return;
+
+    float MaxStamina = PlayerCharacter->MaxStamina;
+    float Percent = CurrentStamina / MaxStamina;
+    StaminaBar->SetPercent(Percent);
+
+    if (Percent < 0.1f)
+    {
+        StaminaBlinkTimer += GetWorld()->GetDeltaSeconds();
+        float BlinkAlpha = (FMath::Sin(StaminaBlinkTimer * 12.0f) + 1.0f) * 0.5f;
+
+        FLinearColor RedColor = FLinearColor(1.f, 0.f, 0.f, BlinkAlpha);
+        StaminaBar->SetFillColorAndOpacity(RedColor);
+
+        if (!bIsLowStaminaSoundPlayed && LowStaminaSound)
+        {
+            UGameplayStatics::PlaySound2D(GetWorld(), LowStaminaSound);
+            bIsLowStaminaSoundPlayed = true;
+        }
+    }
+    else if (Percent < 0.3f)
+    {
+        StaminaBar->SetFillColorAndOpacity(FLinearColor(1.f, 0.4f, 0.f, 1.f));
+        StaminaBlinkTimer = 0.0f;
+    }
+    else if (Percent < 0.5f)
+    {
+        StaminaBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f, 1.f));
+        StaminaBlinkTimer = 0.0f;
+    }
+    else
+    {
+        StaminaBar->SetFillColorAndOpacity(FLinearColor(0.f, 1.f, 0.f, 1.f));
+        StaminaBlinkTimer = 0.0f;
+    }
+
+    if (Percent > 0.1f)
+    {
+        bIsLowStaminaSoundPlayed = false;
+    }
 }

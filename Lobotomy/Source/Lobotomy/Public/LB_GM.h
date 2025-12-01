@@ -29,18 +29,27 @@ protected:
 	bool bIsChainSawManSpawned = false;
 
 	// 숨바꼭질 장인이 문을 해당 숫자 이상 두드릴 때부터 전기톱 스폰 확률 생김
-	int32 PatienceLimit = 3;
+	int32 PatienceLimit = 1;
 	// 숨바꼭질 장인이 문을 두드린 횟수
 	int32 KnockCount = 0;
 	// 숨바꼭질 장인의 다음 노크에 전기톱 살인마를 스폰시켜야 하는가?
-	bool ShouldChainSawManSpawn = false;
+	//bool ShouldChainSawManSpawn = false;
+	// 다음 노크에 문을 열어야 하는가?
+	bool ShouldOpenDoor = false;
 
 	// 숨바꼭질 장인이 문을 해당 숫자 이상 인사하면 이후 스폰은 플레이어 공격
-	int32 HelloLimit = 2;
+	int32 HelloLimit = 1;
 	// 숨바꼭질 장인이 문을 두드린 횟수
 	int32 HelloCount = 0;
 	// 숨바꼭질 장인의 다음 스폰에 플레이어를 공격해야 하는가?
 	bool ShouldHASAttackMode = false;
+
+	// 금고 실패시 경보가 해당 횟수 이상 울리면 전기톱 스폰.
+	int32 SafeBoxAlertLimit = 2;
+	// 금고 실패시 경보가 울린 횟수.
+	int32 SafeBoxAlertCount = 0;
+	// 다음 금고 실패시 경보가 울리고 전기톱을 스폰시킬 것인가?
+	bool ShouldChainSawSpawnForSB = false;
 
 	// ---------- -------------------- ----------
 
@@ -99,8 +108,8 @@ public:
 	//float LobbyDurationForSpawnHAS_Max = 85.0f;
 
 protected:
-	FTimerHandle AtRoomSecondTimerHandle;
-	FTimerHandle PlayerTimerHandle;
+	FTimerHandle AtLobbyTimerHandle;
+	FTimerHandle AtRoomTimerHandle;
 
 public:
 	// 후반 일차에 갈 수록 스폰에 필요한 시간을 감소시키는 로직.
@@ -146,6 +155,12 @@ public:
 	
 	// ---------- 전기톱 살인마 관련 함수 ----------
 public:
+	UFUNCTION(BlueprintCallable)
+	void SafeBoxAlertCountUp();
+
+	UFUNCTION(BlueprintCallable)
+	void SafeBoxAlertCountReset();
+
 	// 전기톱 살인마 스폰 여부 설정
 	FORCEINLINE void SetIsChainSawManSpawned(bool Value) { bIsChainSawManSpawned = Value; }
 
@@ -153,19 +168,29 @@ public:
 	FORCEINLINE void SetChainSawManRef(TWeakObjectPtr<ALB_Monster_ChainSawMan> CSM) { ChainSawManRef = CSM; }
 
 	// 전기톱 살인마 위치 재설정
+	UFUNCTION(BlueprintCallable)
 	void SetChainSawManTransform(FTransform NewTransform);
+	
 
+	// 전기톱 살인마가 노커 때문에 개빡친 상황인가?
+	//FORCEINLINE bool GetShouldChainSawManSpawn() const { return ShouldChainSawManSpawn; }
 
-	// 전기톱 살인마가 개빡친 상황인가?
-	FORCEINLINE bool GetShouldChainSawManSpawn() const { return ShouldChainSawManSpawn; }
+	// 노커가 문을 열 차례인가?
+	FORCEINLINE bool GetShouldOpenDoor() const { return ShouldOpenDoor; }
 
 	// 노커가 개빡친 상황인가?
 	FORCEINLINE bool GetShouldHASAttackMode() const { return ShouldHASAttackMode; }
 
 	// 전기톱 살인마가 스폰되어 있는가?
-	FORCEINLINE bool GetIsChainSawManSpawned() const { return bIsChainSawManSpawned; }
+	UFUNCTION(BlueprintPure)
+	bool GetIsChainSawManSpawned() const { return bIsChainSawManSpawned; }
+
+	// 금고때문에 전기톱 살인마가 개빡친 상황인가?
+	UFUNCTION(BlueprintPure)
+	bool GetShouldChainSawSpawnForSB();
 
 	// 전기톱 살인마가 플레이어와 내비메시 길찾기 경로상 얼만큼 떨어져 있는가?
+	UFUNCTION(BlueprintPure)
 	float GetChainSawManToPlayerDistance();
 	// ---------- -------------------- ----------
 
@@ -239,6 +264,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Chart")
 	TMap<int32, FChartData> RuntimeCharts;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Chart")
+	TArray<FName> NameOfPatients;
+
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void LoadPage(int32 NewPage);
 
@@ -254,9 +282,14 @@ public:
 	void SetSymptomForPage(int32 Page, const FText& NewSymptom);
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void SetRemarkForPage(int32 Page, const FText& NewRemark);
+	UFUNCTION(BlueprintCallable, Category = "Chart")
+	void SetRoomNumberForPage(int32 Page, const FText& NewRemark);
 
 	UFUNCTION(BlueprintCallable, Category = "Chart")
 	void SetDayCheckForPage(int32 Page, int32 DayIndex /*0~6*/, bool bChecked);
+
+	UFUNCTION(BlueprintCallable, Category = "Chart")
+	void SetNightCheckForPage(int32 Page, int32 DayIndex /*0~6*/, bool bChecked);
 
 	UPROPERTY(BlueprintAssignable, Category = "Chart")
 	FOnChartUpdated OnChartUpdated;

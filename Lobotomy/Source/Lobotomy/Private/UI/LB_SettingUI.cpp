@@ -4,6 +4,7 @@
 #include "Components/Slider.h"
 #include "Components/ComboBoxString.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 
 void ULB_SettingUI::NativeConstruct()
 {
@@ -19,6 +20,13 @@ void ULB_SettingUI::NativeConstruct()
     if (SliderVolume)      SliderVolume->SetValue(S->MasterVolume);
     if (SliderSensitivity) SliderSensitivity->SetValue(S->MouseSensitivite);
     if (SliderBrightness)  SliderBrightness->SetValue(S->Brightness);
+
+	FText NewVolumeText = FText::AsNumber(S->MasterVolume);
+	if (TextVolume)      TextVolume->SetText(NewVolumeText);
+	FText NewBrightnessText = FText::AsNumber(S->Brightness);
+	if (TextBrightness)  TextBrightness->SetText(NewBrightnessText);
+	FText NewSensitivityText = FText::AsNumber(S->MouseSensitivite);
+	if (TextSensitivity) TextSensitivity->SetText(NewSensitivityText);
 
 
     SliderVolume->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnVolumeChanged);
@@ -105,17 +113,26 @@ void ULB_SettingUI::OnVolumeChanged(float Value)
 {
     ULB_Setting::Get()->MasterVolume = Value;
     ULB_Setting::Get()->ApplyCustomSettings();
+
+	FText NewText = FText::AsNumber(Value);
+	if (TextVolume)      TextVolume->SetText(NewText);
 }
 
 void ULB_SettingUI::OnSensitivityChanged(float Value)
 {
     ULB_Setting::Get()->MouseSensitivite = Value;
+
+	FText NewText = FText::AsNumber(Value);
+	if (TextSensitivity) TextSensitivity->SetText(NewText);
 }
 
 void ULB_SettingUI::OnBrightnessChanged(float Value)
 {
     ULB_Setting::Get()->Brightness = Value;
     ULB_Setting::Get()->ApplyCustomSettings();
+
+	FText NewText = FText::AsNumber(Value);
+	if (TextBrightness)  TextBrightness->SetText(NewText);
 }
 
 void ULB_SettingUI::OnResolutionChanged(FString Item, ESelectInfo::Type)

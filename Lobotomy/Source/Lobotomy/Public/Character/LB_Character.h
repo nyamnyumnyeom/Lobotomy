@@ -56,6 +56,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void HandleEscape(const FInputActionValue& Value);
 
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void Dropaction();
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
     TArray<TObjectPtr<USoundBase>> FootstepSounds;
 
@@ -89,6 +92,22 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
     float Sensitive = 1.f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float Stamina;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float MaxStamina;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float StaminaDrainRate;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float StaminaRecoverRate;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+    float MinSprintStamina;
+
+    bool bWantsToSprint;
 
 
 private:
@@ -219,6 +238,15 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Item")
     void ClearCurrentItem();
+
+    UFUNCTION(BlueprintCallable, Category = "Item")
+    AActor* SpawnCurrentItem();
+
+public:
+    UFUNCTION(BlueprintCallable, Category = "Item")
+    UClass* GetCurrentItemClass() const;
+
+    const FItemRow* GetCurrentItemData() const;
 
 private:
    // bool TryUseKeyOnCurrentDoor();

@@ -5,6 +5,7 @@
 #include "Components/Slider.h"
 #include "Components/ComboBoxString.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 
 #include "LB_SettingUI.generated.h"
 
@@ -21,6 +22,10 @@ public:
     UPROPERTY(meta = (BindWidget)) USlider* SliderVolume;
     UPROPERTY(meta = (BindWidget)) USlider* SliderSensitivity;
     UPROPERTY(meta = (BindWidget)) USlider* SliderBrightness;
+
+	UPROPERTY(meta = (BindWidget)) UTextBlock* TextVolume;
+	UPROPERTY(meta = (BindWidget)) UTextBlock* TextSensitivity;
+	UPROPERTY(meta = (BindWidget)) UTextBlock* TextBrightness;
 
     UPROPERTY(meta = (BindWidget)) UComboBoxString* ComboResolution;
     UPROPERTY(meta = (BindWidget)) UComboBoxString* ComboWindowMode;

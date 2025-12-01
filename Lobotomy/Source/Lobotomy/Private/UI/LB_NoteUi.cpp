@@ -72,6 +72,7 @@ void ULB_NoteUi::RefreshFromGameMode()
         if (SymptomText)    SymptomText->SetText(Data.Symptom);
         if (RemarkText)     RemarkText->SetText(Data.Remark);
         if (PageNumberText) PageNumberText->SetText(FText::AsNumber(Data.PageNumber));
+		if (RoomText) RoomText->SetText(Data.RoomNumber);
 
         // 체크박스들 반영 (0~6)
         auto GetDay = [&](int32 I)->bool { return Data.DayChecks.IsValidIndex(I) ? Data.DayChecks[I] : false; };
@@ -82,5 +83,15 @@ void ULB_NoteUi::RefreshFromGameMode()
         if (Day05) Day05->SetIsChecked(GetDay(4));
         if (Day06) Day06->SetIsChecked(GetDay(5));
         if (Day07) Day07->SetIsChecked(GetDay(6));
+
+		// 체크박스들 반영 (0~6)
+		auto GetNight = [&](int32 I)->bool { return Data.NightChecks.IsValidIndex(I) ? Data.NightChecks[I] : false; };
+		if (Night01) Night01->SetIsChecked(GetNight(0));
+		if (Night02) Night02->SetIsChecked(GetNight(1));
+		if (Night03) Night03->SetIsChecked(GetNight(2));
+		if (Night04) Night04->SetIsChecked(GetNight(3));
+		if (Night05) Night05->SetIsChecked(GetNight(4));
+		if (Night06) Night06->SetIsChecked(GetNight(5));
+		if (Night07) Night07->SetIsChecked(GetNight(6));
     }
 }

@@ -3,6 +3,7 @@
 #include "Components/Button.h"
 #include "Character/LB_Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void ULB_DialogueUI::NativeConstruct()
 {
@@ -35,6 +36,11 @@ void ULB_DialogueUI::ShowNextDialogue()
             ULB_DialogueUI* NewUI = CreateWidget<ULB_DialogueUI>(PC, GetClass());
             if (NewUI)
             {
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(NewUI->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				PC->SetInputMode(InputMode);
+
                 NewUI->AddToViewport(1000);
                 NewUI->InitDialogue(DialogueTable, NextRow->DialogueID);
             }
@@ -54,6 +60,7 @@ void ULB_DialogueUI::ShowNextDialogue()
             if (ALB_Character* Player = Cast<ALB_Character>(PC->GetPawn()))
             {
                 Player->ShowHUDUI();
+				Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
             }
         }
     }

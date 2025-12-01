@@ -17,11 +17,20 @@ public:
     FText Symptom;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FText Room;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText Remark;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 PageNumber = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText RoomNumber;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<bool> DayChecks;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<bool> NightChecks;
 };

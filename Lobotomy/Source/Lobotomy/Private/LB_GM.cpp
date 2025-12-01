@@ -12,6 +12,7 @@
 #include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
 #include "Save/LB_SaveSetting.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ALB_GM::ALB_GM()
 {
@@ -76,7 +77,7 @@ void ALB_GM::AddKnockCount()
 
 	if (KnockCount >= PatienceLimit)
 	{
-		ShouldChainSawManSpawn = FMath::RandBool();
+		ShouldOpenDoor = true;
 	}
 }
 
@@ -97,23 +98,23 @@ float ALB_GM::CalculateSpawnDelay(int32 Min, int32 Max)
 
 void ALB_GM::PlayerIntoRoom()
 {
-	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtRoomTimerHandle);
 
-	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtLobbyTimerHandle);
 
 	bIsPlayerInRoom = true;
 
 	float SpawnDelay = CalculateSpawnDelay(RoomDurationForSpawnHAS_Min, RoomDurationForSpawnHAS_Max);
 
-	GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
+	GetWorldTimerManager().SetTimer(AtRoomTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
 
 }
 
 void ALB_GM::PlayerIntoLobby()
 {
-	GetWorldTimerManager().ClearTimer(PlayerTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtRoomTimerHandle);
 
-	GetWorldTimerManager().ClearTimer(AtRoomSecondTimerHandle);
+	GetWorldTimerManager().ClearTimer(AtLobbyTimerHandle);
 
 	//if (bShouldMusicBoxSpawn)
 	//{
@@ -125,6 +126,9 @@ void ALB_GM::PlayerIntoLobby()
 
 	bIsPlayerInRoom = false;
 
+	ResetKnockCount();
+	ResetHelloCount();
+
 	//float SpawnDelay = FMath::FRandRange(LobbyDurationForSpawnHAS_Min, LobbyDurationForSpawnHAS_Max);
 	//
 	//GetWorldTimerManager().SetTimer(PlayerTimerHandle, this, &ALB_GM::OnStayTimeOut, SpawnDelay, false);
@@ -133,7 +137,7 @@ void ALB_GM::PlayerIntoLobby()
 
 	float SpawnDelay = CalculateSpawnDelay(LobbyDurationForMusicBox_Min, LobbyDurationForMusicBox_Max);
 
-	GetWorldTimerManager().SetTimer(AtRoomSecondTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, SpawnDelay, false);
+	GetWorldTimerManager().SetTimer(AtLobbyTimerHandle, this, &ALB_GM::OnMusicBoxSpawnTime, SpawnDelay, false);
 }
 
 //void ALB_GM::AtRoomSecondTimer()
@@ -149,14 +153,15 @@ void ALB_GM::PlayerIntoLobby()
 void ALB_GM::ResetKnockCount()
 {
 	KnockCount = 0;
-	ShouldChainSawManSpawn = false;
+	//ShouldChainSawManSpawn = false;
+	ShouldOpenDoor = false;
 }
 
 void ALB_GM::AddHelloCount()
 {
 	HelloCount++;
 
-	if (HelloCount > HelloLimit)
+	if (HelloCount >= HelloLimit)
 	{
 		ShouldHASAttackMode = true;
 	}
@@ -166,6 +171,22 @@ void ALB_GM::ResetHelloCount()
 {
 	KnockCount = 0;
 	ShouldHASAttackMode = false;
+}
+
+void ALB_GM::SafeBoxAlertCountUp()
+{
+	SafeBoxAlertCount++;
+
+	if (SafeBoxAlertCount >= SafeBoxAlertLimit)
+	{
+		ShouldChainSawSpawnForSB = true;
+	}
+}
+
+void ALB_GM::SafeBoxAlertCountReset()
+{
+	SafeBoxAlertCount = 0;
+	ShouldChainSawSpawnForSB = false;
 }
 
 void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
@@ -178,6 +199,11 @@ void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 		CurrentChainSawMan->SetActorTransform(NewTransform);
 		CurrentChainSawMan->SpawnLogic();
 	}
+}
+
+bool ALB_GM::GetShouldChainSawSpawnForSB()
+{
+	return ShouldChainSawSpawnForSB;
 }
 
 float ALB_GM::GetChainSawManToPlayerDistance()
@@ -246,6 +272,8 @@ void ALB_GM::ChangeToNight()
 void ALB_GM::ChangeToDay()
 {
 	bIsNight = false;
+
+	SafeBoxAlertCountReset();
 }
 
 void ALB_GM::StartTimeCount()
@@ -307,6 +335,7 @@ bool ALB_GM::EnsurePageInCache(int32 Page)
 		FChartData Copy = *Row;
 		// 안전장치: 체크박스 크기 보정(필요시)
 		if (Copy.DayChecks.Num() < 7) { Copy.DayChecks.SetNum(7, /*bAllowShrinking*/false); }
+		if (Copy.NightChecks.Num() < 7) { Copy.NightChecks.SetNum(7, /*bAllowShrinking*/false); }
 		Copy.PageNumber = Page; // 보정
 		RuntimeCharts.Add(Page, Copy);
 		return true;
@@ -333,6 +362,7 @@ void ALB_GM::LoadPage(int32 NewPage)
 		FChartData Blank;
 		Blank.PageNumber = CurrentPage;
 		Blank.DayChecks.SetNum(7);
+		Blank.NightChecks.SetNum(7);
 		RuntimeCharts.Add(CurrentPage, Blank);
 	}
 	SyncCurrentFromCacheAndBroadcast();
@@ -350,7 +380,7 @@ FChartData ALB_GM::GetChartCopy(int32 Page) const
 		if (const FChartData* Row = ChartDataTable->FindRow<FChartData>(FName(*RowName), TEXT("LB_GM")))
 			return *Row;
 	}
-	FChartData Empty; Empty.PageNumber = Page; Empty.DayChecks.SetNum(7);
+	FChartData Empty; Empty.PageNumber = Page; Empty.DayChecks.SetNum(7); Empty.NightChecks.SetNum(7);
 	return Empty;
 }
 
@@ -376,6 +406,13 @@ void ALB_GM::SetRemarkForPage(int32 Page, const FText& NewRemark)
 	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
 }
 
+void ALB_GM::SetRoomNumberForPage(int32 Page, const FText& NewRemark)
+{
+	if (!EnsurePageInCache(Page)) return;
+	RuntimeCharts[Page].RoomNumber = NewRemark;
+	if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+}
+
 void ALB_GM::SetDayCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
 {
 	if (!EnsurePageInCache(Page)) return;
@@ -383,6 +420,17 @@ void ALB_GM::SetDayCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
 	if (RuntimeCharts[Page].DayChecks.IsValidIndex(DayIndex))
 	{
 		RuntimeCharts[Page].DayChecks[DayIndex] = bChecked;
+		if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
+	}
+}
+
+void ALB_GM::SetNightCheckForPage(int32 Page, int32 DayIndex, bool bChecked)
+{
+	if (!EnsurePageInCache(Page)) return;
+	if (RuntimeCharts[Page].NightChecks.Num() < 7) RuntimeCharts[Page].NightChecks.SetNum(7);
+	if (RuntimeCharts[Page].NightChecks.IsValidIndex(DayIndex))
+	{
+		RuntimeCharts[Page].NightChecks[DayIndex] = bChecked;
 		if (Page == CurrentPage) SyncCurrentFromCacheAndBroadcast();
 	}
 }
@@ -395,21 +443,23 @@ void ALB_GM::StartDialogue(FName StartRow)
 		if (Player)
 		{
 			Player->HideHUDUI();
+			Player->GetCharacterMovement()->SetMovementMode(MOVE_None);
 		}
 
-		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		PC->SetInputMode(InputMode);
-		PC->bShowMouseCursor = true;
-	}
-
-	if (DialogueWidgetClass && DialogueTable)
-	{
-		ULB_DialogueUI* DialogueUI = CreateWidget<ULB_DialogueUI>(GetWorld(), DialogueWidgetClass);
-		if (DialogueUI)
+		if (DialogueWidgetClass && DialogueTable)
 		{
-			DialogueUI->AddToViewport(10);
-			DialogueUI->InitDialogue(DialogueTable, StartRow);
+			ULB_DialogueUI* DialogueUI = CreateWidget<ULB_DialogueUI>(GetWorld(), DialogueWidgetClass);
+			if (DialogueUI)
+			{
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(DialogueUI->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				PC->SetInputMode(InputMode);
+				PC->bShowMouseCursor = true;
+
+				DialogueUI->AddToViewport(10);
+				DialogueUI->InitDialogue(DialogueTable, StartRow);
+			}
 		}
 	}
 }
