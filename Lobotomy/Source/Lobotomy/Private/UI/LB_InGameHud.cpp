@@ -14,6 +14,7 @@ void ULB_InGameHud::NativeConstruct()
     {
         UpdateBattery(PlayerCharacter->BatteryLevel);
         UpdateStamina(PlayerCharacter->Stamina);
+        UpdateSanity(PlayerCharacter->Sanity);
         PlayerCharacter->OnInventoryUpdated(PlayerCharacter->CurrentItem);
         UpdateInventory();
     }
@@ -36,6 +37,7 @@ void ULB_InGameHud::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
         UpdateBattery(PlayerCharacter->BatteryLevel);
         UpdateGameTime();
         UpdateStamina(PlayerCharacter->Stamina);
+        UpdateSanity(PlayerCharacter->Sanity);
         UpdateInventory();
     }
 
@@ -133,7 +135,7 @@ void ULB_InGameHud::UpdateStamina(float CurrentStamina)
     }
     else
     {
-        StaminaBar->SetFillColorAndOpacity(FLinearColor(0.f, 1.f, 0.f, 1.f));
+        StaminaBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
         StaminaBlinkTimer = 0.0f;
     }
 
@@ -141,4 +143,38 @@ void ULB_InGameHud::UpdateStamina(float CurrentStamina)
     {
         bIsLowStaminaSoundPlayed = false;
     }
+}
+
+void ULB_InGameHud::UpdateSanity(float CurrentSanity)
+{
+    if (!SanityBar || !PlayerCharacter) return;
+
+    float MaxSanity = PlayerCharacter->MaxSanity;
+    float Percent = CurrentSanity / MaxSanity;
+    SanityBar->SetPercent(Percent);
+
+    if (Percent < 0.1f)
+    {
+        SanityBlinkTimer += GetWorld()->GetDeltaSeconds();
+        float BlinkAlpha = (FMath::Sin(SanityBlinkTimer * 12.0f) + 1.0f) * 0.5f;
+
+        FLinearColor Color = FLinearColor(1.f, 0.f, 0.f, BlinkAlpha);
+        SanityBar->SetFillColorAndOpacity(Color);
+    }
+    else if (Percent < 0.3f)
+    {
+        SanityBar->SetFillColorAndOpacity(FLinearColor(1.f, 0.4f, 0.f, 1.f));
+        SanityBlinkTimer = 0.0f;
+    }
+    else if (Percent < 0.5f)
+    {
+        SanityBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f, 1.f));
+        SanityBlinkTimer = 0.0f;
+    }
+    else
+    {
+        SanityBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+        SanityBlinkTimer = 0.0f;
+    }
+
 }
