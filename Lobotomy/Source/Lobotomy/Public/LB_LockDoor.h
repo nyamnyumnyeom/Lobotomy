@@ -35,6 +35,8 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class USphereComponent* SphereCollision;
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	class UBoxComponent* BoxCollision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	class UWidgetComponent* DoorHandleWidget;
