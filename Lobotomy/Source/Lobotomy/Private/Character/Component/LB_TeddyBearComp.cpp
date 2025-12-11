@@ -1,26 +1,27 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/Component/LB_MusicBoxSpawnComp.h"
-#include "NPC/LB_TargetPoint_MusicBox.h"
+#include "Character/Component/LB_TeddyBearComp.h"
+#include "LevelActor/LB_TargetPoint_TeddyBear.h"
 #include "Kismet/GameplayStatics.h"
 #include "LB_GM.h"
 
-ULB_MusicBoxSpawnComp::ULB_MusicBoxSpawnComp()
+ULB_TeddyBearComp::ULB_TeddyBearComp()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
 }
 
-void ULB_MusicBoxSpawnComp::BeginPlay()
+
+void ULB_TeddyBearComp::BeginPlay()
 {
 	Super::BeginPlay();
 
 }
 
-void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
+void ULB_TeddyBearComp::TriggerTeddyBearActive()
 {
-	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 
 	if (GM->bIsNight == false) return;
@@ -48,7 +49,7 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 
 	if (bHit)
 	{
-		ALB_TargetPoint_MusicBox* NearestPoint = nullptr;
+		ALB_TargetPoint_TeddyBear* NearestPoint = nullptr;
 		float MinDist = FLT_MAX;
 
 		AActor* NearestActor = nullptr;
@@ -56,7 +57,7 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 		for (const FHitResult& Hit : HitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
-			if (HitActor && HitActor->ActorHasTag("MusicBoxPoint"))
+			if (HitActor && HitActor->ActorHasTag("TeddyBearPoint"))
 			{
 				float PlayerHeight = MyOwnerPawn->GetActorLocation().Z;
 				float TargetHeight = HitActor->GetActorLocation().Z;
@@ -68,11 +69,11 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 
 				float Dot = FVector::DotProduct(PlayerForward, ToPlayer);
 
-				if (Dot <= Threshold)
+				if (Dot >= Threshold)
 				{
 					float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
 					if (Dist < MinDist)
-					{
+					{ 
 						MinDist = Dist;
 						NearestActor = HitActor;
 					}
@@ -82,10 +83,10 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 
 		if (NearestActor)
 		{
-			NearestPoint = Cast<ALB_TargetPoint_MusicBox>(NearestActor);
+			NearestPoint = Cast<ALB_TargetPoint_TeddyBear>(NearestActor);
 			if (NearestPoint)
 			{
-				NearestPoint->MusicBoxSystemActivate();
+				NearestPoint->ShowTeddyBear();
 				return;
 			}
 		}
@@ -93,11 +94,12 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn, 10.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_TeddyBearComp::TriggerTeddyBearActive, TriggerLoopTime, false);
 	}
 }
 
-void ULB_MusicBoxSpawnComp::TriggerLoopTimerClear()
+void ULB_TeddyBearComp::TriggerLoopTimerClear()
 {
 	GetWorld()->GetTimerManager().ClearTimer(TriggerLoopTimerHandle);
 }
+
