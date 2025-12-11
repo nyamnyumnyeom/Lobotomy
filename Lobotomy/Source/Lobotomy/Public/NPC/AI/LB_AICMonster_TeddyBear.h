@@ -14,5 +14,10 @@ class LOBOTOMY_API ALB_AICMonster_TeddyBear : public ALB_AICMonsterBase
 {
 	GENERATED_BODY()
 	
+public:
+	ALB_AICMonster_TeddyBear();
 
+	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus) override;
 };

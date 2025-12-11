@@ -7,6 +7,7 @@
 #include "NavigationPath.h"
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
+#include "NPC/LB_Monster_TeddyBear.h"
 #include "LB_Setting.h"
 #include "UI/LB_DialogueUI.h"
 #include "UI/LB_ChartData.h"
@@ -206,11 +207,16 @@ void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 	}
 }
 
-void ALB_GM::ChainSawManDestroy()
+void ALB_GM::AllMonsterDestroy()
 {
 	if (ChainSawManRef)
 	{
 		ChainSawManRef->DisappearLogic();
+	}
+
+	if (TeddyBearRef)
+	{
+		TeddyBearRef->DisappearLogic();
 	}
 }
 
@@ -267,6 +273,11 @@ float ALB_GM::GetChainSawManToPlayerDistance()
 	return -1.0f;
 }
 
+void ALB_GM::SetTeddyBearRef(ALB_Monster_TeddyBear* TB)
+{
+	TeddyBearRef = TB;
+}
+
 void ALB_GM::UpdateDate()
 {
 	CurrentDay++;
@@ -287,7 +298,7 @@ void ALB_GM::ChangeToDay()
 	bIsNight = false;
 
 	SafeBoxAlertCountReset();
-	ChainSawManDestroy();
+	AllMonsterDestroy();
 }
 
 void ALB_GM::StartTimeCount()

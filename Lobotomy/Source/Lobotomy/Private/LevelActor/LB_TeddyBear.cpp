@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LevelActor/LB_TargetPoint_TeddyBear.h"
 
+
 ALB_TeddyBear::ALB_TeddyBear()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -36,11 +37,23 @@ void ALB_TeddyBear::CheckMonsterPercentage(bool& bShouldMonster)
 	}
 }
 
-void ALB_TeddyBear::SetBearActive(bool bIsActive)
+void ALB_TeddyBear::MonsterLightDirected()
+{
+	if (!TargetPoint_Ref) return;
+
+	TargetPoint_Ref->OnMonsterBearShow();
+}
+
+void ALB_TeddyBear::SetBearVisibility(bool bIsActive)
 {
 	if (!TeddyMeshComponent) return;
 
 	TeddyMeshComponent->SetVisibility(bIsActive, true);
+}
+
+void ALB_TeddyBear::SetBearCollision(bool bIsActive)
+{
+	if (!TeddyMeshComponent) return;
 
 	if (bIsActive)
 	{
@@ -54,6 +67,8 @@ void ALB_TeddyBear::SetBearActive(bool bIsActive)
 
 void ALB_TeddyBear::TeleportToRandomTarget()
 {
+	ReferenceClear();
+
 	TArray<AActor*> FoundPoints;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALB_TargetPoint_TeddyBear::StaticClass(), FoundPoints);
 
@@ -83,7 +98,7 @@ void ALB_TeddyBear::TeleportToOrigin()
 
 void ALB_TeddyBear::ReferenceClear()
 {
-	if (!TargetPoint_Ref)
+	if (TargetPoint_Ref)
 	{
 		TargetPoint_Ref->ReferenceClear();
 	}

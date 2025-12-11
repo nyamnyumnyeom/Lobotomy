@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB|Properties")
 	int32 MonsterPercentage = 10;
 
+	UPROPERTY(BlueprintReadWrite, Category = "LB|Value")
+	bool bIsCheckTonight = false;
+
 protected:
 	FVector OriginLocation;
 	FRotator OriginRotator;
@@ -38,9 +41,18 @@ public:
 	void CheckMonsterPercentage(bool &bShouldMonster);
 
 public:
-	// bIsActive가 true면 보이고 충돌 가능, false면 안 보이고 충돌 없음.
+	// 괴물화 전등 연출 함수.
 	UFUNCTION(BlueprintCallable, Category = "LB|Action")
-	void SetBearActive(bool bIsActive);
+	void MonsterLightDirected();
+
+public:
+	// bIsActive가 true면 보임, false면 안 보임.
+	UFUNCTION(BlueprintCallable, Category = "LB|Action")
+	void SetBearVisibility(bool bIsActive);
+
+	// bIsActive가 true면 충돌 가능, false면 충돌 없음.
+	UFUNCTION(BlueprintCallable, Category = "LB|Action")
+	void SetBearCollision(bool bIsActive);
 
 	// 레벨에 배치된 ALB_TargetPoint_TeddyBear 중 하나로 랜덤 이동.
 	UFUNCTION(BlueprintCallable, Category = "LB|Action")
@@ -55,4 +67,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LB|Reference")
 	void ReferenceClear();
 
+	// 상호작용 위젯 숨기기
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnInteractWidgetHide();
 };

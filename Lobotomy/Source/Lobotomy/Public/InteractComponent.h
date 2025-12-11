@@ -16,6 +16,7 @@ public:
 	UInteractComponent();
 
 	void ShowWidget();
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void HideWidget();
 
 	UFUNCTION(BlueprintCallable, Category = "Interaction")

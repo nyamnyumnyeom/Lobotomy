@@ -9,6 +9,7 @@
 
 class ULB_DialogueUI;
 class UDataTable;
+class ALB_Monster_TeddyBear;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChartUpdated, int32, PageNumber);
 
@@ -21,6 +22,9 @@ class LOBOTOMY_API ALB_GM : public AGameMode
 protected:
 	// 스폰중인 전기톱 살인마 레퍼런스
 	ALB_Monster_ChainSawMan* ChainSawManRef;
+
+	// 스폰중인 곰탱이 레퍼런스
+	ALB_Monster_TeddyBear* TeddyBearRef;
 
 	// 숨바꼭질 장인이 스폰되어 있는가?
 	bool bIsHidAndSeekerSpawned = false;
@@ -171,9 +175,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetChainSawManTransform(FTransform NewTransform);
 
-	// 전기톱 살인마 제거 + 오르골도
+	// 잔여 몹 제거
 	UFUNCTION(BlueprintCallable)
-	void ChainSawManDestroy();
+	void AllMonsterDestroy();
 	
 
 	// 전기톱 살인마가 노커 때문에 개빡친 상황인가?
@@ -197,6 +201,14 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetChainSawManToPlayerDistance();
 	// ---------- -------------------- ----------
+
+		// ---------- 곰탱이 관련 함수 ----------
+public:
+	// 곰탱이 레퍼런스 등록
+	void SetTeddyBearRef(ALB_Monster_TeddyBear* TB);
+
+	// ---------- -------------------- ----------
+
 
 	// ------------- 날짜 & 밤낮 ---------
 public:

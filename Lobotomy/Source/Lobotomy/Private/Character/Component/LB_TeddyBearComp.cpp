@@ -21,6 +21,13 @@ void ULB_TeddyBearComp::BeginPlay()
 
 void ULB_TeddyBearComp::TriggerTeddyBearActive()
 {
+	GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_TeddyBearComp::TriggerTeddyBearLoop, TriggerLoopTime, true);
+}
+
+void ULB_TeddyBearComp::TriggerTeddyBearLoop()
+{
+	if (bIsChecked) return;
+
 	GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 
@@ -73,7 +80,7 @@ void ULB_TeddyBearComp::TriggerTeddyBearActive()
 				{
 					float Dist = FVector::Dist(Start, HitActor->GetActorLocation());
 					if (Dist < MinDist)
-					{ 
+					{
 						MinDist = Dist;
 						NearestActor = HitActor;
 					}
@@ -86,20 +93,19 @@ void ULB_TeddyBearComp::TriggerTeddyBearActive()
 			NearestPoint = Cast<ALB_TargetPoint_TeddyBear>(NearestActor);
 			if (NearestPoint)
 			{
-				NearestPoint->ShowTeddyBear();
-				return;
+				if (NearestPoint->GetbIsBearHere())
+				{
+					bIsChecked = true;
+					NearestPoint->ShowTeddyBear();
+				}
 			}
 		}
-	}
-
-	if (GetWorld())
-	{
-		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_TeddyBearComp::TriggerTeddyBearActive, TriggerLoopTime, false);
 	}
 }
 
 void ULB_TeddyBearComp::TriggerLoopTimerClear()
 {
+	bIsChecked = false;
 	GetWorld()->GetTimerManager().ClearTimer(TriggerLoopTimerHandle);
 }
 
