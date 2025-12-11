@@ -65,6 +65,10 @@ ALB_Character::ALB_Character()
     StaminaRecoverRate = 0.2f;
     MinSprintStamina = 0.5f;
     bWantsToSprint = false;
+
+    Sanity = 100.0f;
+    MaxSanity = 100.0f;
+
 }
 
 void ALB_Character::BeginPlay()
@@ -217,6 +221,7 @@ void ALB_Character::Tick(float DeltaTime)
             Stamina = FMath::Clamp(Stamina, 0.0f, MaxStamina);
         }
     }
+    UpdateSanityEffect(DeltaTime);
 }
 
 void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -645,4 +650,58 @@ AActor* ALB_Character::SpawnCurrentItem()
     }
 
     return SpawnedActor;
+}
+
+void ALB_Character::AddSanity(float Amount)
+{
+    Sanity = FMath::Clamp(Sanity + Amount, 0.0f, MaxSanity);
+    OnSanityChanged(Sanity);
+}
+
+void ALB_Character::ReduceSanity(float Amount)
+{
+    if (!IsNight())
+    {
+        return;
+    }
+    if (Sanity <= 0.0f)
+    {
+        return;
+    }
+    else
+    {
+        Sanity = FMath::Clamp(Sanity - Amount, 0.0f, MaxSanity);
+        OnSanityChanged(Sanity);
+    }
+}
+
+void ALB_Character::UpdateSanityEffect(float DeltaTime)
+{
+    if (!IsNight())
+    {
+        SanityEffectTimer = -1.0f;
+        return;
+    }
+    if (Sanity > 50.0f)
+    {
+        SanityEffectTimer = -1.0f;
+        return;
+    }
+
+    float Ratio = FMath::Clamp(Sanity / 50.0f, 0.0f, 1.0f);
+    float Interval = FMath::Lerp(10.0f, 100.0f, Ratio);
+
+    if (SanityEffectTimer < 0.0f)
+    {
+        SanityEffectTimer = Interval;
+    }
+
+    SanityEffectTimer -= DeltaTime;
+
+    if (SanityEffectTimer <= 0.0f)
+    {
+        PlaySanityDistortionEffect();
+
+        SanityEffectTimer = Interval;
+    }
 }
