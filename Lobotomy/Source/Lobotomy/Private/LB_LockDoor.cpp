@@ -41,6 +41,7 @@ ALB_LockDoor::ALB_LockDoor()
 	DoorHandleWidget->SetupAttachment(SphereCollision);
 
     bIsOpen = false;
+	bIsLeft = true;
 
 	Tags.Add(FName("Door"));
 }
@@ -144,6 +145,20 @@ void ALB_LockDoor::CloseDoor()
     UE_LOG(LogTemp, Warning, TEXT("Door closed."));
 }
 
+void ALB_LockDoor::LeftOpenDesk()
+{
+	if (bIsLeft) return;
+	bIsLeft = true;
+	UE_LOG(LogTemp, Warning, TEXT("Left door opened."));
+}
+
+void ALB_LockDoor::RightOpenDesk()
+{
+	if (!bIsLeft) return;
+	bIsLeft = false;
+	UE_LOG(LogTemp, Warning, TEXT("Right door opened."));
+}
+
 bool ALB_LockDoor::TryUnlockDoor(ALB_Character* PlayerCharacter)
 {
     if (!PlayerCharacter)
@@ -177,3 +192,4 @@ bool ALB_LockDoor::TryUnlockDoor(ALB_Character* PlayerCharacter)
         *HeldItem.ToString(), *RequiredKey.ToString());
     return false;
 }
+

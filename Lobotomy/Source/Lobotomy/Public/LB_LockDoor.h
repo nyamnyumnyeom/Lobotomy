@@ -20,6 +20,9 @@ public:
     // 문이 열려있는지 여부
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
     bool bIsOpen;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
+	bool bIsLeft;
+	
 
     // 해당 문을 열 수 있는 키 이름 (아이템 데이터 테이블의 ItemCode)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
@@ -108,6 +111,12 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Door")
     void CloseDoor();
+
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	void LeftOpenDesk();
+
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	void RightOpenDesk();
 
     UFUNCTION(BlueprintCallable, Category = "Door")
     bool TryUnlockDoor(ALB_Character* PlayerCharacter);
