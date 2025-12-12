@@ -10,6 +10,7 @@
 class ULB_DialogueUI;
 class UDataTable;
 class ALB_Monster_TeddyBear;
+class ALB_Monster_Manequin;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChartUpdated, int32, PageNumber);
 
@@ -25,6 +26,9 @@ protected:
 
 	// 스폰중인 곰탱이 레퍼런스
 	ALB_Monster_TeddyBear* TeddyBearRef;
+
+	// 스폰중인 마네킹 레퍼런스
+	ALB_Monster_Manequin* ManequinRef;
 
 	// 숨바꼭질 장인이 스폰되어 있는가?
 	bool bIsHidAndSeekerSpawned = false;
@@ -202,10 +206,30 @@ public:
 	float GetChainSawManToPlayerDistance();
 	// ---------- -------------------- ----------
 
-		// ---------- 곰탱이 관련 함수 ----------
+	// ---------- 곰탱이 관련 함수 ----------
 public:
 	// 곰탱이 레퍼런스 등록
 	void SetTeddyBearRef(ALB_Monster_TeddyBear* TB);
+
+	// ---------- -------------------- ----------
+
+	// ---------- 마네킹 관련 함수 ----------
+public:
+	// 마네킹 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> ManequinClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
+	bool ManequinSpawnDay = false;
+
+	// 마네킹 레퍼런스 등록
+	void SetManequinRef(ALB_Monster_Manequin* MQ);
+
+	// 마네킹 스폰
+	void SpawnManequin();
+
+	// 마네킹 디스폰
+	void DespawnManequin();
 
 	// ---------- -------------------- ----------
 

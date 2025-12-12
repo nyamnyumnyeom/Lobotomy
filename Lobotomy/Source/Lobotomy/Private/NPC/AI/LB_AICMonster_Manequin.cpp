@@ -10,6 +10,7 @@
 #include "BehaviorTree/BlackboardData.h" 
 #include "Perception/AISenseConfig_Hearing.h"
 #include "NavigationSystem.h"
+#include "LB_GM.h"
 
 ALB_AICMonster_Manequin::ALB_AICMonster_Manequin()
 {
@@ -48,6 +49,8 @@ void ALB_AICMonster_Manequin::OnPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 
 	if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
 	{
+		Resist_ToGM();
+
 		FVector SoundLocation = Stimulus.StimulusLocation;
 		FVector MyLocation = GetPawn()->GetActorLocation();
 
@@ -139,7 +142,7 @@ void ALB_AICMonster_Manequin::Resist_PlayerCharacter()
 		PlayerCharacterReference_AActor = Cast<AActor>(PlayerCharacterReference);
 		if (PlayerCharacterReference_AActor)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Player_Actor Resist success!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Player_Actor Resist success!"));
 		}
 	}
 	else
@@ -149,4 +152,16 @@ void ALB_AICMonster_Manequin::Resist_PlayerCharacter()
 			GetWorldTimerManager().SetTimer(SetBBTargetTimerHandle, this, &ALB_AICMonster_Manequin::Resist_PlayerCharacter, 1.0f, false);
 		}
 	}
+}
+
+void ALB_AICMonster_Manequin::Resist_ToGM()
+{
+	if (bIsGMResist) return;
+
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	bIsGMResist = true;
+
+	GM->ManequinSpawnDay = true;
 }

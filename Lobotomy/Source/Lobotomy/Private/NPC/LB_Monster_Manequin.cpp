@@ -7,6 +7,7 @@
 #include "NavigationSystem.h"
 #include "NPC/AI/LB_AICMonster_Manequin.h"
 #include "Sound/SoundCue.h"
+#include "LB_GM.h"
 
 ALB_Monster_Manequin::ALB_Monster_Manequin()
 {
@@ -23,6 +24,12 @@ void ALB_Monster_Manequin::BeginPlay()
 	{
 		GetWorldTimerManager().SetTimer(PlayerResistTimerHandle, this, &ALB_Monster_Manequin::Resist_PlayerCharacter_C, 1.0f, false);
 		GetWorldTimerManager().SetTimer(OwnerAICResistTimerHandle, this, &ALB_Monster_Manequin::Resist_OwnerAIC, 1.0f, false);
+	}
+
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->SetManequinRef(this);
 	}
 }
 
