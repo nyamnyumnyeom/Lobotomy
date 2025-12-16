@@ -42,6 +42,7 @@ ALB_LockDoor::ALB_LockDoor()
 
     bIsOpen = false;
 	bIsLeft = true;
+	
 
 	Tags.Add(FName("Door"));
 }
