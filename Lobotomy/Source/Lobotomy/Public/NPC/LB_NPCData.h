@@ -36,3 +36,14 @@ enum class EPatientState : uint8
 	Action UMETA(DisplayName = "Action"),
 };
 // @----------@ @----------@ @----------@ @----------@ @----------@
+
+// @@----------@ @-----@ For Nurse @-----@ @----------@
+UENUM(BlueprintType)
+enum class ENurseState : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Strafe UMETA(DisplayName = "Strafe"),
+	SmartObject UMETA(DisplayName = "SmartObject"),
+	Interact UMETA(DisplayName = "Interact"),
+};
+// @----------@ @----------@ @----------@ @----------@ @----------@

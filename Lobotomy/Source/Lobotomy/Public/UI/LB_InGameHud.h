@@ -60,6 +60,14 @@ protected:
 
     void UpdateGameTime();
 
+    UPROPERTY(meta = (BindWidget))
+    UProgressBar* SanityBar;
+
+    UFUNCTION(BlueprintCallable, Category = "Sanity")
+    void UpdateSanity(float CurrentSanity);
+
+    float SanityBlinkTimer = 0.0f;
+
 private:
     ALB_Character* PlayerCharacter;
 

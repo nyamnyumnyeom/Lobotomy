@@ -31,6 +31,8 @@ protected:
 	ACharacter* PlayerCharacterReference;
 	AActor* PlayerCharacterReference_AActor;
 
+	bool bIsGMResist = false;
+
 public:
 	ALB_AICMonster_Manequin();
 
@@ -48,4 +50,6 @@ public:
 protected:
 	void Resist_OwnedPawn();
 	void Resist_PlayerCharacter();
+
+	void Resist_ToGM();
 };

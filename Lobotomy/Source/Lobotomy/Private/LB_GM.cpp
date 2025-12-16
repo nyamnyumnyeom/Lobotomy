@@ -7,12 +7,15 @@
 #include "NavigationPath.h"
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
+#include "NPC/LB_Monster_TeddyBear.h"
 #include "LB_Setting.h"
 #include "UI/LB_DialogueUI.h"
 #include "UI/LB_ChartData.h"
 #include "UI/LB_SettingUI.h"
 #include "Save/LB_SaveSetting.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "NPC/LB_TargetPoint_Manequin.h"
+#include "NPC/LB_Monster_Manequin.h"
 
 ALB_GM::ALB_GM()
 {
@@ -206,11 +209,21 @@ void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 	}
 }
 
-void ALB_GM::ChainSawManDestroy()
+void ALB_GM::AllMonsterDestroy()
 {
 	if (ChainSawManRef)
 	{
 		ChainSawManRef->DisappearLogic();
+	}
+
+	if (TeddyBearRef)
+	{
+		TeddyBearRef->DisappearLogic();
+	}
+
+	if (ManequinRef)
+	{
+		DespawnManequin();
 	}
 }
 
@@ -267,6 +280,62 @@ float ALB_GM::GetChainSawManToPlayerDistance()
 	return -1.0f;
 }
 
+void ALB_GM::SetTeddyBearRef(ALB_Monster_TeddyBear* TB)
+{
+	TeddyBearRef = TB;
+}
+
+void ALB_GM::SetManequinRef(ALB_Monster_Manequin* MQ)
+{
+	ManequinRef = MQ;
+}
+
+void ALB_GM::SpawnManequin()
+{
+	if (!ManequinClass) return;
+	if (ManequinRef) return;
+
+	if (!ManequinSpawnDay) return;
+
+	TArray<AActor*> FoundPoints;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALB_TargetPoint_Manequin::StaticClass(), FoundPoints);
+
+	if (FoundPoints.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, FoundPoints.Num() - 1);
+
+		AActor* TargetActor = FoundPoints[RandomIndex];
+
+		if (TargetActor)
+		{
+			FVector SpawnLocation = TargetActor->GetActorLocation();
+			SpawnLocation.Z = SpawnLocation.Z + 50.0f;
+			FRotator SpawnRotation = TargetActor->GetActorRotation();
+
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			ManequinRef = GetWorld()->SpawnActor<ALB_Monster_Manequin>(ManequinClass, SpawnLocation, SpawnRotation, SpawnParams);
+			if (ManequinRef)
+			{
+				ManequinRef->SetOwner(this);
+			}
+		}
+	}
+}
+
+void ALB_GM::DespawnManequin()
+{
+	if (!ManequinSpawnDay) return;
+
+	if (ManequinRef)
+	{
+		ManequinRef->Destroy();
+		ManequinRef = nullptr;
+	}
+}
+
 void ALB_GM::UpdateDate()
 {
 	CurrentDay++;
@@ -280,6 +349,8 @@ void ALB_GM::ClearDate()
 void ALB_GM::ChangeToNight()
 {
 	bIsNight = true;
+
+	SpawnManequin();
 }
 
 void ALB_GM::ChangeToDay()
@@ -287,7 +358,7 @@ void ALB_GM::ChangeToDay()
 	bIsNight = false;
 
 	SafeBoxAlertCountReset();
-	ChainSawManDestroy();
+	AllMonsterDestroy();
 }
 
 void ALB_GM::StartTimeCount()

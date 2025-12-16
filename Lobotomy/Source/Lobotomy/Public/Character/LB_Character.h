@@ -248,6 +248,40 @@ public:
 
     const FItemRow* GetCurrentItemData() const;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sanity")
+    float Sanity;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sanity")
+    float MaxSanity = 100.0f;
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Sanity")
+    void OnSanityChanged(float NewSanity);
+
+    //정신력 증가, 감소 함수
+    UFUNCTION(BlueprintCallable, Category = "Sanity")
+    void AddSanity(float Amount);
+
+    UFUNCTION(BlueprintCallable, Category = "Sanity")
+    void ReduceSanity(float Amount);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sanity")
+    float SanityIntervalMin = 10.0f;   // 상태이상 발현 최소 초수
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sanity")
+    float SanityIntervalMax = 100.0f;  // 상태이상 발현 최대 초수
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sanity")
+    float SanityEffectTimer = -1.0f; // 상태이상 타이머
+
+    //왜곡 효과는 여기에
+    UFUNCTION(BlueprintImplementableEvent, Category = "Sanity")
+    void PlaySanityDistortionEffect();
+
+    UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Time")
+    bool IsNight() const;
+
 private:
+
+    void UpdateSanityEffect(float DeltaTime);
    // bool TryUseKeyOnCurrentDoor();
 };

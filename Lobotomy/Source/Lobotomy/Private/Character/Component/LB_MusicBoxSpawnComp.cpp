@@ -58,6 +58,11 @@ void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && HitActor->ActorHasTag("MusicBoxPoint"))
 			{
+				float PlayerHeight = MyOwnerPawn->GetActorLocation().Z;
+				float TargetHeight = HitActor->GetActorLocation().Z;
+				if (PlayerHeight - 200.0f > TargetHeight) continue;
+				if (PlayerHeight + 200.0f < TargetHeight) continue;
+
 				FVector PlayerForward = MyOwnerPawn->GetActorForwardVector().GetSafeNormal();
 				FVector ToPlayer = (HitActor->GetActorLocation() - Start).GetSafeNormal();
 
