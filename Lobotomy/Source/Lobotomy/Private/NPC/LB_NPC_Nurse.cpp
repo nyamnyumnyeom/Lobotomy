@@ -49,18 +49,86 @@ void ALB_NPC_Nurse::Check_SO()
 			{
 				LastSOAction = ISO_Nurse::Execute_CheakNurseSOAction(HitActor);
 
-				SOAction();
+				SOAction(HitActor->GetActorLocation(), HitActor->GetActorRotation().Yaw);
 			}
 		}
 	}
 }
 
-void ALB_NPC_Nurse::SOAction()
+void ALB_NPC_Nurse::PlayAnimation_Zero()
+{
+	if (!Montage_Zero) return;
+
+	UAnimInstance* AnimInst = GetMesh()->GetAnimInstance();
+	if (!AnimInst) return;
+
+	float PlayTime = AnimInst->Montage_Play(Montage_Zero);
+	if (PlayTime <= 0.f) return;
+
+	TimerOff_InteractSO();
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ALB_NPC_Nurse::OnSOZeroMontageEnded);
+	AnimInst->Montage_SetEndDelegate(EndDelegate, Montage_Zero);
+}
+
+void ALB_NPC_Nurse::PlayAnimation_One()
+{
+	if (!Montage_One) return;
+
+	UAnimInstance* AnimInst = GetMesh()->GetAnimInstance();
+	if (!AnimInst) return;
+
+	float PlayTime = AnimInst->Montage_Play(Montage_One);
+	if (PlayTime <= 0.f) return;
+
+	TimerOff_InteractSO();
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ALB_NPC_Nurse::OnSOOneMontageEnded);
+	AnimInst->Montage_SetEndDelegate(EndDelegate, Montage_One);
+}
+
+void ALB_NPC_Nurse::PlayAnimation_Two()
+{
+	if (!Montage_Two) return;
+
+	UAnimInstance* AnimInst = GetMesh()->GetAnimInstance();
+	if (!AnimInst) return;
+
+	float PlayTime = AnimInst->Montage_Play(Montage_Two);
+	if (PlayTime <= 0.f) return;
+
+	TimerOff_InteractSO();
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ALB_NPC_Nurse::OnSOTwoMontageEnded);
+	AnimInst->Montage_SetEndDelegate(EndDelegate, Montage_Two);
+}
+
+void ALB_NPC_Nurse::PlayAnimation_Three()
+{
+	if (!Montage_Three) return;
+
+	UAnimInstance* AnimInst = GetMesh()->GetAnimInstance();
+	if (!AnimInst) return;
+
+	float PlayTime = AnimInst->Montage_Play(Montage_Three);
+	if (PlayTime <= 0.f) return;
+
+	TimerOff_InteractSO();
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ALB_NPC_Nurse::OnSOThreeMontageEnded);
+	AnimInst->Montage_SetEndDelegate(EndDelegate, Montage_Three);
+}
+
+void ALB_NPC_Nurse::SOAction(FVector SOLocation, float ZRotation)
 {
 	if (!OwnerAICReference) return;
 	if (LastSOAction < 0) return;
 
-	OwnerAICReference->SetState_SmartObject(LastSOAction);
+	OwnerAICReference->SetState_SmartObject(LastSOAction, SOLocation, ZRotation);
 }
 
 void ALB_NPC_Nurse::TimerOn_InteractSO()
@@ -79,6 +147,20 @@ void ALB_NPC_Nurse::TimerOff_InteractSO()
 	}
 }
 
+void ALB_NPC_Nurse::SetStateInteract()
+{
+	if (!OwnerAICReference) return;
+
+	OwnerAICReference->SetState_Interact();
+}
+
+void ALB_NPC_Nurse::SetStateNone()
+{
+	if (!OwnerAICReference) return;
+
+	OwnerAICReference->SetState_None();
+}
+
 void ALB_NPC_Nurse::Resist_OwnerAIC()
 {
 	OwnerAICReference = Cast<ALB_AIC_Nurse>(GetController());
@@ -88,6 +170,66 @@ void ALB_NPC_Nurse::Resist_OwnerAIC()
 	if (GetWorld())
 	{
 		GetWorldTimerManager().SetTimer(OwnerAICResistTimerHandle, this, &ALB_NPC_Nurse::Resist_OwnerAIC, 1.0f, false);
+	}
+}
+
+void ALB_NPC_Nurse::OnSOZeroMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage != Montage_Zero) return;
+
+	if (!bInterrupted)
+	{
+		SetStateNone();
+
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(SODelayTimerHandle, this, &ALB_NPC_Nurse::TimerOn_InteractSO, SO_DelayTime, false);
+		}
+	}
+}
+
+void ALB_NPC_Nurse::OnSOOneMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage != Montage_One) return;
+
+	if (!bInterrupted)
+	{
+		SetStateNone();
+
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(SODelayTimerHandle, this, &ALB_NPC_Nurse::TimerOn_InteractSO, SO_DelayTime, false);
+		}
+	}
+}
+
+void ALB_NPC_Nurse::OnSOTwoMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage != Montage_Two) return;
+
+	if (!bInterrupted)
+	{
+		SetStateNone();
+
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(SODelayTimerHandle, this, &ALB_NPC_Nurse::TimerOn_InteractSO, SO_DelayTime, false);
+		}
+	}
+}
+
+void ALB_NPC_Nurse::OnSOThreeMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage != Montage_Three) return;
+
+	if (!bInterrupted)
+	{
+		SetStateNone();
+
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(SODelayTimerHandle, this, &ALB_NPC_Nurse::TimerOn_InteractSO, SO_DelayTime, false);
+		}
 	}
 }
 
