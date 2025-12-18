@@ -8,6 +8,8 @@
 #include "Components/BillboardComponent.h"
 #include "LevelActor/LB_TeddyBear.h"
 #include "NPC/LB_Monster_TeddyBear.h"
+#include "LB_GM.h"
+#include "Kismet/GameplayStatics.h"
 
 ALB_TargetPoint_TeddyBear::ALB_TargetPoint_TeddyBear()
 {
@@ -120,7 +122,24 @@ void ALB_TargetPoint_TeddyBear::ReferenceClear()
 	bIsBearHere = false;
 }
 
-bool ALB_TargetPoint_TeddyBear::GetbIsBearHere()
+void ALB_TargetPoint_TeddyBear::GetBearHere()
 {
-	return bIsBearHere;
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	ALB_TeddyBear* NewTeddy = GM->GetTeddyRef();
+	if (!NewTeddy) return;
+
+	ReferenceResister(NewTeddy);
+
+	NewTeddy->SetBearVisibility(false);
+	NewTeddy->SetBearCollision(false);
+	NewTeddy->bIsCheckTonight = false;
+	NewTeddy->TeleportToSpecialTarget(this);
+
 }
+
+//bool ALB_TargetPoint_TeddyBear::GetbIsBearHere()
+//{
+//	return bIsBearHere;
+//}
