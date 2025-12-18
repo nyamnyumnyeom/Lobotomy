@@ -21,6 +21,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float TriggerLoopTime = 30.0f;
 
+	// 곰인형을 제자리로 돌려놓은 후 다시 로직을 실행시키기 위한 딜레이
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float TriggerLoopDelay = 30.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float Threshold = 0.5f;
 
@@ -32,6 +36,7 @@ protected:
 
 protected:
 	FTimerHandle TriggerLoopTimerHandle;
+	FTimerHandle TriggerLoopDelayHandle;
 
 public:	
 	ULB_TeddyBearComp();
@@ -50,5 +55,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	void TriggerLoopTimerClear();
+
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void ClearbIsChecked();
 
 };

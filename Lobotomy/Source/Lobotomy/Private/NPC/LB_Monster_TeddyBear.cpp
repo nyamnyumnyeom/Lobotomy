@@ -40,8 +40,8 @@ void ALB_Monster_TeddyBear::DisappearLogic()
 	if (OwnerTP)
 	{
 		OwnerTP->TeddyBear_Ref->bIsCheckTonight = false;
-		OwnerTP->TeddyBear_Ref->TeleportToRandomTarget();
-
+		//OwnerTP->TeddyBear_Ref->TeleportToRandomTarget();
+		OwnerTP->TeddyBear_Ref->TeleportToOrigin();
 	}
 
 	ACharacter* PlayerChar = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -78,7 +78,7 @@ void ALB_Monster_TeddyBear::SetSpawnWhetherToGM(bool Value)
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GM)
 	{
-		GM->SetIsChainSawManSpawned(Value);
+		//GM->SetIsChainSawManSpawned(Value);
 		if (Value)
 		{
 			GM->SetTeddyBearRef(this);

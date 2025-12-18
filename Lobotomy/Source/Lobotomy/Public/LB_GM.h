@@ -10,6 +10,7 @@
 class ULB_DialogueUI;
 class UDataTable;
 class ALB_Monster_TeddyBear;
+class ALB_TeddyBear;
 class ALB_Monster_Manequin;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChartUpdated, int32, PageNumber);
@@ -26,6 +27,9 @@ protected:
 
 	// 스폰중인 곰탱이 레퍼런스
 	ALB_Monster_TeddyBear* TeddyBearRef;
+
+	// 스폰중인 곰탱이 인형 레퍼런스
+	ALB_TeddyBear* TeddyRef;
 
 	// 스폰중인 마네킹 레퍼런스
 	ALB_Monster_Manequin* ManequinRef;
@@ -208,8 +212,14 @@ public:
 
 	// ---------- 곰탱이 관련 함수 ----------
 public:
-	// 곰탱이 레퍼런스 등록
+	// 곰탱이 괴물 레퍼런스 등록
 	void SetTeddyBearRef(ALB_Monster_TeddyBear* TB);
+
+	// 곰탱이 인형 레퍼런스 등록
+	void SetTeddyRef(ALB_TeddyBear* TB);
+
+	// 곰탱이 인형 레퍼런스 가져오기
+	FORCEINLINE ALB_TeddyBear* GetTeddyRef() const { return TeddyRef; }
 
 	// ---------- -------------------- ----------
 
