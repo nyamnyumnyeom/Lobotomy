@@ -279,7 +279,6 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Time")
     bool IsNight() const;
-
 private:
 
     void UpdateSanityEffect(float DeltaTime);
