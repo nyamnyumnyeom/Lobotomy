@@ -10,7 +10,7 @@ ALB_SmartObject::ALB_SmartObject()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);
-	SphereCollision->InitSphereRadius(300.0f);
+	SphereCollision->InitSphereRadius(50.0f);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);

@@ -8,6 +8,7 @@
 #include "AIController.h"
 #include "NPC/LB_Monster_ChainSawMan.h"
 #include "NPC/LB_Monster_TeddyBear.h"
+#include "LevelActor/LB_TeddyBear.h"
 #include "LB_Setting.h"
 #include "UI/LB_DialogueUI.h"
 #include "UI/LB_ChartData.h"
@@ -283,6 +284,11 @@ float ALB_GM::GetChainSawManToPlayerDistance()
 void ALB_GM::SetTeddyBearRef(ALB_Monster_TeddyBear* TB)
 {
 	TeddyBearRef = TB;
+}
+
+void ALB_GM::SetTeddyRef(ALB_TeddyBear* TB)
+{
+	TeddyRef = TB;
 }
 
 void ALB_GM::SetManequinRef(ALB_Monster_Manequin* MQ)

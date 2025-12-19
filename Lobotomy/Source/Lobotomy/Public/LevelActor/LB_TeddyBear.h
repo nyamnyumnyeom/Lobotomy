@@ -58,6 +58,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LB|Action")
 	void TeleportToRandomTarget();
 
+	// 레벨에 배치된 ALB_TargetPoint_TeddyBear 에서 호출하는 곳으로 이동.
+	UFUNCTION(BlueprintCallable, Category = "LB|Action")
+	void TeleportToSpecialTarget(ALB_TargetPoint_TeddyBear* TP);
+
 public:
 	// 원래 위치로 이동.
 	UFUNCTION(BlueprintCallable, Category = "LB|Action")
@@ -70,4 +74,7 @@ public:
 	// 상호작용 위젯 숨기기
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnInteractWidgetHide();
+
+protected:
+	void SetSpawnWhetherToGM(bool Value);
 };

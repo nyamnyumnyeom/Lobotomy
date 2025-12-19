@@ -23,8 +23,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float SO_CheckTime = 3.0f;
 
+	// Smart Object를 검사한 뒤 재검사까지 필요한 시간
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float SO_DelayTime = 30.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* Montage_Zero;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* Montage_One;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* Montage_Two;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* Montage_Three;
+
 protected:
 	FTimerHandle SOCheackTimerHandle;
+	FTimerHandle SODelayTimerHandle;
 	FTimerHandle OwnerAICResistTimerHandle;
 
 protected:
@@ -46,9 +60,14 @@ public:
 	// 2 : 문을 두드린 후 열어봄.
 	// 3 : 환자와 대화를 시도함.
 	UFUNCTION(BlueprintCallable)
-	void SOAction();
+	void SOAction(FVector SOLocation, float ZRotation);
 
 	void Check_SO();
+
+	void PlayAnimation_Zero();
+	void PlayAnimation_One();
+	void PlayAnimation_Two();
+	void PlayAnimation_Three();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -57,6 +76,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TimerOff_InteractSO();
 
+	UFUNCTION(BlueprintCallable)
+	void SetStateInteract();
+
+	UFUNCTION(BlueprintCallable)
+	void SetStateNone();
+
 protected:
 	void Resist_OwnerAIC();
+
+protected:
+	void OnSOZeroMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnSOOneMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnSOTwoMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnSOThreeMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+
 };

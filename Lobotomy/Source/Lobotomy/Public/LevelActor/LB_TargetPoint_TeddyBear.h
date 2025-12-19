@@ -106,6 +106,10 @@ public:
 	void ReferenceClear();
 
 	// 곰인형 체크 함수
+	//UFUNCTION(BlueprintCallable, Category = "LB|Reference")
+	//bool GetbIsBearHere();
+
+	// 곰인형 불러오기 함수
 	UFUNCTION(BlueprintCallable, Category = "LB|Reference")
-	bool GetbIsBearHere();
+	void GetBearHere();
 };

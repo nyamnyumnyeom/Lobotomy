@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "LevelActor/LB_TargetPoint_TeddyBear.h"
+#include "LB_GM.h"
 
 
 ALB_TeddyBear::ALB_TeddyBear()
@@ -22,6 +23,8 @@ void ALB_TeddyBear::BeginPlay()
 
 	OriginLocation = GetActorLocation();
 	OriginRotator = GetActorRotation();
+
+	SetSpawnWhetherToGM(true);
 }
 
 void ALB_TeddyBear::CheckMonsterPercentage(bool& bShouldMonster)
@@ -91,6 +94,20 @@ void ALB_TeddyBear::TeleportToRandomTarget()
 	}
 }
 
+void ALB_TeddyBear::TeleportToSpecialTarget(ALB_TargetPoint_TeddyBear* TP)
+{
+	if (TP)
+	{
+		SetActorLocationAndRotation(TP->GetActorLocation(), TP->GetActorRotation());
+
+		TargetPoint_Ref = Cast<ALB_TargetPoint_TeddyBear>(TP);
+		if (TargetPoint_Ref)
+		{
+			TargetPoint_Ref->ReferenceResister(this);
+		}
+	}
+}
+
 void ALB_TeddyBear::TeleportToOrigin()
 {
 	SetActorLocationAndRotation(OriginLocation, OriginRotator);
@@ -101,6 +118,22 @@ void ALB_TeddyBear::ReferenceClear()
 	if (TargetPoint_Ref)
 	{
 		TargetPoint_Ref->ReferenceClear();
+	}
+}
+
+void ALB_TeddyBear::SetSpawnWhetherToGM(bool Value)
+{
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		if (Value)
+		{
+			GM->SetTeddyRef(this);
+		}
+		else
+		{
+			GM->SetTeddyRef(nullptr);
+		}
 	}
 }
 

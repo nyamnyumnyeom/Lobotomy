@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTT_SmartObjectAction.generated.h"
+#include "BTT_GetNursePoint.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LOBOTOMY_API UBTT_SmartObjectAction : public UBTTaskNode
+class LOBOTOMY_API UBTT_GetNursePoint : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Blackboard")
-	FBlackboardKeySelector SOActionNumberKey;
+	UPROPERTY(EditAnywhere, Category = "Location")
+	struct FBlackboardKeySelector LocationKey;
 
 public:
-	UBTT_SmartObjectAction();
+	UBTT_GetNursePoint();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

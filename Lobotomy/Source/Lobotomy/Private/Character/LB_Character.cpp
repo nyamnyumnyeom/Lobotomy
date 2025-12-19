@@ -15,6 +15,7 @@
 #include "Components/AudioComponent.h"
 #include "DrawDebugHelpers.h"
 #include "LB_Setting.h"
+#include "LB_GM.h"
 #include "UI/LB_InGameHud.h"
 #include "LB_LockDoor.h"
 
@@ -148,6 +149,8 @@ void ALB_Character::Tick(float DeltaTime)
         Params
     );
 
+    //정신력소모발동
+    UpdateSanityEffect(DeltaTime);
     // Debug// 디버그 라인 & 스피어 표시
     //DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, 0, 1.0f);
 
@@ -221,7 +224,6 @@ void ALB_Character::Tick(float DeltaTime)
             Stamina = FMath::Clamp(Stamina, 0.0f, MaxStamina);
         }
     }
-    UpdateSanityEffect(DeltaTime);
 }
 
 void ALB_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -660,10 +662,6 @@ void ALB_Character::AddSanity(float Amount)
 
 void ALB_Character::ReduceSanity(float Amount)
 {
-    if (!IsNight())
-    {
-        return;
-    }
     if (Sanity <= 0.0f)
     {
         return;
@@ -677,14 +675,32 @@ void ALB_Character::ReduceSanity(float Amount)
 
 void ALB_Character::UpdateSanityEffect(float DeltaTime)
 {
-    if (!IsNight())
+    bool bNight = false;
+    if (UWorld* World = GetWorld())
+    {
+        if (AGameModeBase* GMBase = UGameplayStatics::GetGameMode(World))
+        {
+            if (ALB_GM* GM = Cast<ALB_GM>(GMBase))
+            {
+                bNight = GM->bIsNight;
+            }
+        }
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] Night=%d Sanity=%.2f Timer=%.2f"),
+        bNight ? 1 : 0, Sanity, SanityEffectTimer);
+
+    if (!bNight)
     {
         SanityEffectTimer = -1.0f;
+        UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] -> Reset (Not Night)"));
         return;
     }
+
     if (Sanity > 50.0f)
     {
         SanityEffectTimer = -1.0f;
+        UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] -> Reset (Sanity > 50)"));
         return;
     }
 
@@ -692,16 +708,14 @@ void ALB_Character::UpdateSanityEffect(float DeltaTime)
     float Interval = FMath::Lerp(10.0f, 100.0f, Ratio);
 
     if (SanityEffectTimer < 0.0f)
-    {
         SanityEffectTimer = Interval;
-    }
 
     SanityEffectTimer -= DeltaTime;
 
     if (SanityEffectTimer <= 0.0f)
     {
+        UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] !!! Trigger Distortion !!!"));
         PlaySanityDistortionEffect();
-
         SanityEffectTimer = Interval;
     }
 }

@@ -93,11 +93,18 @@ void ULB_TeddyBearComp::TriggerTeddyBearLoop()
 			NearestPoint = Cast<ALB_TargetPoint_TeddyBear>(NearestActor);
 			if (NearestPoint)
 			{
-				if (NearestPoint->GetbIsBearHere())
+				/*if (NearestPoint->GetbIsBearHere())
 				{
 					bIsChecked = true;
 					NearestPoint->ShowTeddyBear();
-				}
+				}*/
+
+				bIsChecked = true;
+
+				NearestPoint->GetBearHere();
+				NearestPoint->ShowTeddyBear();
+
+				GetWorld()->GetTimerManager().SetTimer(TriggerLoopDelayHandle, this, &ULB_TeddyBearComp::ClearbIsChecked, TriggerLoopDelay, false);
 			}
 		}
 	}
@@ -107,5 +114,10 @@ void ULB_TeddyBearComp::TriggerLoopTimerClear()
 {
 	bIsChecked = false;
 	GetWorld()->GetTimerManager().ClearTimer(TriggerLoopTimerHandle);
+}
+
+void ULB_TeddyBearComp::ClearbIsChecked()
+{
+	bIsChecked = false;
 }
 
