@@ -17,6 +17,7 @@ void ULB_TeddyBearComp::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 void ULB_TeddyBearComp::TriggerTeddyBearActive()
@@ -28,10 +29,16 @@ void ULB_TeddyBearComp::TriggerTeddyBearLoop()
 {
 	if (bIsChecked) return;
 
-	GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM)
+	{
+		GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	}
+
 	if (!GM) return;
 
 	if (GM->bIsNight == false) return;
+
+	if (GM->GetTeddyBearRef()) return;
 
 	AActor* MyOwnerPawn = GetOwner();
 	if (!MyOwnerPawn) return;

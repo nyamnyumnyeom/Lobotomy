@@ -68,6 +68,8 @@ void ALB_TargetPoint_TeddyBear::ShowTeddyBear()
 	if (!bIsBearHere) return;
 
 	OnTeddyBearShow();
+
+	GetWorld()->GetTimerManager().SetTimer(TeddyLimitTimerHandle, this, &ALB_TargetPoint_TeddyBear::OnMonsterBearShow, LimitTime, false);
 }
 
 void ALB_TargetPoint_TeddyBear::InteractWidgetHide()
@@ -137,6 +139,11 @@ void ALB_TargetPoint_TeddyBear::GetBearHere()
 	NewTeddy->bIsCheckTonight = false;
 	NewTeddy->TeleportToSpecialTarget(this);
 
+}
+
+void ALB_TargetPoint_TeddyBear::ClearTimer_LimitTime()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TeddyLimitTimerHandle);
 }
 
 //bool ALB_TargetPoint_TeddyBear::GetbIsBearHere()

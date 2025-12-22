@@ -40,6 +40,13 @@ void ALB_TeddyBear::CheckMonsterPercentage(bool& bShouldMonster)
 	}
 }
 
+void ALB_TeddyBear::ClearTimer_ForTP()
+{
+	if (!TargetPoint_Ref) return;
+
+	TargetPoint_Ref->ClearTimer_LimitTime();
+}
+
 void ALB_TeddyBear::MonsterLightDirected()
 {
 	if (!TargetPoint_Ref) return;

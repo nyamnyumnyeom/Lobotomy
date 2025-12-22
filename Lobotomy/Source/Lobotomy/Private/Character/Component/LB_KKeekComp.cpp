@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/Component/LB_KKeekComp.h"
@@ -29,9 +29,22 @@ void ULB_KKeekComp::TriggerKKeek()
 	{
 		bIsWaiting = true;
 
-		KKeek_Ref->KKeekKKeekVisible(CanActiveLocation);
+		if (KKeek_Ref)
+		{
+			KKeek_Ref->KKeekKKeekVisible(CanActiveLocation);
+		}
+
+		WaitingTimer();
 
 		CurrentSpawn_Length = CurrentSpawn_Length - Spawn_Length_Closer;
+	}
+}
+
+void ULB_KKeekComp::DissapearKKeek()
+{
+	if (KKeek_Ref)
+	{
+		KKeek_Ref->KKeekKKeekInvisible();
 	}
 }
 
@@ -77,11 +90,65 @@ bool ULB_KKeekComp::CheckCanActive()
 	return true;
 }
 
+void ULB_KKeekComp::CheckCanDissapear()
+{
+	if (!KKeek_Ref) return;
+
+	ACharacter* Char = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+	FVector PlayerForward = Char->GetActorForwardVector().GetSafeNormal();
+
+	FVector ToPlayer = (KKeek_Ref->GetActorLocation() - Char->GetActorLocation()).GetSafeNormal();
+
+	float Dot = FVector::DotProduct(PlayerForward, ToPlayer);
+
+	bIsTooFar = false;
+
+	FVector Dist = KKeek_Ref->GetActorLocation() - Char->GetActorLocation();
+
+	if (Dist.Length() > 1000.0f)
+	{
+		bIsTooFar = true;
+
+		CheckCanDissapearBP();
+
+		DissapearCheckTimerClear();
+
+		return;
+	}
+
+	if (Dot >= Threshold)
+	{
+		CheckCanDissapearBP();
+
+		DissapearCheckTimerClear();
+
+		return;
+	}
+
+}
+
+void ULB_KKeekComp::DissapearCheckTimerStart()
+{
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer(DissapearTimerHandle, this, &ULB_KKeekComp::CheckCanDissapear, 0.3f, true);
+	}
+}
+
+void ULB_KKeekComp::DissapearCheckTimerClear()
+{
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(DissapearTimerHandle);
+	}
+}
+
 void ULB_KKeekComp::TriggerLoopTimerStart()
 {
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_KKeekComp::TriggerKKeek, 1.0f, true);
+		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_KKeekComp::CheakKKeekCondition, 1.0f, true);
 	}
 }
 
@@ -97,7 +164,7 @@ void ULB_KKeekComp::WaitingTimer()
 {
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(TriggerLoopTimerHandle, this, &ULB_KKeekComp::SetWaitingFalse, Action_WaitTime, false);
+		GetWorld()->GetTimerManager().SetTimer(WaitingTimerHandle, this, &ULB_KKeekComp::SetWaitingFalse, Action_WaitTime, false);
 	}
 }
 

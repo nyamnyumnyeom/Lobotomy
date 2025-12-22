@@ -47,6 +47,9 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 
 void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 {
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (!Player) return;
+
 	KKeekComp_Ref->bIsKKeekHere = true;
 
 	SetActorHiddenInGame(false);
@@ -67,7 +70,21 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 		MoveComp->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
 
-	SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	FVector PlayerLocation = Player->GetActorLocation();
+
+	FRotator LookAtRot = (PlayerLocation - GetActorLocation()).Rotation();
+	LookAtRot.Pitch = 0.0f;
+	LookAtRot.Roll = 0.0f;
+
+	SetActorLocationAndRotation(
+		NewLocation,
+		LookAtRot,
+		false,
+		nullptr,
+		ETeleportType::TeleportPhysics
+	);
+
+	// SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
 }
 
 void ALB_Monster_KKeek::ResistForPlayer()

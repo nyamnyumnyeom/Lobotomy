@@ -40,6 +40,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LB|Action")
 	void CheckMonsterPercentage(bool &bShouldMonster);
 
+	// 타겟 포인트의 타이머 클리어.
+	UFUNCTION(BlueprintCallable, Category = "LB|Action")
+	void ClearTimer_ForTP();
+
 public:
 	// 괴물화 전등 연출 함수.
 	UFUNCTION(BlueprintCallable, Category = "LB|Action")
