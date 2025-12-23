@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,33 +7,41 @@
 #include "LB_KKeekComp.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LOBOTOMY_API ULB_KKeekComp : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	// ³£³£ÀÌ Ã¹ µîÀå °Å¸®.
+	// ë½ë½ì´ ì²« ë“±ì¥ ê±°ë¦¬.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
 	float FirstSpawn_Length = 700.0f;
 
-	// ³£³£ÀÌ µîÀå½Ã¸¶´Ù °¨¼Ò½ÃÅ³ °Å¸®.
+	// ë½ë½ì´ ë“±ì¥ì‹œë§ˆë‹¤ ê°ì†Œì‹œí‚¬ ê±°ë¦¬.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
 	float Spawn_Length_Closer = 100.0f;
 
-	// ³£³£ÀÌ °ø°İ °Å¸®.
+	// ë½ë½ì´ ê³µê²© ê±°ë¦¬.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
 	float CanAttack_Length = 100.0f;
 
-	// ÀçµîÀåÀÌ °¡´ÉÇÏ±â±îÁöÀÇ ´ë±â ½Ã°£.
+	// ì¬ë“±ì¥ì´ ê°€ëŠ¥í•˜ê¸°ê¹Œì§€ì˜ ëŒ€ê¸° ì‹œê°„.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
 	float Action_WaitTime = 60.0f;
 
-	// ÀçµîÀåÀÌ °¡´ÉÇÏÁö ¾ÊÀº ´ë±â ½Ã°£ÀÎ°¡?
+	// í”Œë ˆì´ì–´ê°€ ë½ë½ì´ë¥¼ ë°”ë¼ë³´ëŠ” ë‚´ì ì´ í•´ë‹¹ ê°’ ì´ìƒì¼ ë•Œ ì‚¬ë¼ì§.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
+	float Threshold = 0.5f;
+
+	// ì¬ë“±ì¥ì´ ê°€ëŠ¥í•˜ì§€ ì•Šì€ ëŒ€ê¸° ì‹œê°„ì¸ê°€?
 	bool bIsWaiting = false;
 
-	// µîÀå ·ÎÁ÷À» ½ÇÇà½ÃÄÑ ³£³£ÀÌ°¡ ÇÃ·¹ÀÌ¾î ±ÙÃ³·Î ÀÌµ¿Çß´ÂÁö.
+	// ë“±ì¥ ë¡œì§ì„ ì‹¤í–‰ì‹œì¼œ ë½ë½ì´ê°€ í”Œë ˆì´ì–´ ê·¼ì²˜ë¡œ ì´ë™í–ˆëŠ”ì§€.
 	bool bIsKKeekHere = false;
+
+	// ì‚¬ë¼ì ¸ì•¼ í•˜ëŠ” ì¡°ê±´ì´ ê±°ë¦¬ê°€ ë„ˆë¬´ ë©€ì–´ì ¸ì„œì¸ì§€.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "LB_Property|State")
+	bool bIsTooFar = false;
 
 protected:
 	float CurrentSpawn_Length = FirstSpawn_Length;
@@ -46,6 +54,7 @@ protected:
 protected:
 	FTimerHandle TriggerLoopTimerHandle;
 	FTimerHandle WaitingTimerHandle;
+	FTimerHandle DissapearTimerHandle;
 
 public:
 	ULB_KKeekComp();
@@ -54,13 +63,35 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// ³£³£ÀÌ ·ÎÁ÷À» ½ÇÇàÇØ¾ß ÇÏ´Â Å¸ÀÌ¹Ö¿¡ ÀÌ ÇÔ¼ö¸¦ È£Ãâ.
+	// ë½ë½ì´ ë¡œì§ ì¡°ê±´ê²€ì‚¬ (ë¸”ë£¨í”„ë¦°íŠ¸ ì „ìš©)
+	UFUNCTION(BlueprintImplementableEvent, Category = "Spawn")
+	void CheakKKeekCondition();
+
+	// ë½ë½ì´ ë¡œì§ì„ ì‹¤í–‰í•´ì•¼ í•˜ëŠ” íƒ€ì´ë°ì— ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œ.
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	void TriggerKKeek();
 
-	// ³£³£ÀÌ ·ÎÁ÷À» ½ÇÇàÇÒ ¼ö ÀÖ´Â Á¶°ÇÀÎÁö °Ë»ç.
+	// ë½ë½ì´ ì‚¬ë¼ì§€ê²Œ í•´ì•¼ í•˜ëŠ” íƒ€ì´ë°ì— ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œ.
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void DissapearKKeek();
+
+	// ë½ë½ì´ ë¡œì§ì„ ì‹¤í–‰í•  ìˆ˜ ìˆëŠ” ì¡°ê±´ì¸ì§€ ê²€ì‚¬.
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	bool CheckCanActive();
+
+	// ë½ë½ì´ ì‚¬ë¼ì§€ê²Œ í•  ìˆ˜ ìˆëŠ” ì¡°ê±´ì¸ì§€ ê²€ì‚¬.
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void CheckCanDissapear();
+
+	// ë½ë½ì´ ë¡œì§ ì¡°ê±´ê²€ì‚¬ (ë¸”ë£¨í”„ë¦°íŠ¸ ì „ìš©)
+	UFUNCTION(BlueprintImplementableEvent, Category = "Spawn")
+	void CheckCanDissapearBP();
+
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void DissapearCheckTimerStart();
+
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void DissapearCheckTimerClear();
 
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	void TriggerLoopTimerStart();

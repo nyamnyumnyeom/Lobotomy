@@ -218,6 +218,9 @@ public:
 	// 곰탱이 인형 레퍼런스 등록
 	void SetTeddyRef(ALB_TeddyBear* TB);
 
+	// 곰탱이 괴물 레퍼런스 가져오기
+	FORCEINLINE ALB_Monster_TeddyBear* GetTeddyBearRef() const { return TeddyBearRef; }
+
 	// 곰탱이 인형 레퍼런스 가져오기
 	FORCEINLINE ALB_TeddyBear* GetTeddyRef() const { return TeddyRef; }
 

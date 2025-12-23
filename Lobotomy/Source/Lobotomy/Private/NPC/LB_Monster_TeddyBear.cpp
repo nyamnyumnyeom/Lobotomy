@@ -54,6 +54,8 @@ void ALB_Monster_TeddyBear::DisappearLogic()
 		}
 	}
 
+	SetSpawnWhetherToGM(false);
+
 	Destroy();
 }
 
@@ -66,6 +68,8 @@ void ALB_Monster_TeddyBear::BeginPlay()
 		GetWorldTimerManager().ClearTimer(SpawnDurationTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_TeddyBear::TimeupSpawnDuration, SpawnDuration, false);
 	}
+
+	SetSpawnWhetherToGM(true);
 }
 
 void ALB_Monster_TeddyBear::TimeupSpawnDuration()

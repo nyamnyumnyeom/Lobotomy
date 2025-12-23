@@ -38,6 +38,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB|Light Settings")
 	float NightIntensity;
 
+	// 곰인형 등장 후 몇초 후에 괴물화 시킬지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB|Light Settings")
+	float LimitTime = 10.0f;
+
 	// 곰괴물 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	TSubclassOf<AActor> MonsterBearClass;
@@ -54,6 +58,9 @@ public:
 	// 곰괴물 레퍼런스
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LB|Property")
 	class ALB_Monster_TeddyBear* MonsterBear_Ref;
+
+protected:
+	FTimerHandle TeddyLimitTimerHandle;
 
 public:
 	ALB_TargetPoint_TeddyBear();
@@ -112,4 +119,8 @@ public:
 	// 곰인형 불러오기 함수
 	UFUNCTION(BlueprintCallable, Category = "LB|Reference")
 	void GetBearHere();
+
+	// 곰괴물 타이머 클리어
+	UFUNCTION(BlueprintCallable, Category = "LB|Reference")
+	void ClearTimer_LimitTime();
 };
