@@ -95,6 +95,11 @@ void ALB_TargetPoint_TeddyBear::TeddyBearSetActiveCollision(bool Collision)
 
 void ALB_TargetPoint_TeddyBear::SpawnMonsterBear()
 {
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+
+	if (GM->bIsNight == false) return;
+
 	FVector SpawnLocation = MonsterSpawnBillboard->GetComponentLocation();
 	FRotator SpawnRotation = MonsterSpawnBillboard->GetComponentRotation();
 
