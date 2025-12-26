@@ -96,6 +96,8 @@ void ULB_KKeekComp::CheckCanDissapear()
 
 	ACharacter* Char = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
+	if (!Char) return;
+
 	FVector PlayerForward = Char->GetActorForwardVector().GetSafeNormal();
 
 	FVector ToPlayer = (KKeek_Ref->GetActorLocation() - Char->GetActorLocation()).GetSafeNormal();
