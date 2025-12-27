@@ -36,7 +36,7 @@ public:
 
 	// 문 고리에 놓을 UI 관련 코드
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collision")
 	class USphereComponent* SphereCollision;
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class UBoxComponent* BoxCollision;
