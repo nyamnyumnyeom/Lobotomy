@@ -79,6 +79,8 @@ public:
 	// 플레이어 사망 로직 (TargetLocation : 바라볼 액터의 위치, Num : 사망 종류)
 	// 0 : 전기톱
 	// 1 : 노커
+	// 2 : 끾끾끾
+	// 3: 곰탬미
 	// 10 : 낮에 시간초과
 	// 11 : 밤에 시간초과
 	UFUNCTION(BlueprintCallable)

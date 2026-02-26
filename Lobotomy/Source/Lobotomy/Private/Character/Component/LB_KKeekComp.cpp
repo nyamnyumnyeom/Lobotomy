@@ -56,20 +56,23 @@ bool ULB_KKeekComp::CheckCanActive()
 	FRotator CamRot;
 	PC->GetPlayerViewPoint(CamLoc, CamRot);
 
-	FVector TargetLocation = CamLoc + CamRot.Vector() * CurrentSpawn_Length;
-
-	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-
-	FNavLocation Projected;
-	if (!NavSys || !NavSys->ProjectPointToNavigation(TargetLocation, Projected))
-	{
-		return false;
-	}
-
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (!Player) return false;
 
 	FVector PlayerLocation = Player->GetActorLocation();
+
+	FRotator YawOnlyRot(0.f, CamRot.Yaw, 0.f);
+	FVector ForwardDir = YawOnlyRot.Vector();
+
+	FVector TargetLocation = PlayerLocation + ForwardDir * CurrentSpawn_Length;
+
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+
+	FNavLocation Projected;
+	if (NavSys && NavSys->ProjectPointToNavigation(TargetLocation, Projected))
+	{
+		TargetLocation = Projected.Location;
+	}
 
 	FHitResult Hit;
 	FCollisionQueryParams Params;
@@ -134,7 +137,7 @@ void ULB_KKeekComp::DissapearCheckTimerStart()
 {
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(DissapearTimerHandle, this, &ULB_KKeekComp::CheckCanDissapear, 0.3f, true);
+		GetWorld()->GetTimerManager().SetTimer(DissapearTimerHandle, this, &ULB_KKeekComp::CheckCanDissapear, 0.1f, true);
 	}
 }
 

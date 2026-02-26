@@ -21,13 +21,27 @@ protected:
 	class ULB_KKeekComp* KKeekComp_Ref;
 
 protected:
+	bool bIsWalkingForward = false;
+
+	float WalkElapsedTime = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float WalkDuration = 2.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float PlayerKillDistance = 100.0f;
+
+protected:
 	FTimerHandle ResistTimerHandle;
+	FTimerHandle AutoInvisibleTimerHandle;
 
 public:
 	ALB_Monster_KKeek();
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	// 끽끽이 사라지는 로직.
@@ -39,6 +53,14 @@ public:
 	// Visibility, Collision, Movement 켜고 NewLocation으로 이동.
 	UFUNCTION(BlueprintCallable)
 	void KKeekKKeekVisible(FVector NewLocation);
+
+	// 재생할 몽타주
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* PlayMontage;
+
+	// 몽타주 재생 함수
+	UFUNCTION(BlueprintCallable)
+	void PlayKillMontage(float PlayRate = 1.0f);
 
 protected:
 	void ResistForPlayer();

@@ -208,6 +208,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayDeathSequence_Knocker();
 
+	// 끼끼기에게 사망시의 카메라 시퀀스 재생
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDeathSequence_KKE();
+
+	// 곰탱이에게 사망시의 카메라 시퀀스 재생
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDeathSequence_Bear();
+
 	// 낮에 시간 초과 사망시의 로직
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDayDeathLogic();

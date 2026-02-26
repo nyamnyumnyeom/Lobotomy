@@ -31,7 +31,7 @@ public:
 
 	// 플레이어가 끽끽이를 바라보는 내적이 해당 값 이상일 때 사라짐.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
-	float Threshold = 0.5f;
+	float Threshold = 0.0f;
 
 	// 재등장이 가능하지 않은 대기 시간인가?
 	bool bIsWaiting = false;

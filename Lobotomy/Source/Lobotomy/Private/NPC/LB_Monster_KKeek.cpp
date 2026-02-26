@@ -6,10 +6,11 @@
 #include "Character/Component/LB_KKeekComp.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "LB_GM.h"
 
 ALB_Monster_KKeek::ALB_Monster_KKeek()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Tags.Add(FName("KKeek"));
 }
@@ -23,8 +24,32 @@ void ALB_Monster_KKeek::BeginPlay()
 	ResistForPlayer();
 }
 
+void ALB_Monster_KKeek::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bIsWalkingForward)
+	{
+		WalkElapsedTime += DeltaTime;
+
+		AddMovementInput(GetActorForwardVector(), 1.0f);
+
+		if (WalkElapsedTime >= WalkDuration)
+		{
+			bIsWalkingForward = false;
+		}
+	}
+}
+
 void ALB_Monster_KKeek::KKeekKKeekInvisible()
 {
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(AutoInvisibleTimerHandle);
+	}
+
+	bIsWalkingForward = false;
+
 	KKeekComp_Ref->bIsKKeekHere = false;
 
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
@@ -72,7 +97,7 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 
 	FVector PlayerLocation = Player->GetActorLocation();
 
-	FRotator LookAtRot = (PlayerLocation - GetActorLocation()).Rotation();
+	FRotator LookAtRot = (PlayerLocation - NewLocation).Rotation();
 	LookAtRot.Pitch = 0.0f;
 	LookAtRot.Roll = 0.0f;
 
@@ -84,7 +109,38 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 		ETeleportType::TeleportPhysics
 	);
 
+	if ((PlayerLocation - NewLocation).Length() < PlayerKillDistance)
+	{
+		ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		PlayKillMontage(1.0f);
+
+		GM->PlayerDeathLogic(GetActorLocation(), 2);
+
+		return;
+	}
+
+	WalkElapsedTime = 0.0f;
+	bIsWalkingForward = true;
+
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer(AutoInvisibleTimerHandle, this, &ALB_Monster_KKeek::KKeekKKeekInvisible, 1.0f, false);
+	}
+
 	// SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+}
+
+void ALB_Monster_KKeek::PlayKillMontage(float PlayRate)
+{
+	if (!PlayMontage) return;
+
+	GetCharacterMovement()->DisableMovement();
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance) return;
+
+	AnimInstance->Montage_Play(PlayMontage, PlayRate);
 }
 
 void ALB_Monster_KKeek::ResistForPlayer()
