@@ -1,8 +1,9 @@
 ﻿#include "LB_BuzzWireActor.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SplineComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -16,47 +17,14 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	FocusCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FocusCamera"));
 	FocusCamera->SetupAttachment(Root);
 
-	// =========================
-	// Ring (Visual)
-	// =========================
 	RingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RingMesh"));
 	RingMesh->SetupAttachment(Root);
-	RingMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	// 링 메시 자체는 충돌 안씀 (판정은 Sphere로)
+	//RingMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// =========================
-	// Ring Collision (판정용)
-	// =========================
-	RingCollision = CreateDefaultSubobject<USphereComponent>(TEXT("RingCollision"));
-	RingCollision->SetupAttachment(RingMesh);
-	RingCollision->SetSphereRadius(18.f);
-
-	RingCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	RingCollision->SetCollisionObjectType(ECC_WorldDynamic);
-	RingCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
-	RingCollision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-
-	// =========================
-	// Dead Zone (복잡한 메시 그대로 판정)
-	// =========================
 	DeadZoneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DeadZoneMesh"));
 	DeadZoneMesh->SetupAttachment(Root);
+	//DeadZoneMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// ✅ 복잡한 메시 모양 그대로 Overlap 판정
-	DeadZoneMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	DeadZoneMesh->SetCollisionObjectType(ECC_WorldDynamic);
-	DeadZoneMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-	DeadZoneMesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-
-	// ✅ 링이 닿으면 이벤트 발생
-	DeadZoneMesh->OnComponentBeginOverlap.AddDynamic(
-		this,
-		&ALB_BuzzWireActor::HandleDeadZoneMeshBeginOverlap
-	);
-
-	// =========================
-	// Success Zone (Box Collision)
-	// =========================
 	SuccessZoneCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("SuccessZoneCollision"));
 	SuccessZoneCollision->SetupAttachment(Root);
 	SuccessZoneCollision->SetBoxExtent(FVector(60, 60, 60));
@@ -65,13 +33,8 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SuccessZoneCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SuccessZoneCollision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	SuccessZoneCollision->OnComponentBeginOverlap.AddDynamic(
-		this,
-		&ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap
-	);
+		this, &ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap);
 
-	// =========================
-	// SP Zones
-	// =========================
 	SPZone1Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("SPZone1Collision"));
 	SPZone1Collision->SetupAttachment(Root);
 	SPZone1Collision->SetBoxExtent(FVector(50, 50, 50));
@@ -80,9 +43,7 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SPZone1Collision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SPZone1Collision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	SPZone1Collision->OnComponentBeginOverlap.AddDynamic(
-		this,
-		&ALB_BuzzWireActor::HandleSPZone1BeginOverlap
-	);
+		this, &ALB_BuzzWireActor::HandleSPZone1BeginOverlap);
 
 	SPZone2Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("SPZone2Collision"));
 	SPZone2Collision->SetupAttachment(Root);
@@ -92,9 +53,7 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SPZone2Collision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SPZone2Collision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	SPZone2Collision->OnComponentBeginOverlap.AddDynamic(
-		this,
-		&ALB_BuzzWireActor::HandleSPZone2BeginOverlap
-	);
+		this, &ALB_BuzzWireActor::HandleSPZone2BeginOverlap);
 
 	SPZone3Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("SPZone3Collision"));
 	SPZone3Collision->SetupAttachment(Root);
@@ -104,9 +63,7 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SPZone3Collision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SPZone3Collision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	SPZone3Collision->OnComponentBeginOverlap.AddDynamic(
-		this,
-		&ALB_BuzzWireActor::HandleSPZone3BeginOverlap
-	);
+		this, &ALB_BuzzWireActor::HandleSPZone3BeginOverlap);
 }
 
 void ALB_BuzzWireActor::BeginPlay()
@@ -121,6 +78,7 @@ void ALB_BuzzWireActor::Tick(float DeltaSeconds)
 	if (bBuzzActive && !bDeadTriggered && !bSuccessTriggered)
 	{
 		UpdateRingFollowMouse(DeltaSeconds);
+		CheckDistanceToRod();
 	}
 }
 
@@ -132,7 +90,6 @@ void ALB_BuzzWireActor::BuzzPlay(float BlendTime)
 	PreviousViewTarget = CachedPC->GetViewTarget();
 
 	CachedPC->SetViewTargetWithBlend(this, BlendTime);
-
 	ApplyMouseOnlyInputLock(CachedPC);
 
 	bDeadTriggered = false;
@@ -150,7 +107,6 @@ void ALB_BuzzWireActor::BuzzStop(float BlendTime)
 	if (CachedPC)
 	{
 		RestoreInput(CachedPC);
-
 		if (PreviousViewTarget)
 		{
 			CachedPC->SetViewTargetWithBlend(PreviousViewTarget, BlendTime);
@@ -217,31 +173,29 @@ void ALB_BuzzWireActor::UpdateRingFollowMouse(float DeltaSeconds)
 
 	if (!bHit) return;
 
-	const FVector Target = Hit.ImpactPoint + RingWorldOffset;
+	FVector Target = Hit.ImpactPoint + RingWorldOffset;
 	const FVector Current = RingMesh->GetComponentLocation();
+	Target.X = Current.X;
+	// Target.X = GetActorLocation().X; 
+
 	const FVector NewLoc = FMath::VInterpTo(Current, Target, DeltaSeconds, FollowInterpSpeed);
 
 	RingMesh->SetWorldLocation(NewLoc);
 }
 
-bool ALB_BuzzWireActor::IsRingOverlap(UPrimitiveComponent* OtherComp) const
+void ALB_BuzzWireActor::CheckDistanceToRod()
 {
-	return (OtherComp && OtherComp == RingCollision);
-}
+	if (!TargetSpline) return;
 
-void ALB_BuzzWireActor::HandleDeadZoneMeshBeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult
-)
-{
-	if (!bBuzzActive) return;
-	if (bDeadTriggered || bSuccessTriggered) return;
+	const FVector RingLocation = RingMesh->GetComponentLocation();
 
-	if (OtherComp == RingCollision)
+	const FVector Closest =
+		TargetSpline->FindLocationClosestToWorldLocation(
+			RingLocation, ESplineCoordinateSpace::World);
+
+	const float Distance = FVector::Dist(RingLocation, Closest);
+
+	if (Distance <= DangerRadius)
 	{
 		bDeadTriggered = true;
 		bBuzzActive = false;
@@ -250,72 +204,32 @@ void ALB_BuzzWireActor::HandleDeadZoneMeshBeginOverlap(
 }
 
 void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult
-)
+	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (!bBuzzActive) return;
-	if (bDeadTriggered || bSuccessTriggered) return;
+	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 
-	if (IsRingOverlap(OtherComp))
-	{
-		bSuccessTriggered = true;
-		bBuzzActive = false;
-		OnBuzzSuccess();
-	}
+	bSuccessTriggered = true;
+	bBuzzActive = false;
+	OnBuzzSuccess();
 }
 
 void ALB_BuzzWireActor::HandleSPZone1BeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult
-)
+	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
 	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
-
-	if (IsRingOverlap(OtherComp))
-	{
-		OnSPZone1();
-	}
+	OnSPZone1();
 }
 
 void ALB_BuzzWireActor::HandleSPZone2BeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult
-)
+	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
 	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
-
-	if (IsRingOverlap(OtherComp))
-	{
-		OnSPZone2();
-	}
+	OnSPZone2();
 }
 
 void ALB_BuzzWireActor::HandleSPZone3BeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult
-)
+	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
 	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
-
-	if (IsRingOverlap(OtherComp))
-	{
-		OnSPZone3();
-	}
+	OnSPZone3();
 }

@@ -6,14 +6,14 @@
 
 class UCameraComponent;
 class UStaticMeshComponent;
-class USphereComponent;
 class UBoxComponent;
+class USplineComponent;
 
 UCLASS()
 class LOBOTOMY_API ALB_BuzzWireActor : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
 	ALB_BuzzWireActor();
 
@@ -57,9 +57,6 @@ protected:
 	UStaticMeshComponent* RingMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
-	USphereComponent* RingCollision;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
 	UStaticMeshComponent* DeadZoneMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
@@ -73,6 +70,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
 	UBoxComponent* SPZone3Collision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|DistanceCheck")
+	USplineComponent* TargetSpline = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|DistanceCheck")
+	float DangerRadius = 4.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|Mouse Follow")
 	TEnumAsByte<ECollisionChannel> MouseTraceChannel = ECC_Visibility;
@@ -99,61 +102,26 @@ private:
 	UPROPERTY()
 	AActor* PreviousViewTarget = nullptr;
 
-	// Overlap handlers
-	UFUNCTION()
-	void HandleDeadZoneMeshBeginOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
-
-	UFUNCTION()
-	void HandleSuccessZoneBeginOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
-
-	UFUNCTION()
-	void HandleSPZone1BeginOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
-
-	UFUNCTION()
-	void HandleSPZone2BeginOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
-
-	UFUNCTION()
-	void HandleSPZone3BeginOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
-
 	void ApplyMouseOnlyInputLock(APlayerController* PC);
 	void RestoreInput(APlayerController* PC);
 	void UpdateRingFollowMouse(float DeltaSeconds);
+	void CheckDistanceToRod();
 
-	bool IsRingOverlap(UPrimitiveComponent* OtherComp) const;
+	UFUNCTION()
+	void HandleSuccessZoneBeginOverlap(
+		UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleSPZone1BeginOverlap(
+		UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleSPZone2BeginOverlap(
+		UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleSPZone3BeginOverlap(
+		UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	void EndBuzzSession();
 };

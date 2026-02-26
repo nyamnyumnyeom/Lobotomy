@@ -230,6 +230,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void Timeout();
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void Buzzover();
+
 	// ---------- -------------------- ----------
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
