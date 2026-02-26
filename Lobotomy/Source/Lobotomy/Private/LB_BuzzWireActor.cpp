@@ -160,27 +160,20 @@ void ALB_BuzzWireActor::RestoreInput(APlayerController* PC)
 	PC->SetInputMode(Mode);
 }
 
-void ALB_BuzzWireActor::UpdateRingFollowMouse(float DeltaSeconds)
-{
-	if (!CachedPC) return;
-
-	FHitResult Hit;
-	const bool bHit = CachedPC->GetHitResultUnderCursorByChannel(
-		UEngineTypes::ConvertToTraceType(MouseTraceChannel),
-		true,
-		Hit
-	);
-
-	if (!bHit) return;
-
-	FVector Target = Hit.ImpactPoint + RingWorldOffset;
-	const FVector Current = RingMesh->GetComponentLocation();
-	Target.X = Current.X;
-	// Target.X = GetActorLocation().X; 
-
-	const FVector NewLoc = FMath::VInterpTo(Current, Target, DeltaSeconds, FollowInterpSpeed);
-
-	RingMesh->SetWorldLocation(NewLoc);
+void ALB_BuzzWireActor::UpdateRingFollowMouse(float DeltaSeconds) {
+		if (!CachedPC) return;
+		FVector WorldLocation, WorldDirection;
+		if (CachedPC->DeprojectMousePositionToWorld(WorldLocation, WorldDirection)) {
+				FVector PlaneOrigin = GetActorLocation();
+				FVector PlaneNormal = FVector(1.0f, 0.0f, 0.0f);
+				FVector RayStart = WorldLocation;
+				FVector RayEnd = WorldLocation + (WorldDirection * 10000.f);
+				FVector TargetLocation = FMath::LinePlaneIntersection(RayStart, RayEnd, PlaneOrigin, PlaneNormal);
+				TargetLocation += RingWorldOffset;
+				FVector CurrentLoc = RingMesh->GetComponentLocation();
+				FVector NewLoc = FMath::VInterpTo(CurrentLoc, TargetLocation, DeltaSeconds, FollowInterpSpeed);
+				RingMesh->SetWorldLocation(NewLoc);
+		}
 }
 
 void ALB_BuzzWireActor::CheckDistanceToRod()
