@@ -65,6 +65,9 @@ void ALB_GM::PlayerDeathLogic(FVector TargetLocation, int32 Num)
 	case 13:
 		LB_Character->Timeout();
 		break;
+	case 15:
+		LB_Character->Buzzover();
+		break;
 	default:
 		break;
 	}

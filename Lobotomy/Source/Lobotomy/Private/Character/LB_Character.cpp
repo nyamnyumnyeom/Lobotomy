@@ -687,20 +687,20 @@ void ALB_Character::UpdateSanityEffect(float DeltaTime)
         }
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] Night=%d Sanity=%.2f Timer=%.2f"),
-        bNight ? 1 : 0, Sanity, SanityEffectTimer);
+   /* UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] Night=%d Sanity=%.2f Timer=%.2f"),
+        bNight ? 1 : 0, Sanity, SanityEffectTimer);*/
 
     if (!bNight)
     {
         SanityEffectTimer = -1.0f;
-        UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] -> Reset (Not Night)"));
+        //UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] -> Reset (Not Night)"));
         return;
     }
 
     if (Sanity > 50.0f)
     {
         SanityEffectTimer = -1.0f;
-        UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] -> Reset (Sanity > 50)"));
+        //UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] -> Reset (Sanity > 50)"));
         return;
     }
 
@@ -714,7 +714,7 @@ void ALB_Character::UpdateSanityEffect(float DeltaTime)
 
     if (SanityEffectTimer <= 0.0f)
     {
-        UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] !!! Trigger Distortion !!!"));
+        //UE_LOG(LogTemp, Warning, TEXT("[SanityEffect] !!! Trigger Distortion !!!"));
         PlaySanityDistortionEffect();
         SanityEffectTimer = Interval;
     }
