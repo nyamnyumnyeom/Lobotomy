@@ -7,7 +7,7 @@
 class UCameraComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
-class USplineComponent;
+class USphereComponent;
 
 UCLASS()
 class LOBOTOMY_API ALB_BuzzWireActor : public AActor
@@ -57,6 +57,12 @@ protected:
 	UStaticMeshComponent* RingMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
+	USphereComponent* InSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
+	USphereComponent* OutSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
 	UStaticMeshComponent* DeadZoneMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
@@ -71,11 +77,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
 	UBoxComponent* SPZone3Collision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|DistanceCheck")
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|DistanceCheck")
 	USplineComponent* TargetSpline = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|DistanceCheck")
-	float DangerRadius = 4.5f;
+	float DangerRadius = 4.5f;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|Mouse Follow")
 	TEnumAsByte<ECollisionChannel> MouseTraceChannel = ECC_Visibility;
@@ -105,7 +111,7 @@ private:
 	void ApplyMouseOnlyInputLock(APlayerController* PC);
 	void RestoreInput(APlayerController* PC);
 	void UpdateRingFollowMouse(float DeltaSeconds);
-	void CheckDistanceToRod();
+	//void CheckDistanceToRod();
 
 	UFUNCTION()
 	void HandleSuccessZoneBeginOverlap(
@@ -124,4 +130,31 @@ private:
 		UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void EndBuzzSession();
+
+	UFUNCTION()
+	void HandleInBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleInEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void HandleOutBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleOutEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void EvaluateDead();
+
+
+	//회전함수
+public:
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BuzzWire|Rotate")
+		float RingRotationStep = 2.0f;
+
+protected:
+	void RotateRingUp();
+	void RotateRingDown();
+
+	bool bInOverlap = false;
+	bool bOutOverlap = false;
 };

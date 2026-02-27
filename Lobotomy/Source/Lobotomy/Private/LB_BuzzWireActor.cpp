@@ -3,7 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/SplineComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -64,6 +64,27 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SPZone3Collision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	SPZone3Collision->OnComponentBeginOverlap.AddDynamic(
 		this, &ALB_BuzzWireActor::HandleSPZone3BeginOverlap);
+
+	InSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InSphere"));
+	InSphere->SetupAttachment(RingMesh);
+	InSphere->InitSphereRadius(8.f);
+	InSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InSphere->SetCollisionObjectType(ECC_WorldDynamic);
+	InSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InSphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	InSphere->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInBegin);
+	InSphere->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInEnd);
+
+
+	OutSphere = CreateDefaultSubobject<USphereComponent>(TEXT("OutSphere"));
+	OutSphere->SetupAttachment(RingMesh);
+	OutSphere->InitSphereRadius(18.f);
+	OutSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	OutSphere->SetCollisionObjectType(ECC_WorldDynamic);
+	OutSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	OutSphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	OutSphere->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutBegin);
+	OutSphere->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutEnd);
 }
 
 void ALB_BuzzWireActor::BeginPlay()
@@ -78,7 +99,6 @@ void ALB_BuzzWireActor::Tick(float DeltaSeconds)
 	if (bBuzzActive && !bDeadTriggered && !bSuccessTriggered)
 	{
 		UpdateRingFollowMouse(DeltaSeconds);
-		CheckDistanceToRod();
 	}
 }
 
@@ -88,6 +108,15 @@ void ALB_BuzzWireActor::BuzzPlay(float BlendTime)
 	if (!CachedPC) return;
 
 	PreviousViewTarget = CachedPC->GetViewTarget();
+
+	EnableInput(CachedPC);
+	if (InputComponent)
+	{
+		InputComponent->ClearActionBindings();
+
+		InputComponent->BindKey(EKeys::MouseScrollUp, IE_Pressed, this, &ALB_BuzzWireActor::RotateRingUp);
+		InputComponent->BindKey(EKeys::MouseScrollDown, IE_Pressed, this, &ALB_BuzzWireActor::RotateRingDown);
+	}
 
 	CachedPC->SetViewTargetWithBlend(this, BlendTime);
 	ApplyMouseOnlyInputLock(CachedPC);
@@ -111,6 +140,7 @@ void ALB_BuzzWireActor::BuzzStop(float BlendTime)
 		{
 			CachedPC->SetViewTargetWithBlend(PreviousViewTarget, BlendTime);
 		}
+		DisableInput(CachedPC);
 	}
 
 	EndBuzzSession();
@@ -176,25 +206,25 @@ void ALB_BuzzWireActor::UpdateRingFollowMouse(float DeltaSeconds) {
 		}
 }
 
-void ALB_BuzzWireActor::CheckDistanceToRod()
-{
-	if (!TargetSpline) return;
-
-	const FVector RingLocation = RingMesh->GetComponentLocation();
-
-	const FVector Closest =
-		TargetSpline->FindLocationClosestToWorldLocation(
-			RingLocation, ESplineCoordinateSpace::World);
-
-	const float Distance = FVector::Dist(RingLocation, Closest);
-
-	if (Distance <= DangerRadius)
-	{
-		bDeadTriggered = true;
-		bBuzzActive = false;
-		OnBuzzDeath();
-	}
-}
+//void ALB_BuzzWireActor::CheckDistanceToRod()
+//{
+//	if (!TargetSpline) return;
+//
+//	const FVector RingLocation = RingMesh->GetComponentLocation();
+//
+//	const FVector Closest =
+//		TargetSpline->FindLocationClosestToWorldLocation(
+//			RingLocation, ESplineCoordinateSpace::World);
+//
+//	const float Distance = FVector::Dist(RingLocation, Closest);
+//
+//	if (Distance <= DangerRadius)
+//	{
+//		bDeadTriggered = true;
+//		bBuzzActive = false;
+//		OnBuzzDeath();
+//	}
+//}
 
 void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
 	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
@@ -225,4 +255,77 @@ void ALB_BuzzWireActor::HandleSPZone3BeginOverlap(
 {
 	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 	OnSPZone3();
+}
+
+void ALB_BuzzWireActor::RotateRingUp()
+{
+	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+
+	RingMesh->AddLocalRotation(FRotator( 0.f, RingRotationStep, 0.f));
+}
+
+void ALB_BuzzWireActor::RotateRingDown()
+{
+	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+
+	RingMesh->AddLocalRotation(FRotator( 0.f, -RingRotationStep, 0.f));
+}
+
+void ALB_BuzzWireActor::HandleInBegin(
+	UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32, bool, const FHitResult&)
+{
+	if (OtherComp == DeadZoneMesh)
+	{
+		bInOverlap = true;
+		EvaluateDead();
+	}
+
+}
+
+void ALB_BuzzWireActor::HandleInEnd(
+	UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32)
+{
+	if (OtherComp == DeadZoneMesh)
+	{
+		bInOverlap = false;
+		EvaluateDead();
+	}
+}
+
+void ALB_BuzzWireActor::HandleOutBegin(
+	UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32, bool, const FHitResult&)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Overlap With: %s"), *GetNameSafe(OtherComp));
+	if (OtherComp == DeadZoneMesh)
+	{
+		bOutOverlap = true;
+		EvaluateDead();
+	}
+
+}
+
+void ALB_BuzzWireActor::HandleOutEnd(
+	UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32)
+{
+	if (OtherComp == DeadZoneMesh)
+	{
+		bOutOverlap = false;
+		EvaluateDead();
+	}
+}
+
+void ALB_BuzzWireActor::EvaluateDead()
+{
+	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+
+	if (bOutOverlap && !bInOverlap)
+	{
+		bDeadTriggered = true;
+		bBuzzActive = false;
+		OnBuzzDeath();
+	}
 }
