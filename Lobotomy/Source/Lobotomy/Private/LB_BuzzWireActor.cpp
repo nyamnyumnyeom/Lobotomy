@@ -143,6 +143,9 @@ void ALB_BuzzWireActor::EndBuzzSession()
 	bBuzzActive = false;
 	bDeadTriggered = false;
 	bSuccessTriggered = false;
+	bSpzone1ov = false;
+	bSpzone2ov = false;
+	bSpzone3ov = false;
 }
 
 void ALB_BuzzWireActor::SetBuzzActive(bool bNewActive)
@@ -222,6 +225,7 @@ void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
 	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
 	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	if (!bSpzone1ov || !bSpzone2ov || !bSpzone3ov) return;
 
 	bSuccessTriggered = true;
 	bBuzzActive = false;
@@ -318,6 +322,9 @@ void ALB_BuzzWireActor::EvaluateDead()
 	{
 		bDeadTriggered = true;
 		bBuzzActive = false;
+		bSpzone1ov = false;
+		bSpzone2ov = false;
+		bSpzone3ov = false;
 		OnBuzzDeath();
 	}
 }

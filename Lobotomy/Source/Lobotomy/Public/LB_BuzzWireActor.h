@@ -156,4 +156,8 @@ protected:
 
 	bool bInOverlap = false;
 	bool bOutOverlap = false;
+
+	bool bSpzone1ov = false;
+	bool bSpzone2ov = false;
+	bool bSpzone3ov = false;
 };
