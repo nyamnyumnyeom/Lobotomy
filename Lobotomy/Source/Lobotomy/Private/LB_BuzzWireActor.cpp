@@ -3,7 +3,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -65,26 +64,19 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SPZone3Collision->OnComponentBeginOverlap.AddDynamic(
 		this, &ALB_BuzzWireActor::HandleSPZone3BeginOverlap);
 
-	InCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InCapsule"));
-	InCapsule->SetupAttachment(RingMesh);
-	InCapsule->InitCapsuleSize(7.f, 20.f);
-	InCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	InCapsule->SetCollisionObjectType(ECC_WorldDynamic);
-	InCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
-	InCapsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-	InCapsule->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInBegin);
-	InCapsule->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInEnd);
+	InBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InBox"));
+	InBox->SetupAttachment(RingMesh);
+	InBox->SetBoxExtent(FVector(7, 20, 7));
+	InBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	InBox->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInBegin);
+	InBox->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInEnd);
 
-
-	OutCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("OutCapsule"));
-	OutCapsule->SetupAttachment(RingMesh);
-	OutCapsule->InitCapsuleSize(18.f, 20.f);
-	OutCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	OutCapsule->SetCollisionObjectType(ECC_WorldDynamic);
-	OutCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
-	OutCapsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-	OutCapsule->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutBegin);
-	OutCapsule->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutEnd);
+	OutBox = CreateDefaultSubobject<UBoxComponent>(TEXT("OutBox"));
+	OutBox->SetupAttachment(RingMesh);
+	OutBox->SetBoxExtent(FVector(18, 20, 18));
+	OutBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	OutBox->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutBegin);
+	OutBox->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutEnd);
 }
 
 void ALB_BuzzWireActor::BeginPlay()

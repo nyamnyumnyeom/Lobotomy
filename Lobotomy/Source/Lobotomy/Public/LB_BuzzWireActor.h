@@ -7,7 +7,6 @@
 class UCameraComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
-class UCapsuleComponent;
 
 UCLASS()
 class LOBOTOMY_API ALB_BuzzWireActor : public AActor
@@ -57,10 +56,10 @@ protected:
 	UStaticMeshComponent* RingMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
-	UCapsuleComponent* InCapsule;
+	UBoxComponent* InBox;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
-	UCapsuleComponent* OutCapsule;
+	UBoxComponent* OutBox;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuzzWire|Components")
 	UStaticMeshComponent* DeadZoneMesh;
