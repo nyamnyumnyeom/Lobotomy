@@ -3,7 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -65,26 +65,26 @@ ALB_BuzzWireActor::ALB_BuzzWireActor()
 	SPZone3Collision->OnComponentBeginOverlap.AddDynamic(
 		this, &ALB_BuzzWireActor::HandleSPZone3BeginOverlap);
 
-	InSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InSphere"));
-	InSphere->SetupAttachment(RingMesh);
-	InSphere->InitSphereRadius(8.f);
-	InSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	InSphere->SetCollisionObjectType(ECC_WorldDynamic);
-	InSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	InSphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-	InSphere->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInBegin);
-	InSphere->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInEnd);
+	InCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InCapsule"));
+	InCapsule->SetupAttachment(RingMesh);
+	InCapsule->InitCapsuleSize(7.f, 20.f);
+	InCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InCapsule->SetCollisionObjectType(ECC_WorldDynamic);
+	InCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InCapsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	InCapsule->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInBegin);
+	InCapsule->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleInEnd);
 
 
-	OutSphere = CreateDefaultSubobject<USphereComponent>(TEXT("OutSphere"));
-	OutSphere->SetupAttachment(RingMesh);
-	OutSphere->InitSphereRadius(18.f);
-	OutSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	OutSphere->SetCollisionObjectType(ECC_WorldDynamic);
-	OutSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	OutSphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-	OutSphere->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutBegin);
-	OutSphere->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutEnd);
+	OutCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("OutCapsule"));
+	OutCapsule->SetupAttachment(RingMesh);
+	OutCapsule->InitCapsuleSize(18.f, 20.f);
+	OutCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	OutCapsule->SetCollisionObjectType(ECC_WorldDynamic);
+	OutCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	OutCapsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	OutCapsule->OnComponentBeginOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutBegin);
+	OutCapsule->OnComponentEndOverlap.AddDynamic(this, &ALB_BuzzWireActor::HandleOutEnd);
 }
 
 void ALB_BuzzWireActor::BeginPlay()
