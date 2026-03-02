@@ -21,15 +21,18 @@ protected:
 	class ULB_KKeekComp* KKeekComp_Ref;
 
 protected:
-	bool bIsWalkingForward = false;
+	bool bIsWalkingRight = false;
 
 	float WalkElapsedTime = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float WalkDuration = 2.0f;
+	float WalkDuration = 5.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float PlayerKillDistance = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float RightOffset = 100.f;
 
 protected:
 	FTimerHandle ResistTimerHandle;
@@ -54,9 +57,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void KKeekKKeekVisible(FVector NewLocation);
 
-	// 재생할 몽타주
+	// 끽끽이가 플레이어를 응시하는 로직.
+	// 제자리에 멈춰서 플레이어를 바라봄.
+	UFUNCTION(BlueprintCallable)
+	void KKeekKKeekWatchThePlayer();
+
+	// 킬 몽타주
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* PlayMontage;
+
+	// 응시 몽타주
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* WatchMontage;
 
 	// 몽타주 재생 함수
 	UFUNCTION(BlueprintCallable)
@@ -64,4 +76,8 @@ public:
 
 protected:
 	void ResistForPlayer();
+
+	void MoveToFarthestReachableTarget();
+
+	void KKERealInvisible();
 };
