@@ -37,6 +37,7 @@ public:
 	bool bIsWaiting = false;
 
 	// 등장 로직을 실행시켜 끽끽이가 플레이어 근처로 이동했는지.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "LB_Property|State")
 	bool bIsKKeekHere = false;
 
 	// 사라져야 하는 조건이 거리가 너무 멀어져서인지.

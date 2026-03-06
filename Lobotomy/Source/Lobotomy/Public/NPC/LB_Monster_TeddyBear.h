@@ -14,6 +14,10 @@ class LOBOTOMY_API ALB_Monster_TeddyBear : public ALB_MonsterBase
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	class USphereComponent* SphereCollision;
+
 public:
 	// 스폰 후 유지 가능한 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
@@ -25,6 +29,9 @@ protected:
 protected:
 	FTimerHandle SpawnDurationTimerHandle;
 
+protected:
+	AActor* CachedPlayerCharacter;
+
 public:
 	ALB_Monster_TeddyBear();
 
@@ -32,8 +39,19 @@ public:
 
 	virtual void DisappearLogic() override;
 
+	void	SetActorRotationToPlayer();
+
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnOverlapBegin(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
 
 protected:
 	void TimeupSpawnDuration();

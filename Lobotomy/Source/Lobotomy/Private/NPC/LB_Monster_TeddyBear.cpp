@@ -8,9 +8,22 @@
 #include "Character/Component/LB_TeddyBearComp.h"
 #include "Character/LB_Character.h"
 #include "LB_GM.h"
+#include "Components/SphereComponent.h"
+#include "NPC/AI/LB_AICMonster_TeddyBear.h"
 
 ALB_Monster_TeddyBear::ALB_Monster_TeddyBear()
 {
+	PrimaryActorTick.bCanEverTick = false;
+
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->SetupAttachment(RootComponent);
+
+	SphereCollision->InitSphereRadius(180.0f);
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ALB_Monster_TeddyBear::OnOverlapBegin);
 }
 
 bool ALB_Monster_TeddyBear::CheakShouldDestroy_Implementation()
@@ -59,6 +72,20 @@ void ALB_Monster_TeddyBear::DisappearLogic()
 	Destroy();
 }
 
+void ALB_Monster_TeddyBear::SetActorRotationToPlayer()
+{
+	if (CachedPlayerCharacter)
+	{
+		FVector TargetLocation = CachedPlayerCharacter->GetActorLocation();
+		FVector MyLocation = GetActorLocation();
+
+		TargetLocation.Z = MyLocation.Z;
+
+		FRotator LookAtRot = (TargetLocation - MyLocation).Rotation();
+		SetActorRotation(LookAtRot);
+	}
+}
+
 void ALB_Monster_TeddyBear::BeginPlay()
 {
 	Super::BeginPlay();
@@ -70,6 +97,22 @@ void ALB_Monster_TeddyBear::BeginPlay()
 	}
 
 	SetSpawnWhetherToGM(true);
+}
+
+void ALB_Monster_TeddyBear::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		if (OtherActor->ActorHasTag(FName("Player")))
+		{
+			ALB_AICMonster_TeddyBear* AIC = Cast<ALB_AICMonster_TeddyBear>(GetController());
+			if (AIC)
+			{
+				CachedPlayerCharacter = OtherActor;
+				AIC->SetState_Attack();
+			}
+		}
+	}
 }
 
 void ALB_Monster_TeddyBear::TimeupSpawnDuration()
