@@ -66,8 +66,6 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 
 	bIsWalkingRight = false;
 
-	KKeekComp_Ref->bIsKKeekHere = false;
-
 	MoveToFarthestReachableTarget();
 
 	if (GetWorld())
@@ -136,6 +134,11 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 		return;
 	}
 
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+	}
+
 	WalkElapsedTime = 0.0f;
 	bIsWalkingRight = true;
 
@@ -199,7 +202,7 @@ void ALB_Monster_KKeek::MoveToFarthestReachableTarget()
 
 	FVector MyLocation = GetActorLocation();
 
-	float MaxPathLength = 0.f;
+	float MaxPathLength = 0.0f;
 	ALB_TargetPoint_KKE* FarthestTarget = nullptr;
 
 	for (TActorIterator<ALB_TargetPoint_KKE> It(GetWorld()); It; ++It)
@@ -226,6 +229,17 @@ void ALB_Monster_KKeek::MoveToFarthestReachableTarget()
 		}
 	}
 
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance->Montage_IsPlaying(WatchMontage))
+	{
+		AnimInstance->Montage_Stop(0.2f, WatchMontage);
+	}
+
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = RunawaySpeed;
+	}
+
 	if (FarthestTarget)
 	{
 		AICon->MoveToActor(FarthestTarget);
@@ -234,6 +248,8 @@ void ALB_Monster_KKeek::MoveToFarthestReachableTarget()
 
 void ALB_Monster_KKeek::KKERealInvisible()
 {
+	KKeekComp_Ref->bIsKKeekHere = false;
+
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance->Montage_IsPlaying(WatchMontage))
 	{

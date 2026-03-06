@@ -29,6 +29,12 @@ protected:
 	float WalkDuration = 5.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float NormalSpeed = 30.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float RunawaySpeed = 500.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float PlayerKillDistance = 100.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

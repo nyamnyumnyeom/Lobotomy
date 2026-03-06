@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,13 +15,18 @@ class LOBOTOMY_API UBTT_TryKillPlayer : public UBTTaskNode
 	GENERATED_BODY()
 
 public:
-	// »ç¸Á Á¾·ù
-	// 0 : Àü±âÅé
-	// 1 : ³ëÄ¿
-	// 10 : ³·¿¡ ½Ã°£ÃÊ°ú
-	// 11 : ¹ã¿¡ ½Ã°£ÃÊ°ú
+	// ì‚¬ë§ ì¢…ë¥˜
+	// 0 : ì „ê¸°í†±
+	// 1 : ë…¸ì»¤
+	// 2 : ë¾ë¾ë¾
+	// 3: ê³°íƒ¬ë¯¸
+	// 10 : ë‚®ì— ì‹œê°„ì´ˆê³¼
+	// 11 : ë°¤ì— ì‹œê°„ì´ˆê³¼
 	UPROPERTY(EditAnywhere, Category = "Death")
 	int32 DeathNumber = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Death")
+	bool bIsChainSaw = true;
 
 public:
 	UBTT_TryKillPlayer();

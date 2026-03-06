@@ -117,7 +117,7 @@ void ULB_KKeekComp::CheckCanDissapear()
 
 		CheckCanDissapearBP();
 
-		DissapearCheckTimerClear();
+		//DissapearCheckTimerClear();
 
 		return;
 	}
@@ -126,7 +126,7 @@ void ULB_KKeekComp::CheckCanDissapear()
 	{
 		CheckCanDissapearBP();
 
-		DissapearCheckTimerClear();
+		//DissapearCheckTimerClear();
 
 		return;
 	}
