@@ -64,6 +64,13 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 		GetWorld()->GetTimerManager().ClearTimer(AutoInvisibleTimerHandle);
 	}
 
+	AAIController* AICon = Cast<AAIController>(GetController());
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (AICon && Player)
+	{
+		AICon->SetFocus(nullptr);
+	}
+
 	bIsWalkingRight = false;
 
 	MoveToFarthestReachableTarget();
@@ -78,6 +85,12 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (!Player) return;
+
+	AAIController* AICon = Cast<AAIController>(GetController());
+	if (AICon && Player)
+	{
+		AICon->SetFocus(Player);
+	}
 
 	KKeekComp_Ref->bIsKKeekHere = true;
 

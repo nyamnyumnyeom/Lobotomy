@@ -21,6 +21,7 @@ protected:
 	class ULB_KKeekComp* KKeekComp_Ref;
 
 protected:
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bIsWalkingRight = false;
 
 	float WalkElapsedTime = 0.0f;
