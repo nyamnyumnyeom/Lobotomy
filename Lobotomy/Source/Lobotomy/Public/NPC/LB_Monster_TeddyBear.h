@@ -32,6 +32,13 @@ protected:
 protected:
 	AActor* CachedPlayerCharacter;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* SpawnSoundCue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* KillSoundCue;
+
 public:
 	ALB_Monster_TeddyBear();
 
@@ -57,4 +64,9 @@ protected:
 	void TimeupSpawnDuration();
 
 	void SetSpawnWhetherToGM(bool Value);
+
+protected:
+	void PlaySound_Spawn();
+
+	void PlaySound_Kill();
 };

@@ -97,6 +97,8 @@ void ALB_Monster_TeddyBear::BeginPlay()
 	}
 
 	SetSpawnWhetherToGM(true);
+
+	PlaySound_Spawn();
 }
 
 void ALB_Monster_TeddyBear::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -110,6 +112,7 @@ void ALB_Monster_TeddyBear::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 			{
 				CachedPlayerCharacter = OtherActor;
 				AIC->SetState_Attack();
+				PlaySound_Kill();
 			}
 		}
 	}
@@ -134,6 +137,28 @@ void ALB_Monster_TeddyBear::SetSpawnWhetherToGM(bool Value)
 		{
 			GM->SetTeddyBearRef(nullptr);
 		}
+	}
+}
+
+void ALB_Monster_TeddyBear::PlaySound_Spawn()
+{
+	if (SpawnSoundCue)
+	{
+		UGameplayStatics::SpawnSoundAttached(
+			SpawnSoundCue,
+			GetRootComponent()
+		);
+	}
+}
+
+void ALB_Monster_TeddyBear::PlaySound_Kill()
+{
+	if (KillSoundCue)
+	{
+		UGameplayStatics::SpawnSoundAttached(
+			KillSoundCue,
+			GetRootComponent()
+		);
 	}
 }
 

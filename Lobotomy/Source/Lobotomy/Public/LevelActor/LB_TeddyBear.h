@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "LB_TeddyBear.generated.h"
 
+class UAudioComponent;
+class USoundBase;
+
 UCLASS()
 class LOBOTOMY_API ALB_TeddyBear : public AActor
 {
@@ -28,6 +31,10 @@ protected:
 	FRotator OriginRotator;
 
 	class ALB_TargetPoint_TeddyBear* TargetPoint_Ref;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* InteractiveSoundCue;
 
 public:
 	ALB_TeddyBear();
@@ -81,4 +88,7 @@ public:
 
 protected:
 	void SetSpawnWhetherToGM(bool Value);
+
+protected:
+	void PlaySound_Interactive();
 };
