@@ -6,6 +6,9 @@
 #include "NPC/LB_MonsterBase.h"
 #include "LB_Monster_KKeek.generated.h"
 
+class UAudioComponent;
+class USoundBase;
+
 /**
  * 
  */
@@ -40,6 +43,25 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float RightOffset = 100.f;
+
+protected:
+	UPROPERTY()
+	UAudioComponent* VisibleAudioComp;
+
+	UPROPERTY()
+	UAudioComponent* SideWalkAudioComp;
+
+	UPROPERTY()
+	UAudioComponent* RunawayAudioComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	TArray<USoundBase*> VisibleSoundCues;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	TArray<USoundBase*> SideWalkSoundCues;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	TArray<USoundBase*> RunawaySoundCues;
 
 protected:
 	FTimerHandle ResistTimerHandle;
@@ -87,4 +109,9 @@ protected:
 	void MoveToFarthestReachableTarget();
 
 	void KKERealInvisible();
+
+protected:
+	void PlaySound_Visible();
+
+	void PlaySound_Runaway();
 };

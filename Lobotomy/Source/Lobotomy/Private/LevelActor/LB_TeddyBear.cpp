@@ -144,3 +144,15 @@ void ALB_TeddyBear::SetSpawnWhetherToGM(bool Value)
 	}
 }
 
+void ALB_TeddyBear::PlaySound_Interactive()
+{
+	if (InteractiveSoundCue)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			InteractiveSoundCue,
+			GetActorLocation()
+		);
+	}
+}
+

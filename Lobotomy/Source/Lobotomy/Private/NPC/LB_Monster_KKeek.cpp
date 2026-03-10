@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Character/Component/LB_KKeekComp.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "LB_GM.h"
 #include "AIController.h"
@@ -38,6 +39,7 @@ void ALB_Monster_KKeek::BeginPlay()
 	{
 		AICon->SetFocus(Player);
 	}
+
 }
 
 void ALB_Monster_KKeek::Tick(float DeltaTime)
@@ -130,6 +132,8 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 		nullptr,
 		ETeleportType::TeleportPhysics
 	);
+
+	PlaySound_Visible();
 
 	if ((PlayerLocation - NewLocation).Length() < PlayerKillDistance)
 	{
@@ -257,6 +261,8 @@ void ALB_Monster_KKeek::MoveToFarthestReachableTarget()
 	{
 		AICon->MoveToActor(FarthestTarget);
 	}
+
+	PlaySound_Runaway();
 }
 
 void ALB_Monster_KKeek::KKERealInvisible()
@@ -285,4 +291,55 @@ void ALB_Monster_KKeek::KKERealInvisible()
 	GetCharacterMovement()->DisableMovement();
 
 	SetActorLocation(OriginLocation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	if (RunawayAudioComp && RunawayAudioComp->IsPlaying())
+	{
+		RunawayAudioComp->Stop();
+	}
+}
+
+void ALB_Monster_KKeek::PlaySound_Visible()
+{
+	if (VisibleSoundCues.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, VisibleSoundCues.Num() - 1);
+
+		VisibleAudioComp = UGameplayStatics::SpawnSoundAttached(
+			VisibleSoundCues[RandomIndex],
+			GetRootComponent()
+		);
+	}
+
+	if (SideWalkSoundCues.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, SideWalkSoundCues.Num() - 1);
+
+		SideWalkAudioComp= UGameplayStatics::SpawnSoundAttached(
+			SideWalkSoundCues[RandomIndex],
+			GetRootComponent()
+		);
+	}
+}
+
+void ALB_Monster_KKeek::PlaySound_Runaway()
+{
+	if (VisibleAudioComp && VisibleAudioComp->IsPlaying())
+	{
+		VisibleAudioComp->Stop();
+	}
+
+	if (SideWalkAudioComp && SideWalkAudioComp->IsPlaying())
+	{
+		SideWalkAudioComp->Stop();
+	}
+
+	if (RunawaySoundCues.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, RunawaySoundCues.Num() - 1);
+
+		RunawayAudioComp= UGameplayStatics::SpawnSoundAttached(
+			RunawaySoundCues[RandomIndex],
+			GetRootComponent()
+		);
+	}
 }
