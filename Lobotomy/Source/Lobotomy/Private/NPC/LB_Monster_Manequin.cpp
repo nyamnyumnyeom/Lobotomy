@@ -257,6 +257,11 @@ bool ALB_Monster_Manequin::IsVisibleTime()
 	// TeleportToRandomNavLocation 함수 작동시
 	// 레벨 내 유효한 위치에 이동시킬지, 이세계로 보낼지 판단해야댐.
 
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return false;
+
+	if (GM->bIsNight == false) return false;
+
 	return true;
 }
 
