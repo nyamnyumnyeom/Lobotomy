@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
+#include "LB_GM.h"
 
 ULB_KKeekComp::ULB_KKeekComp()
 {
@@ -36,7 +37,12 @@ void ULB_KKeekComp::TriggerKKeek()
 
 		WaitingTimer();
 
-		CurrentSpawn_Length = CurrentSpawn_Length - Spawn_Length_Closer;
+		ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (!GM) return;
+
+		int32 MyCurrentDay = GM->CurrentDay;
+
+		CurrentSpawn_Length = CurrentSpawn_Length - (Spawn_Length_Closer * MyCurrentDay);
 	}
 }
 
@@ -171,6 +177,11 @@ void ULB_KKeekComp::WaitingTimer()
 	{
 		GetWorld()->GetTimerManager().SetTimer(WaitingTimerHandle, this, &ULB_KKeekComp::SetWaitingFalse, Action_WaitTime, false);
 	}
+}
+
+void ULB_KKeekComp::DistanceReset()
+{
+	CurrentSpawn_Length = FirstSpawn_Length;
 }
 
 void ULB_KKeekComp::ResistKKeek(ALB_Monster_KKeek* Ref)

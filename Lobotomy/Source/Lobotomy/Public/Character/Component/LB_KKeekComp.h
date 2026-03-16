@@ -17,9 +17,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
 	float FirstSpawn_Length = 700.0f;
 
-	// 끽끽이 등장시마다 감소시킬 거리.
+	// 끽끽이 등장시마다 감소시킬 거리. 해당 수치에 현재 진행된 날짜를 곱하여 계산.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
-	float Spawn_Length_Closer = 100.0f;
+	float Spawn_Length_Closer = 20.0f;
 
 	// 끽끽이 공격 거리.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
@@ -102,6 +102,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 	void WaitingTimer();
+
+	// 거리 초기화
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	void DistanceReset();
 
 public:
 	void ResistKKeek(class ALB_Monster_KKeek* Ref);
