@@ -82,6 +82,17 @@ void ALB_Character::BeginPlay()
 void ALB_Character::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    const bool bInWater = IsInWaterArea();
+
+    const float CurrentWalkSpeed = bInWater ? WalkSpeed * 0.5f : WalkSpeed;
+    const float CurrentSprintSpeed = bInWater ? SprintSpeed * 0.5f : SprintSpeed;
+
+    if (GetCharacterMovement())
+    {
+        GetCharacterMovement()->MaxWalkSpeed = bWantsToSprint ? CurrentSprintSpeed : CurrentWalkSpeed;
+    }
+
     const FVector Velocity = GetCharacterMovement()->Velocity;
     const float HorizontalSpeed = FVector(Velocity.X, Velocity.Y, 0).Size();
     const float DistanceThisFrame = HorizontalSpeed * DeltaTime;
@@ -90,22 +101,37 @@ void ALB_Character::Tick(float DeltaTime)
     while (DistanceTraveled >= FootstepDistanceThreshold)
     {
         DistanceTraveled -= FootstepDistanceThreshold;
-        if (FootstepSounds.Num() > 0)
-        {
-            const int32 RandomIndex = FMath::RandRange(0, FootstepSounds.Num() - 1);
-            USoundBase* SoundToPlay = FootstepSounds[RandomIndex];
-            if (SoundToPlay)
-            {
-                UGameplayStatics::PlaySoundAtLocation(this, SoundToPlay, GetActorLocation());
 
-                MakeNoise(NoiseLoudness, this, GetActorLocation());
+        USoundBase* SoundToPlay = nullptr;
+
+        if (bInWater)
+        {
+            if (Water_walk_Sound.Num() > 0)
+            {
+                const int32 RandomIndex = FMath::RandRange(0, Water_walk_Sound.Num() - 1);
+                SoundToPlay = Water_walk_Sound[RandomIndex];
             }
         }
+        else
+        {
+            if (FootstepSounds.Num() > 0)
+            {
+                const int32 RandomIndex = FMath::RandRange(0, FootstepSounds.Num() - 1);
+                SoundToPlay = FootstepSounds[RandomIndex];
+            }
+        }
+
+        if (SoundToPlay)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, SoundToPlay, GetActorLocation());
+            MakeNoise(NoiseLoudness, this, GetActorLocation());
+        }
     }
+
     APlayerController* PC = Cast<APlayerController>(GetController());
     if (!PC) return;
 
-    if (HorizontalSpeed > 0.f && HorizontalSpeed <= WalkSpeed)
+    if (HorizontalSpeed > 0.f && HorizontalSpeed <= CurrentWalkSpeed)
     {
         if (!bWasWalking)
         {
@@ -114,7 +140,7 @@ void ALB_Character::Tick(float DeltaTime)
             bWasRunning = false;
         }
     }
-    else if (HorizontalSpeed > WalkSpeed)
+    else if (HorizontalSpeed > CurrentWalkSpeed)
     {
         if (!bWasRunning)
         {
@@ -149,27 +175,12 @@ void ALB_Character::Tick(float DeltaTime)
         Params
     );
 
-    //정신력소모발동
     UpdateSanityEffect(DeltaTime);
-    // Debug// 디버그 라인 & 스피어 표시
-    //DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, 0, 1.0f);
 
-    //if (bHit)
-    //{
-    //    // 무언가에 부딪혔다면, 부딪힌 지점에 초록색 구체
-    //    DrawDebugSphere(GetWorld(), HitResult.Location, 20.0f, 12, FColor::Green, false, -1.0f);
-    //}
-    //else
-    //{
-    //    // 아무것도 안 부딪혔으면 끝지점에 빨간 구체
-    //    DrawDebugSphere(GetWorld(), End, 20.0f, 12, FColor::Red, false, -1.0f);
-    //}
-// Debug
     AActor* HitActor = bHit ? HitResult.GetActor() : nullptr;
 
     if (HitActor != CurrentInteractActor)
     {
-
         if (CurrentInteractActor)
         {
             if (UInteractComponent* OldInteractComp = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
@@ -192,32 +203,27 @@ void ALB_Character::Tick(float DeltaTime)
     {
         float Distance = FVector::Distance(GetActorLocation(), HeartbeatTarget->GetActorLocation());
 
-        // 볼륨 계산 (기존)
         float Alpha = 1.f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.f, 1.f);
         float CurveAlpha = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
         float NewVolume = FMath::Lerp(MinVolume, MaxVolume, CurveAlpha);
         HeartbeatAudioComponent->SetVolumeMultiplier(NewVolume);
 
-        // 박동 속도 계산
         float NewPitch = FMath::Lerp(MinPitch, MaxPitch, CurveAlpha);
         HeartbeatAudioComponent->SetPitchMultiplier(NewPitch);
     }
 
     if (bWantsToSprint && Stamina > 0.0f)
     {
-        // 소모
         Stamina -= StaminaDrainRate * DeltaTime;
         Stamina = FMath::Clamp(Stamina, 0.0f, MaxStamina);
 
         if (Stamina <= 0.0f)
         {
-            // 스태미너 바닥 -> 강제로 걷기
             StopSprint();
         }
     }
     else
     {
-        // 회복 (달리는 중 아니거나 바닥임)
         if (Stamina < MaxStamina)
         {
             Stamina += StaminaRecoverRate * DeltaTime;
@@ -718,4 +724,22 @@ void ALB_Character::UpdateSanityEffect(float DeltaTime)
         PlaySanityDistortionEffect();
         SanityEffectTimer = Interval;
     }
+}
+
+bool ALB_Character::IsInWaterArea() const
+{
+    TArray<UPrimitiveComponent*> OverlappingComponents;
+    GetCapsuleComponent()->GetOverlappingComponents(OverlappingComponents);
+
+    static const FName WaterAreaTag(TEXT("Water_Area"));
+
+    for (UPrimitiveComponent* OverlapComp : OverlappingComponents)
+    {
+        if (OverlapComp && OverlapComp->ComponentHasTag(WaterAreaTag))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
