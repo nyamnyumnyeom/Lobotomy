@@ -290,6 +290,11 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Time")
     bool IsNight() const;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio|Footsteps")
+    TArray<TObjectPtr<USoundBase>> Water_walk_Sound;
+
+    bool IsInWaterArea() const;
 private:
 
     void UpdateSanityEffect(float DeltaTime);
