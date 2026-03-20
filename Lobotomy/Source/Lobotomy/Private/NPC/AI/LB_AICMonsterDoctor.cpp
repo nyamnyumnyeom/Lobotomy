@@ -7,7 +7,7 @@
 
 ALB_AICMonsterDoctor::ALB_AICMonsterDoctor()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ALB_AICMonsterDoctor::OnPossess(APawn* InPawn)

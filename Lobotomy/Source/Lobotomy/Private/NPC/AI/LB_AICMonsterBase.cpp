@@ -207,6 +207,15 @@ void ALB_AICMonsterBase::StopBehaviorTree()
 	}
 }
 
+void ALB_AICMonsterBase::SetFocusPlayer()
+{
+	APawn* TargetActor = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (TargetActor)
+	{
+		SetFocus(TargetActor, EAIFocusPriority::Gameplay);
+	}
+}
+
 void ALB_AICMonsterBase::SetBB_Target()
 {
 	if (BB)

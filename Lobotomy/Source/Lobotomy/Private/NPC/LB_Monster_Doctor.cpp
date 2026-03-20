@@ -69,6 +69,12 @@ void ALB_Monster_Doctor::SpawnLogic()
 	{
 		GetWorldTimerManager().SetTimer(SoundPlayTimerHandle, [this](){SoundPlay(1);}, SoundPlayDelay, true);
 	}
+
+	ALB_AICMonsterDoctor* AIC = Cast<ALB_AICMonsterDoctor>(GetController());
+	if (AIC)
+	{
+		AIC->SetFocusPlayer();
+	}
 }
 
 void ALB_Monster_Doctor::SetActorRotationToPlayer()

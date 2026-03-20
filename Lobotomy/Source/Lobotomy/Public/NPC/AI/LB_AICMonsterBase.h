@@ -83,7 +83,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopBehaviorTree();
 
+	UFUNCTION(BlueprintCallable)
+	void SetFocusPlayer();
+
 public:
 	void SetBB_Target();
+
 
 };
