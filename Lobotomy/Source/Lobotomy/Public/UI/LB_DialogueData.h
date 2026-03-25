@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Sound/SoundBase.h"
 #include "Engine/DataTable.h"
 #include "LB_DialogueData.generated.h"
 
@@ -22,4 +23,10 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
     FName NextID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    TObjectPtr<USoundBase> DialogueSound = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    bool bPlaySound = false;
 };
