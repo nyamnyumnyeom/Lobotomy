@@ -91,6 +91,10 @@ void ULB_DialogueUI::DisplayCurrentDialogue()
         {
             DialogueText->SetText(Row->DialogueText);
         }
+        if (CurrentRow.bPlaySound && CurrentRow.DialogueSound)
+        {
+            UGameplayStatics::PlaySound2D(this, CurrentRow.DialogueSound);
+        }
 
         InvalidateLayoutAndVolatility();
     }
