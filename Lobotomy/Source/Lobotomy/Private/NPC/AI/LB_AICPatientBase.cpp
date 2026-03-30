@@ -46,6 +46,13 @@ void ALB_AICPatientBase::SetState_Action()
 	BB->SetValueAsEnum("EPatientState", static_cast<uint8>(EPatientState::Action));
 }
 
+void ALB_AICPatientBase::SetState_Interact()
+{
+	if (!BB) return;
+
+	BB->SetValueAsEnum("EPatientState", static_cast<uint8>(ENurseState::Interact));
+}
+
 void ALB_AICPatientBase::SetBehaviorAndAnim()
 {
 	if (!NPC) return;

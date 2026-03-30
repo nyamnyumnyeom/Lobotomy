@@ -2,6 +2,7 @@
 
 
 #include "NPC/LB_PatientBase.h"
+#include "NPC/AI/LB_AICPatientBase.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BillboardComponent.h"
 
@@ -85,6 +86,31 @@ void ALB_PatientBase::OnNightBehaviorHint()
 
 		MeshComp->SetWorldLocation(BedLocation);
 		MeshComp->SetWorldRotation(BedRotation);
+	}
+}
+
+void ALB_PatientBase::SetInteractState()
+{
+	ALB_AICPatientBase* AIC = Cast<ALB_AICPatientBase>(GetController());
+	if (AIC)
+	{
+		AIC->SetState_Interact();
+	}
+}
+
+void ALB_PatientBase::SetOriginState()
+{
+	ALB_AICPatientBase* AIC = Cast<ALB_AICPatientBase>(GetController());
+	if (AIC)
+	{
+		if (BehaviorMode == 1)
+		{
+			AIC->SetState_Strafe();
+		}
+		else
+		{
+			AIC->SetState_None();
+		}
 	}
 }
 

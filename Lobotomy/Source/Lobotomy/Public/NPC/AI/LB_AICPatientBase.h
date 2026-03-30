@@ -41,6 +41,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetState_Action();
 
+	UFUNCTION(BlueprintCallable)
+	void SetState_Interact();
+
 protected:
 	void SetBehaviorAndAnim();
 };
