@@ -62,6 +62,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnNightBehaviorHint();
 
+	UFUNCTION(BlueprintCallable)
+	void SetInteractState();
+
+	UFUNCTION(BlueprintCallable)
+	void SetOriginState();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	int32 Behnum;
 

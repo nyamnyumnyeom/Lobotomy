@@ -47,6 +47,10 @@ public:
     void StartSprint();
     void StopSprint();
 
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+	void OnDialogueEnd();
+
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void HandleChart();
 

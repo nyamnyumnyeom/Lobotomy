@@ -34,6 +34,7 @@ enum class EPatientState : uint8
 	None UMETA(DisplayName = "None"),
 	Strafe UMETA(DisplayName = "Strafe"),
 	Action UMETA(DisplayName = "Action"),
+	Interact UMETA(DisplayName = "Interact"),
 };
 // @----------@ @----------@ @----------@ @----------@ @----------@
 

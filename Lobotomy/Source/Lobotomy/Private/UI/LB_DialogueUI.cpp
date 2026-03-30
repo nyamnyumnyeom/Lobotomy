@@ -61,6 +61,7 @@ void ULB_DialogueUI::ShowNextDialogue()
             {
                 Player->ShowHUDUI();
 				Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+				Player->OnDialogueEnd();
             }
         }
     }
