@@ -54,6 +54,10 @@ void ALB_GM::PlayerDeathLogic(FVector TargetLocation, int32 Num)
 		LB_Character->PlayDeathSequence_Bear(TargetLocation);
 		break;
 
+	case 4:
+		LB_Character->PlayDeathSequence_Doctor(TargetLocation);
+		break;
+
 	case 10:
 		LB_Character->OnDayDeathLogic();
 		break;

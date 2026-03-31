@@ -56,6 +56,13 @@ void ALB_Monster_Doctor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 				AIC->SetState_Attack();
 
 				SoundPlay(2);
+
+				SetActorRotationToPlayer();
+
+				ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+				if (!GM) return;
+
+				GM->PlayerDeathLogic(GetActorLocation(), 4);
 			}
 		}
 	}
