@@ -81,6 +81,7 @@ public:
 	// 1 : 노커
 	// 2 : 끾끾끾
 	// 3: 곰탬미
+	// 4: 의사
 	// 10 : 낮에 시간초과
 	// 11 : 밤에 시간초과
 	UFUNCTION(BlueprintCallable)
