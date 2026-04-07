@@ -88,10 +88,13 @@ void ALB_BuzzWireActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bBuzzActive && !bDeadTriggered && !bSuccessTriggered)
-	{
-		UpdateRingFollowMouse(DeltaSeconds);
-	}
+	//if (bBuzzActive && !bDeadTriggered && !bSuccessTriggered)
+	//{
+	//	UpdateRingFollowMouse(DeltaSeconds);
+	//}
+
+	if (!bBuzzActive) return;
+	UpdateRingFollowMouse(DeltaSeconds);
 }
 
 void ALB_BuzzWireActor::BuzzPlay(float BlendTime)
@@ -224,7 +227,7 @@ void ALB_BuzzWireActor::UpdateRingFollowMouse(float DeltaSeconds) {
 void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
 	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 	if (!bSpzone1ov || !bSpzone2ov || !bSpzone3ov) return;
 
 	bSuccessTriggered = true;
@@ -235,34 +238,37 @@ void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
 void ALB_BuzzWireActor::HandleSPZone1BeginOverlap(
 	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	bSpzone1ov = true;
 	OnSPZone1();
 }
 
 void ALB_BuzzWireActor::HandleSPZone2BeginOverlap(
 	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	bSpzone2ov = true;
 	OnSPZone2();
 }
 
 void ALB_BuzzWireActor::HandleSPZone3BeginOverlap(
 	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	bSpzone3ov = true;
 	OnSPZone3();
 }
 
 void ALB_BuzzWireActor::RotateRingUp()
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 
 	RingMesh->AddLocalRotation(FRotator( 0.f, RingRotationStep, 0.f));
 }
 
 void ALB_BuzzWireActor::RotateRingDown()
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 
 	RingMesh->AddLocalRotation(FRotator( 0.f, -RingRotationStep, 0.f));
 }
@@ -316,8 +322,9 @@ void ALB_BuzzWireActor::HandleOutEnd(
 
 void ALB_BuzzWireActor::EvaluateDead()
 {
-	if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 
+	/*
 	if (bOutOverlap && !bInOverlap)
 	{
 		bDeadTriggered = true;
@@ -326,5 +333,32 @@ void ALB_BuzzWireActor::EvaluateDead()
 		bSpzone2ov = false;
 		bSpzone3ov = false;
 		OnBuzzDeath();
+	}*/
+
+	bDeadTriggered = true;
+	//bBuzzActive = false;
+	bSpzone1ov = false;
+	bSpzone2ov = false;
+	bSpzone3ov = false;
+	OnBuzzDeath();
+}
+
+void ALB_BuzzWireActor::DeadZonePenalty(int32 NewPenaltySecond)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().SetTimer(EverySecondTimerHandle, this, &ALB_BuzzWireActor::OnEverySecondDelay, 1.0f, true);
+		GetWorldTimerManager().SetTimer(PenaltyTimerHandle, this, &ALB_BuzzWireActor::ClearEverySecondDelay, NewPenaltySecond, false);
 	}
+}
+
+void ALB_BuzzWireActor::ClearEverySecondDelay()
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(EverySecondTimerHandle);
+		GetWorldTimerManager().ClearTimer(PenaltyTimerHandle);
+	}
+
+	OnEndEverySecondDelay();
 }
