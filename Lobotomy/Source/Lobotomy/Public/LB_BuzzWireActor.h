@@ -142,7 +142,23 @@ private:
 	UFUNCTION()
 	void HandleOutEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION(BlueprintCallable)
 	void EvaluateDead();
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void DeadZonePenalty(int32 NewPenaltySecond);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEverySecondDelay();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndEverySecondDelay();
+
+	void ClearEverySecondDelay();
+
+	FTimerHandle PenaltyTimerHandle;
+	FTimerHandle EverySecondTimerHandle;
 
 
 	//회전함수
