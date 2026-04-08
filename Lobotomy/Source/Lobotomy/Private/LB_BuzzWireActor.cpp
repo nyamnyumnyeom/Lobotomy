@@ -225,8 +225,10 @@ void ALB_BuzzWireActor::UpdateRingFollowMouse(float DeltaSeconds) {
 //}
 
 void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
-	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
+	UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherComp != RingMesh) return;
+
 	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
 	if (!bSpzone1ov || !bSpzone2ov || !bSpzone3ov) return;
 
@@ -236,25 +238,47 @@ void ALB_BuzzWireActor::HandleSuccessZoneBeginOverlap(
 }
 
 void ALB_BuzzWireActor::HandleSPZone1BeginOverlap(
-	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
+	UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+
+	//UE_LOG(LogTemp, Warning, TEXT("Actor: %s (%s) / Comp: %s (%s)"),
+	//	*GetNameSafe(OtherActor),
+	//	*GetNameSafe(OtherActor ? OtherActor->GetClass() : nullptr),
+	//	*GetNameSafe(OtherComp),
+	//	*GetNameSafe(OtherComp ? OtherComp->GetClass() : nullptr)
+	//);
+
+	if (OtherComp != RingMesh) return;
+
+	if (bSpzone1ov) return;
+
 	bSpzone1ov = true;
 	OnSPZone1();
 }
 
 void ALB_BuzzWireActor::HandleSPZone2BeginOverlap(
-	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
+	UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+
+	if (OtherComp != RingMesh) return;
+
+	if (bSpzone2ov) return;
+
 	bSpzone2ov = true;
 	OnSPZone2();
 }
 
 void ALB_BuzzWireActor::HandleSPZone3BeginOverlap(
-	UPrimitiveComponent*, AActor*, UPrimitiveComponent*, int32, bool, const FHitResult&)
+	UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//if (!bBuzzActive || bDeadTriggered || bSuccessTriggered) return;
+
+	if (OtherComp != RingMesh) return;
+
+	if (bSpzone3ov) return;
+
 	bSpzone3ov = true;
 	OnSPZone3();
 }
