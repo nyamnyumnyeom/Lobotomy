@@ -34,6 +34,7 @@ public:
 	float Threshold = 0.0f;
 
 	// 재등장이 가능하지 않은 대기 시간인가?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
 	bool bIsWaiting = false;
 
 	// 등장 로직을 실행시켜 끽끽이가 플레이어 근처로 이동했는지.
