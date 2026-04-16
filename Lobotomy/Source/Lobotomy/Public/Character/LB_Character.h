@@ -303,6 +303,15 @@ public:
     TArray<TObjectPtr<USoundBase>> Water_walk_Sound;
 
     bool IsInWaterArea() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    bool HasAnyItem() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    bool GiveItemByID(FName ItemID);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    bool bReceivedpjwReward = false;
 private:
 
     void UpdateSanityEffect(float DeltaTime);

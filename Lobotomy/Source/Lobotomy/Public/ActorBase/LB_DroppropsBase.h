@@ -18,7 +18,7 @@ public:
     ALB_DroppropsBase();
 
     UFUNCTION(BlueprintCallable, Category = "Drop")
-    void Dropforce();
+    void Dropforce(); 
 
     UFUNCTION(BlueprintCallable, Category = "Drop")
     void ResetDropProps();
