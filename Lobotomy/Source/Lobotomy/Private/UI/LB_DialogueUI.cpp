@@ -25,7 +25,52 @@ void ULB_DialogueUI::ShowNextDialogue()
 {
     if (!DialogueTable) return;
 
-    FDialogueRow* NextRow = DialogueTable->FindRow<FDialogueRow>(CurrentRow.NextID, TEXT("ShowNextDialogue"));
+    FName NextDialogueID = CurrentRow.NextID;
+
+    if (CurrentRow.bUseInventoryBranch)
+    {
+        if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+        {
+            if (ALB_Character* Player = Cast<ALB_Character>(PC->GetPawn()))
+            {
+                // 이미 아이템을 받은 상태면 분기 무시, 그냥 원래 NextID 유지
+                if (!Player->bReceivedpjwReward)
+                {
+                    if (!Player->HasAnyItem())
+                    {
+                        bool bGiveSuccess = false;
+
+                        if (!CurrentRow.RewardItemID.IsNone())
+                        {
+                            bGiveSuccess = Player->GiveItemByID(CurrentRow.RewardItemID);
+                        }
+
+                        if (bGiveSuccess)
+                        {
+                            Player->bReceivedpjwReward = true;
+                            NextDialogueID = CurrentRow.EmptyInventoryNextID;
+                        }
+                        else
+                        {
+                            NextDialogueID = CurrentRow.OccupiedInventoryNextID;
+                        }
+                    }
+                    else
+                    {
+                        NextDialogueID = CurrentRow.OccupiedInventoryNextID;
+                    }
+                }
+            }
+        }
+    }
+
+    FDialogueRow* NextRow = nullptr;
+
+    if (!NextDialogueID.IsNone())
+    {
+        NextRow = DialogueTable->FindRow<FDialogueRow>(NextDialogueID, TEXT("ShowNextDialogue"));
+    }
+
     if (NextRow)
     {
         RemoveFromParent();
@@ -36,10 +81,11 @@ void ULB_DialogueUI::ShowNextDialogue()
             ULB_DialogueUI* NewUI = CreateWidget<ULB_DialogueUI>(PC, GetClass());
             if (NewUI)
             {
-				FInputModeUIOnly InputMode;
-				InputMode.SetWidgetToFocus(NewUI->TakeWidget());
-				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-				PC->SetInputMode(InputMode);
+                FInputModeUIOnly InputMode;
+                InputMode.SetWidgetToFocus(NewUI->TakeWidget());
+                InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+                PC->SetInputMode(InputMode);
+                PC->bShowMouseCursor = true;
 
                 NewUI->AddToViewport(1000);
                 NewUI->InitDialogue(DialogueTable, NextRow->DialogueID);
@@ -60,8 +106,8 @@ void ULB_DialogueUI::ShowNextDialogue()
             if (ALB_Character* Player = Cast<ALB_Character>(PC->GetPawn()))
             {
                 Player->ShowHUDUI();
-				Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-				Player->OnDialogueEnd();
+                Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+                Player->OnDialogueEnd();
             }
         }
     }

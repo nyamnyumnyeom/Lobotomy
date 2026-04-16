@@ -743,3 +743,17 @@ bool ALB_Character::IsInWaterArea() const
 
     return false;
 }
+
+bool ALB_Character::HasAnyItem() const
+{
+    return !CurrentItem.IsNone();
+}
+
+bool ALB_Character::GiveItemByID(FName ItemID)
+{
+    if (ItemID.IsNone()) return false;
+    if (!CurrentItem.IsNone()) return false;
+
+    PickupItem(ItemID);
+    return CurrentItem == ItemID;
+}

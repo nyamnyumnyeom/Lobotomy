@@ -29,4 +29,16 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
     bool bPlaySound = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    bool bUseInventoryBranch = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    FName EmptyInventoryNextID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    FName OccupiedInventoryNextID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    FName RewardItemID = NAME_None;
 };
