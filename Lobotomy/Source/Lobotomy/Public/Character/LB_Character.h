@@ -190,8 +190,14 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void OnInventoryUpdated(FName NewItem);
 
-    UFUNCTION(BlueprintCallable, Category = "Battery")
+    UFUNCTION(BlueprintCallable, Category = "InvItems")
     void AddBattery(float Amount);
+
+    UFUNCTION(BlueprintCallable, Category = "InvItems")
+    void AddMedicine(float Amount);
+
+    UFUNCTION(BlueprintCallable, Category = "InvItems")
+    void AddStamina(float Amount);
 
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void ShowNoPickup();

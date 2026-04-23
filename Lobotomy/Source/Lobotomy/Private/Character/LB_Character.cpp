@@ -483,6 +483,18 @@ void ALB_Character::AddBattery(float Amount)
     UE_LOG(LogTemp, Warning, TEXT("Battery Level: %f"), BatteryLevel);
 }
 
+void ALB_Character::AddMedicine(float Amount)
+{
+    Sanity = FMath::Clamp(Sanity + Amount, 0.0f, MaxSanity);
+    UE_LOG(LogTemp, Warning, TEXT("Sanity : %f"), Sanity);
+}
+
+void ALB_Character::AddStamina(float Amount)
+{
+    Stamina = FMath::Clamp(Stamina + Amount, 0.0f, MaxStamina);
+    UE_LOG(LogTemp, Warning, TEXT("Stamina : %f"), Stamina);
+}
+
 void ALB_Character::UseItem()
 {
     if (CurrentItem == NAME_None)
@@ -507,14 +519,24 @@ void ALB_Character::UseItem()
     switch (ItemRow->ItemType)
     {
     case EItemType::Battery:
-        {
-
+    {
         AddBattery(0.2f);
-        UE_LOG(LogTemp, Warning, TEXT("배터리 사용: 충전 완료"));
-
         bConsumed = true;
         break;
         }
+
+    case EItemType::Medicine:
+    {
+        AddMedicine(0.2f);
+        bConsumed = true;
+        break;
+    }
+    case EItemType::Medicine2:
+    {
+        AddStamina(0.2f);
+        bConsumed = true;
+        break;
+    }
 
     default:
         {
