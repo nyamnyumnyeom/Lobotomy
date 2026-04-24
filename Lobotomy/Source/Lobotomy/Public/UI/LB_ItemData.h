@@ -10,6 +10,8 @@ enum class EItemType : uint8
 {
     None UMETA(DisplayName = "None"),
     Battery UMETA(DisplayName = "Battery"),
+    Medicine UMETA(DisplayName = "Medicine"),
+    Medicine2 UMETA(DisplayName = "Medicine2"),
     Key UMETA(DisplayName = "Key"),
     Tool UMETA(DisplayName = "Tool")
 };
