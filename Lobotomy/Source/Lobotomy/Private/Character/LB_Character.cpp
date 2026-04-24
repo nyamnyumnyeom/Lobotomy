@@ -485,8 +485,13 @@ void ALB_Character::AddBattery(float Amount)
 
 void ALB_Character::AddMedicine(float Amount)
 {
-    Sanity = FMath::Clamp(Sanity + Amount, 0.0f, MaxSanity);
-    UE_LOG(LogTemp, Warning, TEXT("Sanity : %f"), Sanity);
+    float LostSanity = MaxSanity - Sanity;
+
+    float RecoveryAmount = LostSanity * (Amount / 1.0f);
+
+    Sanity = FMath::Clamp(Sanity + RecoveryAmount, 0.0f, MaxSanity);
+
+    UE_LOG(LogTemp, Warning, TEXT("Sanity : %f (Recovered: %f)"), Sanity, RecoveryAmount);
 }
 
 void ALB_Character::AddStamina(float Amount)
@@ -527,13 +532,13 @@ void ALB_Character::UseItem()
 
     case EItemType::Medicine:
     {
-        AddMedicine(0.2f);
+        AddMedicine(0.3f);
         bConsumed = true;
         break;
     }
     case EItemType::Medicine2:
     {
-        AddStamina(0.2f);
+        AddStamina(0.5f);
         bConsumed = true;
         break;
     }
