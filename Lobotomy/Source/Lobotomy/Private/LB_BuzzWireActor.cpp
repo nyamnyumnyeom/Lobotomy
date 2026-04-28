@@ -88,7 +88,7 @@ void ALB_BuzzWireActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	//if (bBuzzActive && !bDeadTriggered && !bSuccessTriggered)
+	//if (bBuzzActive && !bDeadTriggered && !bSuccessTriggered)c
 	//{
 	//	UpdateRingFollowMouse(DeltaSeconds);
 	//}
@@ -364,7 +364,7 @@ void ALB_BuzzWireActor::EvaluateDead()
 	bSpzone1ov = false;
 	bSpzone2ov = false;
 	bSpzone3ov = false;
-	OnBuzzDeath();
+	//OnBuzzDeath();
 }
 
 void ALB_BuzzWireActor::DeadZonePenalty(int32 NewPenaltySecond)
