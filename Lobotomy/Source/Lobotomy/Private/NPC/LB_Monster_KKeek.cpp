@@ -81,6 +81,8 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 	{
 		GetWorld()->GetTimerManager().SetTimer(AutoInvisibleTimerHandle, this, &ALB_Monster_KKeek::KKERealInvisible, 10.0f, false);
 	}
+
+	Sanity_Reduces(0.5f);
 }
 
 void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)

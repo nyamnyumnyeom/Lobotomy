@@ -316,4 +316,6 @@ void ALB_Monster_Manequin::PlaySound_Manequin(USoundCue* Sound, FVector SoundLoc
 			SoundLocation
 		);
 	}
+
+	Sanity_Reduces(0.5f);
 }

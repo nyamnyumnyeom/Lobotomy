@@ -29,4 +29,7 @@ public:
 public:
 	virtual void DisappearLogic();
 
+	UFUNCTION(BlueprintCallable, Category = "Sanity")
+	void Sanity_Reduces(float Amount);
+
 };

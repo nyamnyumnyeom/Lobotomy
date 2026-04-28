@@ -69,6 +69,8 @@ void ALB_Monster_TeddyBear::DisappearLogic()
 
 	SetSpawnWhetherToGM(false);
 
+	GetWorldTimerManager().ClearTimer(SanityTimerHandle);
+
 	Destroy();
 }
 
@@ -94,6 +96,7 @@ void ALB_Monster_TeddyBear::BeginPlay()
 	{
 		GetWorldTimerManager().ClearTimer(SpawnDurationTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnDurationTimerHandle, this, &ALB_Monster_TeddyBear::TimeupSpawnDuration, SpawnDuration, false);
+		GetWorldTimerManager().SetTimer(SanityTimerHandle, this, &ALB_Monster_TeddyBear::SanityLogic, 1.0f, true);
 	}
 
 	SetSpawnWhetherToGM(true);
@@ -160,5 +163,10 @@ void ALB_Monster_TeddyBear::PlaySound_Kill()
 			GetRootComponent()
 		);
 	}
+}
+
+void ALB_Monster_TeddyBear::SanityLogic()
+{
+	Sanity_Reduces(0.1f);
 }
 

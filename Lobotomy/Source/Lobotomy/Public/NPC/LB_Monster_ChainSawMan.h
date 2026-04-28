@@ -60,6 +60,7 @@ protected:
 	FTimerHandle SpeedSettingTimerHandle;
 	FTimerHandle RunModeTimerHandle;
 	FTimerHandle SoundPlayTimerHandle;
+	FTimerHandle SanityTimerHandle;
 
 protected:
 	AActor* CachedPlayerCharacter;
@@ -106,4 +107,6 @@ protected:
 	void SoundPlay();
 
 	void HeartbeatToggle(bool Value);
+
+	void SanityTimer();
 };

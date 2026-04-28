@@ -41,6 +41,7 @@ void ALB_Monster_ChainSawMan::BeginPlay()
 	if (GetWorld())
 	{
 		GetWorldTimerManager().SetTimer(SpeedSettingTimerHandle, this, &ALB_Monster_ChainSawMan::SpeedSettingTimer, 2.0f, true);
+		GetWorldTimerManager().SetTimer(SanityTimerHandle, this, &ALB_Monster_ChainSawMan::SanityTimer, 1.0f, true);
 	}
 
 	HeartbeatToggle(true);
@@ -144,6 +145,7 @@ void ALB_Monster_ChainSawMan::DisappearLogic()
 	SetSpawnWhetherToGM(false);
 
 	GetWorldTimerManager().ClearTimer(SoundPlayTimerHandle);
+	GetWorldTimerManager().ClearTimer(SanityTimerHandle);
 
 	if (AudioComp && AudioComp->IsPlaying())
 	{
@@ -271,4 +273,9 @@ void ALB_Monster_ChainSawMan::HeartbeatToggle(bool Value)
 			Player->StopHeartbeat();
 		}
 	}
+}
+
+void ALB_Monster_ChainSawMan::SanityTimer()
+{
+	Sanity_Reduces(0.1f);
 }

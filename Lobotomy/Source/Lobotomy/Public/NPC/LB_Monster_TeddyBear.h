@@ -28,6 +28,7 @@ protected:
 
 protected:
 	FTimerHandle SpawnDurationTimerHandle;
+	FTimerHandle SanityTimerHandle;
 
 protected:
 	AActor* CachedPlayerCharacter;
@@ -69,4 +70,6 @@ protected:
 	void PlaySound_Spawn();
 
 	void PlaySound_Kill();
+
+	void SanityLogic();
 };

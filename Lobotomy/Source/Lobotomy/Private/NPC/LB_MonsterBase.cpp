@@ -2,6 +2,8 @@
 
 
 #include "NPC/LB_MonsterBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "Character/LB_Character.h"
 
 ALB_MonsterBase::ALB_MonsterBase()
 {
@@ -22,4 +24,12 @@ void ALB_MonsterBase::CheckIsChase_Implementation(bool bIsChase)
 void ALB_MonsterBase::DisappearLogic()
 {
 
+}
+
+void ALB_MonsterBase::Sanity_Reduces(float Amount)
+{
+	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (!LB_Character) return;
+
+	LB_Character->ReduceSanity(Amount);
 }
