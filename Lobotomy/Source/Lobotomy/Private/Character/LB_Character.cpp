@@ -485,13 +485,36 @@ void ALB_Character::AddBattery(float Amount)
 
 void ALB_Character::AddMedicine(float Amount)
 {
-    float LostSanity = MaxSanity - Sanity;
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1, 2.0f, FColor::Yellow,
+            FString::Printf(TEXT("[Before] Sanity: %.2f / %.2f (Amount: %.2f)"),
+                Sanity, MaxSanity, Amount)
+        );
+    }
 
-    float RecoveryAmount = LostSanity * (Amount / 1.0f);
+    float LostSanity = MaxSanity - Sanity;
+    float RecoveryAmount = LostSanity * Amount;
+
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1, 2.0f, FColor::Cyan,
+            FString::Printf(TEXT("Lost: %.2f, Recover: %.2f"),
+                LostSanity, RecoveryAmount)
+        );
+    }
 
     Sanity = FMath::Clamp(Sanity + RecoveryAmount, 0.0f, MaxSanity);
 
-    UE_LOG(LogTemp, Warning, TEXT("Sanity : %f (Recovered: %f)"), Sanity, RecoveryAmount);
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1, 2.0f, FColor::Green,
+            FString::Printf(TEXT("[After] Sanity: %.2f"), Sanity)
+        );
+    }
 }
 
 void ALB_Character::AddStamina(float Amount)
@@ -538,7 +561,7 @@ void ALB_Character::UseItem()
     }
     case EItemType::Medicine2:
     {
-        AddStamina(0.5f);
+        AddStamina(1.0f);
         bConsumed = true;
         break;
     }
