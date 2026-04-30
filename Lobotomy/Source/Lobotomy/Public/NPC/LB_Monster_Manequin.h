@@ -31,11 +31,11 @@ public:
 
 	// 따라붙기 시작한 뒤, 일정 시간 뒤에 다른 위치로 순간이동하고 초기화되기까지 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
-	float Manequin_ResetTime_Min = 60.0f;
+	float Manequin_ResetTime_Min = 25.0f;
 
 	// 따라붙기 시작한 뒤, 일정 시간 뒤에 다른 위치로 순간이동하고 초기화되기까지 최대 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|State")
-	float Manequin_ResetTime_Max = 100.0f;
+	float Manequin_ResetTime_Max = 35.0f;
 
 	// 벽을 끼고 사야를 벗어날 경우, 일정 시간 뒤에 움직임을 재개하는 최소 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|Move")
@@ -43,7 +43,7 @@ public:
 
 	// 벽을 끼고 사야를 벗어날 경우, 일정 시간 뒤에 움직임을 재개하는 최대 시간.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LB_Property|Move")
-	float MoveRestartTime_Max = 30.0f;
+	float MoveRestartTime_Max = 20.0f;
 
 protected:
 	// Reference

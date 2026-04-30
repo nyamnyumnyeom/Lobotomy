@@ -47,7 +47,7 @@ void ALB_AICMonster_Manequin::OnPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 
 	if (!Actor->ActorHasTag("Player")) return;
 
-	if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
+	/*if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
 	{
 		Resist_ToGM();
 
@@ -96,7 +96,7 @@ void ALB_AICMonster_Manequin::OnPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 				}
 			}
 		}
-	}
+	}*/
 }
 
 void ALB_AICMonster_Manequin::MoveToPlayerBackward(bool bShouldMove)

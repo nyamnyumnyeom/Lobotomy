@@ -241,7 +241,7 @@ bool ALB_Monster_Manequin::TeleportToRandomNavLocation(float MinDistanceFromPlay
 	}
 	else
 	{
-		bool bSuccess = TeleportTo(FVector(10000.0f, 10000.0f, 10000.0f), GetActorRotation());
+		bool bSuccess = TeleportTo(FVector(4960.000004f, 2657.047936f, 14000.570533f), GetActorRotation());
 		if (bSuccess)
 		{
 			return true;
