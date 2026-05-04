@@ -110,6 +110,8 @@ void ALB_Monster_TeddyBear::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 	{
 		if (OtherActor->ActorHasTag(FName("Player")))
 		{
+			if (CheakPlayerIsIn()) return;
+
 			ALB_AICMonster_TeddyBear* AIC = Cast<ALB_AICMonster_TeddyBear>(GetController());
 			if (AIC)
 			{

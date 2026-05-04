@@ -10,6 +10,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "NPC/LB_NPCData.h"
 #include "NavigationSystem.h"
+#include "Character/LB_Character.h"
 
 ALB_AICMonsterBase::ALB_AICMonsterBase()
 {
@@ -227,4 +228,26 @@ void ALB_AICMonsterBase::SetBB_Target()
 			//SetFocus(TargetActor);
 		}
 	}
+}
+
+bool ALB_AICMonsterBase::CheakPlayerIsIn()
+{
+	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (LB_Character)
+	{
+		FProperty* Property = LB_Character->GetClass()->FindPropertyByName(FName("Isin?"));
+
+		if (Property)
+		{
+			FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property);
+			if (BoolProperty)
+			{
+				bool bCurrentValue = BoolProperty->GetPropertyValue_InContainer(LB_Character);
+
+				if (bCurrentValue) return true;
+			}
+		}
+	}
+
+	return false;
 }

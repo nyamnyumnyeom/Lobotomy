@@ -48,6 +48,16 @@ void ALB_AICMonster_ChainSawMan::OnPerceptionUpdated(AActor* Actor, FAIStimulus 
 		{
 			if (Stimulus.Type == UAISense::GetSenseID(UAISense_Hearing::StaticClass()))
 			{
+				if (CheakPlayerIsIn())
+				{
+					GetWorld()->GetTimerManager().SetTimer(LostSightTimerHandle, this, &ALB_AICMonsterBase::OnLostSightTimeout, LostSightTime, false);
+
+					if (!BB) return;
+
+					BB->SetValueAsVector("LastSeenLocation", Stimulus.StimulusLocation);
+					BB->SetValueAsBool("IsSeePlayer", false);
+				}
+
 				FVector SoundLocation = Stimulus.StimulusLocation;
 				FVector MyLocation = GetPawn()->GetActorLocation();
 

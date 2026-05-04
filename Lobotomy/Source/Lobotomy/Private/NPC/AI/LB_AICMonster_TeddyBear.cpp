@@ -26,6 +26,16 @@ void ALB_AICMonster_TeddyBear::OnPerceptionUpdated(AActor* Actor, FAIStimulus St
 	{
 		if (Stimulus.Type == UAISense::GetSenseID(UAISense_Sight::StaticClass()))
 		{
+			if (CheakPlayerIsIn())
+			{
+				GetWorld()->GetTimerManager().SetTimer(LostSightTimerHandle, this, &ALB_AICMonsterBase::OnLostSightTimeout, LostSightTime, false);
+
+				if (!BB) return;
+
+				BB->SetValueAsVector("LastSeenLocation", Stimulus.StimulusLocation);
+				BB->SetValueAsBool("IsSeePlayer", false);
+			}
+
 			GetWorld()->GetTimerManager().ClearTimer(LostSightTimerHandle);
 
 			SetBB_Target();

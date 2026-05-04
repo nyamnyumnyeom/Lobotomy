@@ -89,5 +89,5 @@ public:
 public:
 	void SetBB_Target();
 
-
+	bool CheakPlayerIsIn();
 };

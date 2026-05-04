@@ -73,7 +73,7 @@ void ALB_PatientBase::OnNightBehavior()
 
 void ALB_PatientBase::OnNightBehaviorHint()
 {
-	ApplyAnimBlueprint(Behnum);
+	ApplyAnimBlueprint(BehaviorMode_Night);
 
 	USkeletalMeshComponent* MeshComp = GetMesh();
 	if (MeshComp)

@@ -68,8 +68,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetOriginState();
 
+	// [0:서있기 - Stand] , [1:배회하기 - Strafe], [2:앉아있기 - Sit], [3:누워있기 - Lay], [4:잠자기 - Sleep]
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-	int32 Behnum;
+	int32 BehaviorMode_Night;
 
 	// 낮이 되었을 때 실행시킬 함수. 기존 위치로 이동 + 애니메이션 프리셋을 초기 값으로 변경함.
 	UFUNCTION(BlueprintCallable)

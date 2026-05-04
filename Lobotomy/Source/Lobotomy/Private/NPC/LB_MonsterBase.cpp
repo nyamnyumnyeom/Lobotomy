@@ -33,3 +33,25 @@ void ALB_MonsterBase::Sanity_Reduces(float Amount)
 
 	LB_Character->ReduceSanity(Amount);
 }
+
+bool ALB_MonsterBase::CheakPlayerIsIn()
+{
+	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (LB_Character)
+	{
+		FProperty* Property = LB_Character->GetClass()->FindPropertyByName(FName("Isin?"));
+
+		if (Property)
+		{
+			FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property);
+			if (BoolProperty)
+			{
+				bool bCurrentValue = BoolProperty->GetPropertyValue_InContainer(LB_Character);
+
+				if (bCurrentValue) return true;
+			}
+		}
+	}
+
+    return false;
+}

@@ -32,4 +32,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sanity")
 	void Sanity_Reduces(float Amount);
 
+	bool CheakPlayerIsIn();
+
 };

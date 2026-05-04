@@ -53,6 +53,8 @@ void ALB_Monster_ChainSawMan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 	{
 		if (OtherActor->ActorHasTag(FName("Player")))
 		{
+			if (CheakPlayerIsIn()) return;
+
 			ALB_AICMonster_ChainSawMan* AIC = Cast<ALB_AICMonster_ChainSawMan>(GetController());
 			if (AIC)
 			{
