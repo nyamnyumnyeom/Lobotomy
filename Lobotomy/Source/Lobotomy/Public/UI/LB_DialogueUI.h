@@ -10,6 +10,8 @@
 class UTextBlock;
 class UButton;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueEventTriggered);
+
 UCLASS()
 class LOBOTOMY_API ULB_DialogueUI : public UUserWidget
 {
@@ -23,6 +25,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void ShowNextDialogue();
+
+    UPROPERTY(BlueprintAssignable, Category = "Dialogue")
+    FOnDialogueEventTriggered OnDialogueEventTriggered;
 
 protected:
     void DisplayCurrentDialogue();

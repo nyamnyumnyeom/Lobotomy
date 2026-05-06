@@ -41,4 +41,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
     FName RewardItemID = NAME_None;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+    bool bTriggerEvent = false;
 };

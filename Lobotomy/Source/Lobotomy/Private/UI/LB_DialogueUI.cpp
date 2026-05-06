@@ -8,6 +8,7 @@
 void ULB_DialogueUI::NativeConstruct()
 {
     Super::NativeConstruct();
+
     if (NextButton)
     {
         NextButton->OnClicked.AddDynamic(this, &ULB_DialogueUI::ShowNextDialogue);
@@ -33,7 +34,6 @@ void ULB_DialogueUI::ShowNextDialogue()
         {
             if (ALB_Character* Player = Cast<ALB_Character>(PC->GetPawn()))
             {
-                // 이미 아이템을 받은 상태면 분기 무시, 그냥 원래 NextID 유지
                 if (!Player->bReceivedpjwReward)
                 {
                     if (!Player->HasAnyItem())
@@ -79,11 +79,15 @@ void ULB_DialogueUI::ShowNextDialogue()
         if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
         {
             ULB_DialogueUI* NewUI = CreateWidget<ULB_DialogueUI>(PC, GetClass());
+
             if (NewUI)
             {
+                NewUI->OnDialogueEventTriggered = OnDialogueEventTriggered;
+
                 FInputModeUIOnly InputMode;
                 InputMode.SetWidgetToFocus(NewUI->TakeWidget());
                 InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
                 PC->SetInputMode(InputMode);
                 PC->bShowMouseCursor = true;
 
@@ -118,29 +122,31 @@ void ULB_DialogueUI::DisplayCurrentDialogue()
     if (!DialogueTable) return;
 
     FDialogueRow* Row = DialogueTable->FindRow<FDialogueRow>(CurrentRowName, TEXT("DisplayCurrentDialogue"));
+
     if (Row)
     {
         CurrentRow = *Row;
-        if (SpeakerText)
-        {
-            SpeakerText->SetText(FText::GetEmpty());
-        }
-        if (DialogueText)
-        {
-            DialogueText->SetText(FText::GetEmpty());
-        }
 
         if (SpeakerText)
         {
+            SpeakerText->SetText(FText::GetEmpty());
             SpeakerText->SetText(Row->SpeakerName);
         }
+
         if (DialogueText)
         {
+            DialogueText->SetText(FText::GetEmpty());
             DialogueText->SetText(Row->DialogueText);
         }
+
         if (CurrentRow.bPlaySound && CurrentRow.DialogueSound)
         {
             UGameplayStatics::PlaySound2D(this, CurrentRow.DialogueSound);
+        }
+
+        if (CurrentRow.bTriggerEvent)
+        {
+            OnDialogueEventTriggered.Broadcast();
         }
 
         InvalidateLayoutAndVolatility();
