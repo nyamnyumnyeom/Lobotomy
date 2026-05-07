@@ -56,6 +56,8 @@ void ALB_AICMonster_ChainSawMan::OnPerceptionUpdated(AActor* Actor, FAIStimulus 
 
 					BB->SetValueAsVector("LastSeenLocation", Stimulus.StimulusLocation);
 					BB->SetValueAsBool("IsSeePlayer", false);
+
+					return;
 				}
 
 				FVector SoundLocation = Stimulus.StimulusLocation;

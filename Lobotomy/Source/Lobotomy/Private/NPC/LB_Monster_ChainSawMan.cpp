@@ -93,6 +93,13 @@ bool ALB_Monster_ChainSawMan::CheakShouldDestroy_Implementation()
 
 	float Dot = FVector::DotProduct(PlayerForward, ToPlayer);
 
+	if (CheakPlayerIsIn())
+	{
+		DisappearLogic();
+
+		return true;
+	}
+
 	if (Dot <= 0)
 	{
 		DisappearLogic();
