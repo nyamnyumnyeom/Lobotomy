@@ -96,6 +96,55 @@ void ULB_SettingUI::NativeConstruct()
         else ComboResolution->SetSelectedOption("1080p"); // 기본값
     }
 
+	// "Antialiasing, PostProcessing, Shadow, Texture" 설정값이 표기되는 로직 추가
+	if (ComboAA)
+	{
+		switch (S->GetAntiAliasingQuality())
+		{
+		case 0:			     ComboAA->SetSelectedOption("Low"); break;
+		case 1:			     ComboAA->SetSelectedOption("Medium"); break;
+		case 2:				 ComboAA->SetSelectedOption("High"); break;
+		case 3:				 ComboAA->SetSelectedOption("Epic"); break;
+		case 4:				 ComboAA->SetSelectedOption("Cinematic"); break;
+		}
+	}
+
+	if (ComboPost)
+	{
+		switch (S->GetPostProcessingQuality())
+		{
+		case 0:			     ComboPost->SetSelectedOption("Low"); break;
+		case 1:			     ComboPost->SetSelectedOption("Medium"); break;
+		case 2:				 ComboPost->SetSelectedOption("High"); break;
+		case 3:				 ComboPost->SetSelectedOption("Epic"); break;
+		case 4:				 ComboPost->SetSelectedOption("Cinematic"); break;
+		}
+	}
+
+	if (ComboShadow)
+	{
+		switch (S->GetShadowQuality())
+		{
+		case 0:			     ComboShadow->SetSelectedOption("Low"); break;
+		case 1:			     ComboShadow->SetSelectedOption("Medium"); break;
+		case 2:				 ComboShadow->SetSelectedOption("High"); break;
+		case 3:				 ComboShadow->SetSelectedOption("Epic"); break;
+		case 4:				 ComboShadow->SetSelectedOption("Cinematic"); break;
+		}
+	}
+
+	if (ComboTexture)
+	{
+		switch (S->GetTextureQuality())
+		{
+		case 0:			     ComboTexture->SetSelectedOption("Low"); break;
+		case 1:			     ComboTexture->SetSelectedOption("Medium"); break;
+		case 2:				 ComboTexture->SetSelectedOption("High"); break;
+		case 3:				 ComboTexture->SetSelectedOption("Epic"); break;
+		case 4:				 ComboTexture->SetSelectedOption("Cinematic"); break;
+		}
+	}
+
     if (ButtonApply) ButtonApply->OnClicked.AddDynamic(this, &ULB_SettingUI::OnApplyClicked);
     if (ButtonReset) ButtonReset->OnClicked.AddDynamic(this, &ULB_SettingUI::OnResetClicked);
 
@@ -197,24 +246,24 @@ void ULB_SettingUI::SynchronizeProperties()
 {
     Super::SynchronizeProperties();
 
-    auto FillQuality = [](UComboBoxString* Combo)
-        {
-            if (!Combo) return;
-            Combo->ClearOptions();
-            Combo->AddOption("Low");
-            Combo->AddOption("Medium");
-            Combo->AddOption("High");
-            Combo->AddOption("Epic");
-            Combo->AddOption("Cinematic");
-            Combo->RefreshOptions();
-        };
+    //auto FillQuality = [](UComboBoxString* Combo)
+    //    {
+    //        if (!Combo) return;
+    //        Combo->ClearOptions();
+    //        Combo->AddOption("Low");
+    //        Combo->AddOption("Medium");
+    //        Combo->AddOption("High");
+    //        Combo->AddOption("Epic");
+    //        Combo->AddOption("Cinematic");
+    //        Combo->RefreshOptions();
+    //    };
 
-    FillQuality(ComboAA);
-    ComboAA->RefreshOptions();
-    FillQuality(ComboPost);
-    ComboPost->RefreshOptions();
-    FillQuality(ComboShadow);
-    ComboShadow->RefreshOptions();
-    FillQuality(ComboTexture);
-    ComboTexture->RefreshOptions();
+    //FillQuality(ComboAA);
+    //ComboAA->RefreshOptions();
+    //FillQuality(ComboPost);
+    //ComboPost->RefreshOptions();
+    //FillQuality(ComboShadow);
+    //ComboShadow->RefreshOptions();
+    //FillQuality(ComboTexture);
+    //ComboTexture->RefreshOptions();
 }
