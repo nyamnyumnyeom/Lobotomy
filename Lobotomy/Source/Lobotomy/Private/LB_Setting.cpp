@@ -3,6 +3,8 @@
 #include "Engine/Engine.h"
 #include "Sound/SoundClass.h"
 #include "Misc/ConfigCacheIni.h"
+#include "EngineUtils.h"
+#include "Engine/PostProcessVolume.h"
 #include "Character/LB_PlayerController.h"
 
 void ULB_Setting::ApplyCustomSettings()
@@ -19,17 +21,46 @@ void ULB_Setting::ApplyCustomSettings()
     // r.Color.Mid는 감마/중간톤 조절이므로 계속 사용 가능
     float TargetMid = FMath::GetMappedRangeValueClamped(
         FVector2D(0.f, 1.f),    // 입력 범위 (슬라이더)
-        FVector2D(2.0f, 0.5f),  // 출력 범위 (2.0=어두움, 0.5=밝음)
+        FVector2D(0.5f, 2.0f),  // 출력 범위 (2.0=어두움, 0.5=밝음)
         Brightness              // 현재 슬라이더 값
     );
 
-    if (GEngine && GetWorld())
-    {
-        GEngine->Exec(GetWorld(), *FString::Printf(TEXT("r.Color.Mid %.3f"), TargetMid));
-    }
+	// 설정된 밝기 값을 실제로 적용하는 로직
+	// UGameUserSettings 클래스는 월드에 속해있지 않기 때문에 단순 GetWorld() 함수로는 nullptr을 반환함.
+	// 때문에 월드를 가져오는 로직 추가함.
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			if (Context.WorldType == EWorldType::Game || Context.WorldType == EWorldType::PIE)
+			{
+				World = Context.World();
+				break;
+			}
+		}
+	}
+
+	if (World)
+	{
+		for (TActorIterator<APostProcessVolume> It(World); It; ++It)
+		{
+			APostProcessVolume* PPVolume = *It;
+			if (PPVolume)
+			{
+				PPVolume->Settings.AutoExposureBias = TargetMid;
+			}
+		}
+
+		if (GEngine && World)
+		{
+			GEngine->Exec(GetWorld(), *FString::Printf(TEXT("r.Color.Mid %.3f"), TargetMid));
+		}
+	}
+
     // -------------------
     // 3. 마우스 감도 (UGameUserSettings가 관리 안 함 -> 직접 구현)
-    if (UWorld* World = GetWorld())
+    if (World)
     {
         if (APlayerController* PC = World->GetFirstPlayerController())
         {
