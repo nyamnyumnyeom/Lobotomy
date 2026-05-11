@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	TArray<TSubclassOf<UAnimInstance>> AnimBlueprintPresets;
 
-	// [0:서있기 - Stand] , [1:배회하기 - Strafe], [2:앉아있기 - Sit], [3:누워있기 - Lay], [4:잠자기 - Sleep]
+	// [0:서있기 - Stand] , [1:배회하기 - Strafe], [2:앉아있기 - Sit], [3:누워있기 - Lay], [4:잠자기 - Sleep], [5:발작 - Seizure]
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	int32 BehaviorMode = 0;
 
@@ -68,7 +68,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetOriginState();
 
-	// [0:서있기 - Stand] , [1:배회하기 - Strafe], [2:앉아있기 - Sit], [3:누워있기 - Lay], [4:잠자기 - Sleep]
+	// [0:서있기 - Stand] , [1:배회하기 - Strafe], [2:앉아있기 - Sit], [3:누워있기 - Lay], [4:잠자기 - Sleep], [5:발작 - Seizure]
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	int32 BehaviorMode_Night;
 

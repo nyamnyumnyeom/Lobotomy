@@ -20,7 +20,7 @@ public:
     float MasterVolume = 1.0f;     // 0.0 ~ 1.0
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-    float Brightness = 1.0f;       // 
+    float Brightness = 0.25f;       // 
 
     /** Reference to Master SoundClass (에디터에서 할당 가능) */
     //UPROPERTY(EditDefaultsOnly, Category = "Audio")
