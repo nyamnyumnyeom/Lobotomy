@@ -21,6 +21,11 @@ void ALB_MonsterBase::CheckIsChase_Implementation(bool bIsChase)
 {
 }
 
+void ALB_MonsterBase::StopMovemontAtDoor_Implementation()
+{
+
+}
+
 void ALB_MonsterBase::DisappearLogic()
 {
 

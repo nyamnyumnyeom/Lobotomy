@@ -5,6 +5,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "NPC/Interface/LB_Interface_MonsterState.h"
 
 ALB_LockDoor::ALB_LockDoor()
 {
@@ -61,6 +62,14 @@ void ALB_LockDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		if (GetWorld())
 		{
 			GetWorld()->GetTimerManager().SetTimer(OpenLoopTimerHandle, this, &ALB_LockDoor::OnWalkerBeginOverlap, 1.0f, true);
+		}
+
+		if (!bIsOpen)
+		{
+			if (OtherActor->GetClass()->ImplementsInterface(UCheakingState::StaticClass()))
+			{
+				ICheakingState::Execute_StopMovemontAtDoor(OtherActor);
+			}
 		}
 	}
 }

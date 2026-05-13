@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "NPC/LB_MonsterBase.h"
+#include "NPC/LB_NPCData.h"
 #include "LB_Monster_Doctor.generated.h"
 
 /**
@@ -36,15 +37,21 @@ public:
 
 protected:
 	FTimerHandle SoundPlayTimerHandle;
+	FTimerHandle MonsterStateTimerHandle;
 
 protected:
 	AActor* CachedPlayerCharacter;
+
+
+	EMonsterState CachedState;
 
 public:
 	ALB_Monster_Doctor();
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void StopMovemontAtDoor_Implementation() override;
 
 	UFUNCTION()
 	void OnOverlapBegin(
@@ -71,4 +78,6 @@ protected:
 	void SoundPlay(int32 SoundType);
 
 	void HeartbeatToggle(bool Value);
+
+	void RestorationMonsterState();
 };

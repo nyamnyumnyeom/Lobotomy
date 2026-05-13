@@ -72,6 +72,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetState_Attack();
 
+	UFUNCTION(BlueprintCallable)
+	void SetState_Wait();
+
+	UFUNCTION(BlueprintCallable)
+	EMonsterState GetCurrentMonsterState();
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void OnLostSightTimeout();

@@ -14,6 +14,7 @@ enum class EMonsterState : uint8
 	Chase UMETA(DisplayName = "Chase"),
 	Disappeared UMETA(DisplayName = "Disappeared"),
 	Attack UMETA(DisplayName = "Attack"),
+	Wait UMETA(DisplayName = "Wait")
 };
 // @----------@ @----------@ @----------@ @----------@ @----------@
 

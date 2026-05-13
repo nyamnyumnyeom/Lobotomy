@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "NPC/LB_MonsterBase.h"
+#include "NPC/LB_NPCData.h"
 #include "LB_Monster_ChainSawMan.generated.h"
 
 /**
@@ -55,12 +56,15 @@ protected:
 	bool bIsRunning = false;
 	float CurrentSpeed = 200.0f;
 
+	EMonsterState CachedState;
+
 protected:
 	FTimerHandle SpawnDurationTimerHandle;
 	FTimerHandle SpeedSettingTimerHandle;
 	FTimerHandle RunModeTimerHandle;
 	FTimerHandle SoundPlayTimerHandle;
 	FTimerHandle SanityTimerHandle;
+	FTimerHandle MonsterStateTimerHandle;
 
 protected:
 	AActor* CachedPlayerCharacter;
@@ -84,6 +88,8 @@ public:
 	virtual bool CheakShouldDestroy_Implementation() override;
 
 	virtual void CheckIsChase_Implementation(bool bIsChase) override;
+
+	virtual void StopMovemontAtDoor_Implementation() override;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnWeaponUp();
@@ -109,4 +115,6 @@ protected:
 	void HeartbeatToggle(bool Value);
 
 	void SanityTimer();
+
+	void RestorationMonsterState();
 };

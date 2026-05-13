@@ -170,6 +170,22 @@ void ALB_AICMonsterBase::SetState_Attack()
 	BB->SetValueAsEnum("CurrentState", static_cast<uint8>(EMonsterState::Attack));
 }
 
+void ALB_AICMonsterBase::SetState_Wait()
+{
+	if (!BB) return;
+
+	BB->SetValueAsEnum("CurrentState", static_cast<uint8>(EMonsterState::Wait));
+}
+
+EMonsterState ALB_AICMonsterBase::GetCurrentMonsterState()
+{
+	if (!BB) return EMonsterState();
+
+	uint8 StateValue = BB->GetValueAsEnum("CurrentState");
+
+	return static_cast<EMonsterState>(StateValue);
+}
+
 void ALB_AICMonsterBase::OnLostSightTimeout()
 {
 	if (!BB) return;

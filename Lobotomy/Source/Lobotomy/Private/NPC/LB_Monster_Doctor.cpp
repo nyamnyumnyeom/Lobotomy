@@ -39,6 +39,22 @@ void ALB_Monster_Doctor::BeginPlay()
 	HeartbeatToggle(true);
 }
 
+void ALB_Monster_Doctor::StopMovemontAtDoor_Implementation()
+{
+	ALB_AICMonsterDoctor* AIC = Cast<ALB_AICMonsterDoctor>(GetController());
+	if (AIC)
+	{
+		CachedState = AIC->GetCurrentMonsterState();
+
+		AIC->SetState_Wait();
+
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(MonsterStateTimerHandle, this, &ALB_Monster_Doctor::RestorationMonsterState, 0.5f, false);
+		}
+	}
+}
+
 void ALB_Monster_Doctor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this))
@@ -81,6 +97,8 @@ void ALB_Monster_Doctor::SpawnLogic()
 	if (AIC)
 	{
 		AIC->SetFocusPlayer();
+
+		AIC->SetState_Chase();
 	}
 }
 
@@ -150,6 +168,28 @@ void ALB_Monster_Doctor::HeartbeatToggle(bool Value)
 		{
 			Player->ResetHeartbeatTarget();
 			Player->StopHeartbeat();
+		}
+	}
+}
+
+void ALB_Monster_Doctor::RestorationMonsterState()
+{
+	ALB_AICMonsterDoctor* AIC = Cast<ALB_AICMonsterDoctor>(GetController());
+	if (AIC)
+	{
+		switch (CachedState)
+		{
+		case EMonsterState::Idle:
+			AIC->SetState_Idle();
+			break;
+
+		case EMonsterState::Chase:
+			AIC->SetState_Chase();
+			break;
+
+		default:
+			AIC->SetState_Idle();
+			break;
 		}
 	}
 }

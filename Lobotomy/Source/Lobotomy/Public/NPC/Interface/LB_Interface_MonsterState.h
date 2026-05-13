@@ -29,5 +29,10 @@ public:
 	// 해당 캐릭터가 Chase 상태인지 확인하는 용도.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "State")
 	void CheckIsChase(bool bIsChase);
+
+	// 문 근처를 지나가며 문을 열때 호출될 함수.
+	// 잠시 이동을 멈추는 용도.
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "State")
+	void StopMovemontAtDoor();
 };
 

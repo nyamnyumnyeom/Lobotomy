@@ -115,6 +115,22 @@ void ALB_Monster_ChainSawMan::CheckIsChase_Implementation(bool bIsChase)
 	bIsChasing = bIsChase;
 }
 
+void ALB_Monster_ChainSawMan::StopMovemontAtDoor_Implementation()
+{
+	ALB_AICMonster_ChainSawMan* AIC = Cast<ALB_AICMonster_ChainSawMan>(GetController());
+	if (AIC)
+	{
+		CachedState = AIC->GetCurrentMonsterState();
+
+		AIC->SetState_Wait();
+
+		if (GetWorld())
+		{
+			GetWorldTimerManager().SetTimer(MonsterStateTimerHandle, this, &ALB_Monster_ChainSawMan::RestorationMonsterState, 0.5f, false);
+		}
+	}
+}
+
 void ALB_Monster_ChainSawMan::SpawnLogic()
 {
 	SetSpawnWhetherToGM(true);
@@ -287,4 +303,26 @@ void ALB_Monster_ChainSawMan::HeartbeatToggle(bool Value)
 void ALB_Monster_ChainSawMan::SanityTimer()
 {
 	Sanity_Reduces(0.1f);
+}
+
+void ALB_Monster_ChainSawMan::RestorationMonsterState()
+{
+	ALB_AICMonster_ChainSawMan* AIC = Cast<ALB_AICMonster_ChainSawMan>(GetController());
+	if (AIC)
+	{
+		switch (CachedState)
+		{
+			case EMonsterState::Idle:
+				AIC->SetState_Idle();
+				break;
+
+			case EMonsterState::Chase:
+				AIC->SetState_Chase();
+				break;
+
+			default:
+				AIC->SetState_Idle();
+				break;
+		}
+	}
 }
