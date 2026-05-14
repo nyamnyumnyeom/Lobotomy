@@ -212,7 +212,10 @@ void ALB_Character::Tick(float DeltaTime)
         HeartbeatAudioComponent->SetPitchMultiplier(NewPitch);
     }
 
-    if (bWantsToSprint && Stamina > 0.0f)
+    const bool bIsMoving =
+        GetVelocity().SizeSquared2D() > 0.f;
+
+    if (bWantsToSprint && bIsMoving && Stamina > 0.0f)
     {
         Stamina -= StaminaDrainRate * DeltaTime;
         Stamina = FMath::Clamp(Stamina, 0.0f, MaxStamina);
