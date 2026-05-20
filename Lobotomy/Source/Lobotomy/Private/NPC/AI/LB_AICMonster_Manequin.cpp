@@ -16,12 +16,6 @@ ALB_AICMonster_Manequin::ALB_AICMonster_Manequin()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
-	HearingConfig->HearingRange = HearingDistance;
-	HearingConfig->SetMaxAge(5.0f);
-	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
-	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
-	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 }
 
 void ALB_AICMonster_Manequin::OnPossess(APawn* InPawn)

@@ -94,7 +94,7 @@ bool ULB_KKeekComp::CheckCanActive()
 
 	if (bBlocked) return false;
 
-	CanActiveLocation = TargetLocation;
+	CanActiveLocation = TargetLocation + FVector(0.0f, 0.0f, 90.0f);
 
 	return true;
 }

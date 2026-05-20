@@ -15,10 +15,6 @@ class LOBOTOMY_API ALB_AICMonster_Manequin : public ALB_AICMonsterBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
-	class UAISenseConfig_Hearing* HearingConfig;
-
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float HearingDistance = 600.0f;
 
