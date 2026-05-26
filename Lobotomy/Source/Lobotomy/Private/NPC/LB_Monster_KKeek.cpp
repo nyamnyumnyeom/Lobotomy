@@ -71,6 +71,9 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 	if (AICon && Player)
 	{
 		AICon->SetFocus(nullptr);
+
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 
 	bIsWalkingRight = false;
@@ -79,7 +82,7 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(AutoInvisibleTimerHandle, this, &ALB_Monster_KKeek::KKERealInvisible, 10.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(AutoInvisibleTimerHandle, this, &ALB_Monster_KKeek::KKERealInvisible, 5.0f, false);
 	}
 
 	Sanity_Reduces(0.5f);
@@ -93,6 +96,9 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 	AAIController* AICon = Cast<AAIController>(GetController());
 	if (AICon && Player)
 	{
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+
 		AICon->SetFocus(Player);
 	}
 
@@ -119,16 +125,16 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 	FVector PlayerLocation = Player->GetActorLocation();
 	FVector PlayerRight = Player->GetActorRightVector();
 
-	FVector AdjustedLocation = NewLocation + PlayerRight * RightOffset;
+	//FVector AdjustedLocation = NewLocation + PlayerRight * RightOffset;
 	
 	FVector SpawnLocation = NewLocation;
 
-	FRotator LookAtRot = (PlayerLocation - AdjustedLocation).Rotation();
+	FRotator LookAtRot = (PlayerLocation - SpawnLocation).Rotation();
 	LookAtRot.Pitch = 0.0f;
 	LookAtRot.Roll = 0.0f;
 
 	SetActorLocationAndRotation(
-		AdjustedLocation,
+		SpawnLocation,
 		LookAtRot,
 		false,
 		nullptr,
