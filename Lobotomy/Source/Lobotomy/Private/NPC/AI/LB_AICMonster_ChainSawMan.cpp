@@ -87,6 +87,11 @@ void ALB_AICMonster_ChainSawMan::OnPerceptionUpdated(AActor* Actor, FAIStimulus 
 
 						FNavAgentProperties AgentProps = this->GetNavAgentPropertiesRef();
 						ANavigationData* NavData = NavSys->GetNavDataForProps(AgentProps);
+						if (!NavData)
+						{
+							UE_LOG(LogTemp, Warning, TEXT("NavData not ready"));
+							return;
+						}
 
 						FVector StartLocation = MyLocation;
 						FVector EndLocation = SoundLocation;
