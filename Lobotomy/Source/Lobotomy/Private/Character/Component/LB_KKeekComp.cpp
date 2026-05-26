@@ -117,7 +117,7 @@ void ULB_KKeekComp::CheckCanDissapear()
 
 	FVector Dist = KKeek_Ref->GetActorLocation() - Char->GetActorLocation();
 
-	if (Dist.Length() > 1000.0f)
+	if (Dist.Length() > 1000.0f || Dist.Length() < 200.0f)
 	{
 		bIsTooFar = true;
 
