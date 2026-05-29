@@ -66,7 +66,7 @@ void UInteractComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UInteractComponent::ShowWidget()
 {
-	if (InteractionText)
+	if (InteractionText && bShowInteractionText)
 	{
 		InteractionText->SetVisibility(true);
 
@@ -81,11 +81,12 @@ void UInteractComponent::ShowWidget()
 			);
 		}
 	}
+
 	if (isoverlayok)
 	{
-	
-	SetOverlayVisible(true);
+		SetOverlayVisible(true);
 	}
+
 	OnInteractBPevent();
 }
 

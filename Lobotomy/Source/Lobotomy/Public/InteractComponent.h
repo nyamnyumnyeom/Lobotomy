@@ -78,6 +78,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "interact")
 	bool interactbp = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction|UI")
+	bool bShowInteractionText = true;
+
 private:
 	void CollectAllMeshes(AActor* Actor);
 	void SetOverlayVisible(bool bVisible);
