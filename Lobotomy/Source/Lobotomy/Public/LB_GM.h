@@ -14,6 +14,7 @@ class ALB_TeddyBear;
 class ALB_Monster_Manequin;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChartUpdated, int32, PageNumber);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDayChanged);
 
 UCLASS()
 class LOBOTOMY_API ALB_GM : public AGameMode
@@ -70,6 +71,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateSet();
+
+	UPROPERTY(BlueprintAssignable, Category = "GameTime")
+	FOnDayChanged OnDayChanged;
 
 protected:
 	virtual void BeginPlay() override;

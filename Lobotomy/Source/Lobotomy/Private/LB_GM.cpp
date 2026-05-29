@@ -414,7 +414,13 @@ void ALB_GM::UpdateTimeByTimer()
 	if (CurrentHour >= 24)
 		CurrentHour = CurrentHour % 24;
 
-	UE_LOG(LogTemp, Log, TEXT("Game Time: %02d:%02d"), CurrentHour, CurrentMinute);
+	if (CurrentHour == 23 && CurrentMinute == 59 && CurrentSecond == 59)
+	{
+		if (OnDayChanged.IsBound())
+		{
+			OnDayChanged.Broadcast();
+		}
+	}
 }
 
 void ALB_GM::GetGameTime(int32& Hours, int32& Minutes) const
@@ -429,6 +435,7 @@ void ALB_GM::SetGameTime(int32 Hour, int32 Minute)
 	CurrentMinute = Minute % 60;
 	CurrentSecond = 0;
 }
+
 
 bool ALB_GM::EnsurePageInCache(int32 Page)
 {
