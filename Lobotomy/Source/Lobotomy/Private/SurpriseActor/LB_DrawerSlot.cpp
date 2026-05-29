@@ -5,14 +5,13 @@
 #include "LevelActor/LB_SurpriseBox.h"
 #include "Components/BillboardComponent.h"
 
-// Sets default values
 ALB_DrawerSlot::ALB_DrawerSlot()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	DrawerMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DrawerMesh"));
-	DrawerMeshComponent->SetupAttachment(RootComponent);
+	SetRootComponent(DrawerMeshComponent);
+
 	DrawerMeshComponent->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 
 	SpawnBillboard = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard"));

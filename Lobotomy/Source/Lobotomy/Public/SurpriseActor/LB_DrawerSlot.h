@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "LB_DrawerSlot.generated.h"
 
+class UBillboardComponent;
+
 UCLASS()
 class LOBOTOMY_API ALB_DrawerSlot : public AActor
 {
