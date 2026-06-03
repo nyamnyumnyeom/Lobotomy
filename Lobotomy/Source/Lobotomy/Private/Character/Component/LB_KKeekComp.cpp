@@ -7,6 +7,9 @@
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 #include "LB_GM.h"
+#include "Character/LB_Character.h"
+#include "Components/ShapeComponent.h"
+#include "Engine/OverlapResult.h"
 
 ULB_KKeekComp::ULB_KKeekComp()
 {
@@ -56,16 +59,32 @@ void ULB_KKeekComp::DissapearKKeek()
 
 bool ULB_KKeekComp::CheckCanActive()
 {
+	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return false;
+
+	if (GM->bIsPlayerInRoom) return false;
+
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	FVector CamLoc;
 	FRotator CamRot;
 	PC->GetPlayerViewPoint(CamLoc, CamRot);
 
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (!Player) return false;
+	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (!LB_Character) return false;
 
-	FVector PlayerLocation = Player->GetActorLocation();
+	FProperty* Property = LB_Character->GetClass()->FindPropertyByName(FName("Isin?"));
+	if (Property)
+	{
+		FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property);
+		if (BoolProperty)
+		{
+			bool bCurrentValue = BoolProperty->GetPropertyValue_InContainer(LB_Character);
+			if (bCurrentValue) return false;
+		}
+	}
+
+	FVector PlayerLocation = LB_Character->GetActorLocation();
 
 	FRotator YawOnlyRot(0.f, CamRot.Yaw, 0.f);
 	FVector ForwardDir = YawOnlyRot.Vector();
@@ -82,7 +101,7 @@ bool ULB_KKeekComp::CheckCanActive()
 
 	FHitResult Hit;
 	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(Player);
+	Params.AddIgnoredActor(LB_Character);
 
 	bool bBlocked = GetWorld()->LineTraceSingleByChannel(
 		Hit,
@@ -93,6 +112,52 @@ bool ULB_KKeekComp::CheckCanActive()
 	);
 
 	if (bBlocked) return false;
+
+	float ScanRadius = 1.0f;
+
+	FCollisionQueryParams QueryParams(TEXT("RoomCheckQuery"));
+	QueryParams.bTraceComplex = false; 
+
+	TArray<FOverlapResult> OverlapResults;
+
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	bool bHasOverlap = GetWorld()->OverlapMultiByObjectType(
+		OverlapResults,
+		TargetLocation,
+		FQuat::Identity,
+		ObjectQueryParams, 
+		FCollisionShape::MakeSphere(ScanRadius),
+		QueryParams
+	);
+
+	if (bHasOverlap)
+	{
+
+		//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Black, TEXT("월드 다이나믹이 무언가 걸리긴 했다네~"));
+
+		for (const FOverlapResult& Result : OverlapResults)
+		{
+			AActor* OverlappedActor = Result.GetActor();
+
+			if (OverlappedActor)
+			{
+
+				//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Black, FString::Printf(TEXT("월드 다이나믹이 무언가 걸리긴 했다네~ : %s"), *OverlappedActor->GetName()));
+
+				if (OverlappedActor->ActorHasTag(TEXT("RoomChecker")))
+				{
+
+					//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("스폰 포인트가 룸체크에 걸렸네~"));
+
+					return false;
+				}
+			}
+		}
+	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("아무것도 안걸렸다네"));
 
 	CanActiveLocation = TargetLocation + FVector(0.0f, 0.0f, 90.0f);
 
