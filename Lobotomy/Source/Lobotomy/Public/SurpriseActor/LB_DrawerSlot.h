@@ -34,7 +34,7 @@ public:
 	// 깜짝 상자일 백분율. 
 	// 60일 경우 열었을 때 60% 확률로 깜짝 인형이 등장하거나 40% 확률로 배터리 등장.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Value")
-	int32 SurpriseProbability = 50;
+	int32 SurpriseProbability = 30;
 
 	// 현재 깜짝 상자가 스폰되어 있느가?
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Value")
