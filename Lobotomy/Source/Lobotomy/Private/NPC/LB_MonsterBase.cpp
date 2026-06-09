@@ -31,12 +31,14 @@ void ALB_MonsterBase::DisappearLogic()
 
 }
 
-void ALB_MonsterBase::Sanity_Reduces(float Amount)
+void ALB_MonsterBase::Sanity_Reduces(float Amount, AActor* SanityActor)
 {
 	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!LB_Character) return;
 
 	LB_Character->ReduceSanity(Amount);
+
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, FString::Printf(TEXT("정신력 감소됨. [ 액터 : %s ][ 소모량 : %f ]"), *SanityActor->GetName(), Amount));
 }
 
 bool ALB_MonsterBase::CheakPlayerIsIn()

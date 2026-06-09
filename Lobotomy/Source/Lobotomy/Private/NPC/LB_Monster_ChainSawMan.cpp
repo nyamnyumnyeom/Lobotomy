@@ -302,7 +302,7 @@ void ALB_Monster_ChainSawMan::HeartbeatToggle(bool Value)
 
 void ALB_Monster_ChainSawMan::SanityTimer()
 {
-	Sanity_Reduces(0.1f);
+	Sanity_Reduces(0.1f, this);
 }
 
 void ALB_Monster_ChainSawMan::RestorationMonsterState()

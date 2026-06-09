@@ -161,7 +161,7 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 					GM->ResetKnockCount();
 					GM->AddHelloCount();
 
-					SpawnedHideAndSeeker->Sanity_Reduces(4.0f);
+					SpawnedHideAndSeeker->Sanity_Reduces(4.0f, this);
 				}
 				else
 				{
@@ -170,7 +170,7 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 					GM->ResetHelloCount();
 					GM->AddKnockCount();
 
-					SpawnedHideAndSeeker->Sanity_Reduces(2.0f);
+					SpawnedHideAndSeeker->Sanity_Reduces(2.0f, this);
 				}
 			}
 		}

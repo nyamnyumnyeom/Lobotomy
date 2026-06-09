@@ -34,7 +34,7 @@ public:
 	virtual void DisappearLogic();
 
 	UFUNCTION(BlueprintCallable, Category = "Sanity")
-	void Sanity_Reduces(float Amount);
+	void Sanity_Reduces(float Amount, AActor* SanityActor);
 
 	bool CheakPlayerIsIn();
 

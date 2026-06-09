@@ -169,6 +169,6 @@ void ALB_Monster_TeddyBear::PlaySound_Kill()
 
 void ALB_Monster_TeddyBear::SanityLogic()
 {
-	Sanity_Reduces(0.1f);
+	Sanity_Reduces(0.1f, this);
 }
 

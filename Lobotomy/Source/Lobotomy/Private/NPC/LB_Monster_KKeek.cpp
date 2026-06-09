@@ -85,7 +85,6 @@ void ALB_Monster_KKeek::KKeekKKeekInvisible()
 		GetWorld()->GetTimerManager().SetTimer(AutoInvisibleTimerHandle, this, &ALB_Monster_KKeek::KKERealInvisible, 5.0f, false);
 	}
 
-	Sanity_Reduces(0.5f);
 }
 
 void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
@@ -142,6 +141,8 @@ void ALB_Monster_KKeek::KKeekKKeekVisible(FVector NewLocation)
 	);
 
 	PlaySound_Visible();
+
+	Sanity_Reduces(0.5f, this);
 
 	if ((PlayerLocation - NewLocation).Length() < PlayerKillDistance)
 	{
