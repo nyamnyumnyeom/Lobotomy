@@ -17,6 +17,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NPC/LB_TargetPoint_Manequin.h"
 #include "NPC/LB_Monster_Manequin.h"
+#include "NPC/LB_MusicBox.h"
 
 ALB_GM::ALB_GM()
 {
@@ -208,6 +209,11 @@ void ALB_GM::SafeBoxAlertCountReset()
 	ShouldChainSawSpawnForSB = false;
 }
 
+void ALB_GM::SetMusicBoxRef(ALB_MusicBox* MB)
+{
+	MusicBoxRef = MB;
+}
+
 void ALB_GM::SetChainSawManRef(ALB_Monster_ChainSawMan* CSM)
 {
 	ChainSawManRef = CSM;
@@ -227,6 +233,11 @@ void ALB_GM::SetChainSawManTransform(FTransform NewTransform)
 
 void ALB_GM::AllMonsterDestroy()
 {
+	if (MusicBoxRef)
+	{
+		MusicBoxRef->MusicOff();
+	}
+
 	if (ChainSawManRef)
 	{
 		ChainSawManRef->DisappearLogic();

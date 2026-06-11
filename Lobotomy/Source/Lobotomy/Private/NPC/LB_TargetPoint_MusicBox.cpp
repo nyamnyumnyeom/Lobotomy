@@ -59,6 +59,12 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 		{
 			SpawnedMusicBox->SetOwner(this);
 
+			ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+			if (GM)
+			{
+				GM->SetMusicBoxRef(SpawnedMusicBox);
+			}
+
 			GetWorldTimerManager().SetTimer(MusicBoxTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxTimeup, TimeupTime, false);
 			GetWorldTimerManager().SetTimer(MusicBoxStopTimerHandle, this, &ALB_TargetPoint_MusicBox::StopMusicBoxTimer, DespawnTime, false);
 		}
@@ -121,7 +127,14 @@ void ALB_TargetPoint_MusicBox::TryMusicBoxDestroy()
 
 	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
 
-	if(SpawnedMusicBox)
-	SpawnedMusicBox->Destroy();
+	if (SpawnedMusicBox)
+	{
+		ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (GM)
+		{
+			GM->SetMusicBoxRef(nullptr);
+		}
 
+		SpawnedMusicBox->Destroy();
+	}
 }
