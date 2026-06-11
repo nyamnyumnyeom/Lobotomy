@@ -21,6 +21,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float Threshold = 0.5f;
 
+
+	// 엔딩 페이즈에서 스폰을 막기 위한 변수
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	bool bIsSpawnDisable = false;
+
 protected:
 	FTimerHandle TriggerLoopTimerHandle;
 

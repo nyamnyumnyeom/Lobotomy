@@ -20,6 +20,8 @@ void ULB_MusicBoxSpawnComp::BeginPlay()
 
 void ULB_MusicBoxSpawnComp::TriggerMusicBoxSpawn()
 {
+	if (bIsSpawnDisable) return;
+
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 

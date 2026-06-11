@@ -24,6 +24,8 @@ void ULB_HideAndSeekComp::BeginPlay()
 
 void ULB_HideAndSeekComp::TriggerHASSpawn()
 {
+	if (bIsSpawnDisable) return;
+
 	ALB_GM* GM = Cast<ALB_GM>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 
