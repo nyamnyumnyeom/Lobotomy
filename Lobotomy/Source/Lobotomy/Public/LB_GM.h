@@ -12,6 +12,7 @@ class UDataTable;
 class ALB_Monster_TeddyBear;
 class ALB_TeddyBear;
 class ALB_Monster_Manequin;
+class ALB_MusicBox;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChartUpdated, int32, PageNumber);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDayChanged);
@@ -25,6 +26,9 @@ class LOBOTOMY_API ALB_GM : public AGameMode
 protected:
 	// 스폰중인 전기톱 살인마 레퍼런스
 	ALB_Monster_ChainSawMan* ChainSawManRef;
+
+	// 스폰중인 오그록  레퍼런스
+	ALB_MusicBox* MusicBoxRef;
 
 	// 스폰중인 곰탱이 레퍼런스
 	ALB_Monster_TeddyBear* TeddyBearRef;
@@ -182,6 +186,9 @@ public:
 
 	// 전기톱 살인마 스폰 여부 설정
 	FORCEINLINE void SetIsChainSawManSpawned(bool Value) { bIsChainSawManSpawned = Value; }
+
+	// 오르골 레퍼런스 등록
+	void SetMusicBoxRef(ALB_MusicBox* MB);
 
 	// 전기톱 살인마 레퍼런스 등록
 	void SetChainSawManRef(ALB_Monster_ChainSawMan* CSM);
