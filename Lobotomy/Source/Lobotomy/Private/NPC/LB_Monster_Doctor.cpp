@@ -118,7 +118,7 @@ void ALB_Monster_Doctor::SetActorRotationToPlayer()
 
 void ALB_Monster_Doctor::SoundPlay(int32 SoundType)
 {
-	if (AudioComp && AudioComp->IsPlaying())
+	if (IsValid(AudioComp) && AudioComp->IsPlaying())
 	{
 		AudioComp->Stop();
 	}
