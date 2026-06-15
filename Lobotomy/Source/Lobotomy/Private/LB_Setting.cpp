@@ -21,7 +21,7 @@ void ULB_Setting::ApplyCustomSettings()
     // r.Color.Mid는 감마/중간톤 조절이므로 계속 사용 가능
     float TargetMid = FMath::GetMappedRangeValueClamped(
         FVector2D(0.f, 1.f),    // 입력 범위 (슬라이더)
-        FVector2D(0.5f, 2.0f),  // 출력 범위 (2.0=어두움, 0.5=밝음)
+        FVector2D(0.8f, 1.5f),  // 출력 범위
         Brightness              // 현재 슬라이더 값
     );
 
