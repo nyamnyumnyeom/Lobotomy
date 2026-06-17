@@ -1,0 +1,10 @@
+{
+  "inputs": [],
+  "servers": {
+    "StoveStoreDevCenter": {
+      "type": "http",
+      "url": "https://api.onstove.com/store-developer-center-mcp",
+      "headers": {}
+    }
+  }
+}

@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MediaPlayer.h"
 #include "MediaSource.h"
+#include "BaseSDK.h"
 
 void UIntroVideo::NativeConstruct()
 {
@@ -36,4 +37,9 @@ void UIntroVideo::OnIntroFinished()
             UE_LOG(LogTemp, Warning, TEXT("MainMenuClass is not set in IntroWidget!"));
         }
     }
+}
+
+void UIntroVideo::OnReStartApp()
+{
+
 }

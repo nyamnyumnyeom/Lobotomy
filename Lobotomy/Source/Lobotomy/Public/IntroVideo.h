@@ -29,4 +29,9 @@ protected:
 
     UFUNCTION()
     void OnIntroFinished();
+
+	// 여기는 저 뭐야 스토브 PCSDK 연동(스토브 런처 검증)용 입니다.
+protected:
+	UFUNCTION()
+	void OnReStartApp();
 };
