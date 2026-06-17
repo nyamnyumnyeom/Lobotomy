@@ -130,6 +130,7 @@ void ULB_StoveSubsystem::OnRestartAppIfNecessaryFinished(Stove::PCSDK::CallbackR
 		UE_LOG(LogStoveSDK, Error, TEXT("Base_RestartAppIfNecessaryAsync failed. ErrorMessage: %s, ExternalError: %d"),
 			callbackResult.GetErrorMessage(),
 			callbackResult.GetExternalError());
+		FGenericPlatformMisc::RequestExit(false);
 		return;
 	}
 
@@ -138,6 +139,7 @@ void ULB_StoveSubsystem::OnRestartAppIfNecessaryFinished(Stove::PCSDK::CallbackR
 		// Game was NOT launched via Stove Launcher — SDK will restart it through the launcher.
 		// The process will exit and relaunch automatically; no further action needed here.
 		UE_LOG(LogStoveSDK, Warning, TEXT("Game was not launched from Stove Launcher. Restarting through launcher..."));
+		FGenericPlatformMisc::RequestExit(false);
 		return;
 	}
 
@@ -226,7 +228,7 @@ void ULB_StoveSubsystem::OnOwnershipListReceived(
 		else
 		{
 			UE_LOG(LogStoveSDK, Warning, TEXT("Stove Ownership Check Failed: User does not own the game."));
-			// TODO: Implement policy for unauthorized execution, e.g., close the game or notify the user.
+			FGenericPlatformMisc::RequestExit(false);
 		}
 	}
 	else
