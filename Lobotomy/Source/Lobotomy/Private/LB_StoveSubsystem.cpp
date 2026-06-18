@@ -4,6 +4,9 @@
 #include "BaseSDK.h"
 #include "OwnershipSDK.h"
 
+#undef min
+#undef max
+
 // Unreal logging category definition
 DEFINE_LOG_CATEGORY_STATIC(LogStoveSDK, Log, All);
 
