@@ -56,5 +56,7 @@ public class Lobotomy : ModuleRules
             }
         }
 
+        // Stove Signature Verifier 보안 강화 정적 라이브러리 링크 추가
+        PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory, "StoveSignatureVerifier.lib"));
     }
 }
