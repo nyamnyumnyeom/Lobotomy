@@ -18,7 +18,7 @@ ALB_Monster_Doctor::ALB_Monster_Doctor()
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);
 
-	SphereCollision->InitSphereRadius(180.0f);
+	SphereCollision->InitSphereRadius(70.0f);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);

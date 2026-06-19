@@ -20,7 +20,7 @@ ALB_Monster_ChainSawMan::ALB_Monster_ChainSawMan()
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);
 
-	SphereCollision->InitSphereRadius(180.0f);
+	SphereCollision->InitSphereRadius(80.0f);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
