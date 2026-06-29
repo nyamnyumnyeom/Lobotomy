@@ -3,7 +3,7 @@
 #include "LB_StoveSubsystem.h"
 #include "BaseSDK.h"
 #include "OwnershipSDK.h"
-//#include "Lobotomy/StoveSignatureVerifier.h"
+#include "Lobotomy/StoveSignatureVerifier.h"
 
 #undef min
 #undef max
@@ -14,13 +14,13 @@ DEFINE_LOG_CATEGORY_STATIC(LogStoveSDK, Log, All);
 // Global static pointer to the active subsystem instance for callbacks
 static ULB_StoveSubsystem* StoveSubsystemInstance = nullptr;
 
-//ULB_StoveSubsystem::ULB_StoveSubsystem()
-//{
-//#if !UE_EDITOR
-//	// 프로그램 시작(서브시스템 생성) 시점에 DLL 변조 여부 보안 검증 수행
-//	StartStoveVerify();
-//#endif
-//}
+ULB_StoveSubsystem::ULB_StoveSubsystem()
+{
+#if !UE_EDITOR
+	// 프로그램 시작(서브시스템 생성) 시점에 DLL 변조 여부 보안 검증 수행
+	StartStoveVerify();
+#endif
+}
 
 void ULB_StoveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
