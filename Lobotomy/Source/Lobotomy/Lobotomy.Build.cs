@@ -11,7 +11,8 @@ public class Lobotomy : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "EngineSettings","InputCore", "EnhancedInput", "AIModule", "NavigationSystem" , "MediaAssets" , "Slate", "SlateCore" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+        // OnlineSubsystemSteam 활성화 및 Steamworks SDK 직접 참조 설정
+        PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "OnlineSubsystemSteam", "Steamworks" });
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
@@ -21,7 +22,7 @@ public class Lobotomy : ModuleRules
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
-                string ThirdPartyPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../ThirdParty"));
+        string ThirdPartyPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../ThirdParty"));
 
         string StovePCSDKPath = Path.Combine(ThirdPartyPath, "StovePCSDK");
         
@@ -58,5 +59,23 @@ public class Lobotomy : ModuleRules
 
         // Stove Signature Verifier 보안 강화 정적 라이브러리 링크 추가
         PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory, "StoveSignatureVerifier.lib"));
-    }
+
+        // Steamworks SDK - Encrypted App Ticket 연동 설정 추가
+        string SteamworksSDKPath = Path.Combine(ThirdPartyPath, "steamworks_sdk_164");
+        PublicIncludePaths.Add(Path.Combine(SteamworksSDKPath, "sdk", "public", "steam"));
+
+        if (Target.Platform == UnrealTargetPlatform.Win64)
+        {
+            string SteamLibPath = Path.Combine(SteamworksSDKPath, "sdk", "public", "steam", "lib", "win64");
+            
+            // sdkencryptedappticket64.lib 정적 라이브러리 링크
+            PublicAdditionalLibraries.Add(Path.Combine(SteamLibPath, "sdkencryptedappticket64.lib"));
+
+            // sdkencryptedappticket64.dll 런타임 종속성 추가 (Binaries 폴더 복사)
+            RuntimeDependencies.Add(
+                Path.Combine("$(BinaryOutputDir)", "sdkencryptedappticket64.dll"),
+                Path.Combine(SteamLibPath, "sdkencryptedappticket64.dll")
+            );
+        }
+	}
 }
