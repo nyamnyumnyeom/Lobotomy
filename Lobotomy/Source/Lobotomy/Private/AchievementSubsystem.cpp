@@ -91,3 +91,39 @@ void UAchievementSubsystem::UnlockAchievement(FName AchievementID)
 
 	UE_LOG(LogTemp, Log, TEXT("[AchievementSubsystem] Successfully unlocked and stored achievement: %s"), *AchievementString);
 }
+
+void UAchievementSubsystem::SetSteamStat(FName StatID, int32 Value)
+{
+	FString StatString = StatID.ToString();
+
+	// 1. SteamAPI 초기화 확인
+	if (!SteamAPI_Init() || !SteamUserStats())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AchievementSubsystem] SteamAPI or SteamUserStats is invalid!"));
+		return;
+	}
+
+	// 2. 현재 통계 데이터 요청 (최신 상태 보장)
+	if (!SteamUserStats()->RequestCurrentStats())
+	{
+		UE_LOG(LogTemp, Error, TEXT("[AchievementSubsystem] RequestCurrentStats failed for Stat!"));
+		return;
+	}
+
+	// 3. 스팀 서버에 Stat 값 설정
+	if (!SteamUserStats()->SetStat(TCHAR_TO_ANSI(*StatString), Value))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[AchievementSubsystem] SetStat failed for: %s"), *StatString);
+		return;
+	}
+	UE_LOG(LogTemp, Log, TEXT("[AchievementSubsystem] SetStat success: %s = %d"), *StatString, Value);
+
+	// 4. 변경된 통계를 스팀 서버로 전송 및 저장 (이때 조건이 충족되면 업적이 자동 해제됩니다)
+	if (!SteamUserStats()->StoreStats())
+	{
+		UE_LOG(LogTemp, Error, TEXT("[AchievementSubsystem] StoreStats failed for Stat!"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("[AchievementSubsystem] Successfully stored stat: %s"), *StatString);
+}
