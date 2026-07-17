@@ -42,10 +42,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float DespawnTime = 25.0f;
 
+	// 스팀 업적용. 이만큼 대기한 뒤 오르골을 끄면 업적 달성.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	float AchivementTime = 18.0f;
+
+	int32 CurrentAchivementTime;
+
 protected:
 	FTimerHandle MusicBoxTimerHandle;
 	FTimerHandle MusicBoxStopTimerHandle;
 	FTimerHandle MusicBoxDestroyTimerHandle;
+
+
+	FTimerHandle AchiveTimerHandle;
 
 protected:
 	UPROPERTY()
@@ -71,4 +80,7 @@ protected:
 	// 모든 역할이 끝나서 제거 시도
 	void TryMusicBoxDestroy();
 
+	// 스팀 업적 : 18초 대기 후 끄기
+	void MusicBoxAchivementTimer();
+	void MusicBoxAchivement();
 };

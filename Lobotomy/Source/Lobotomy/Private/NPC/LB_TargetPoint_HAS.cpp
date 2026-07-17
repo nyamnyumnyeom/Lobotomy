@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LB_LockDoor.h"
 #include "Character/LB_Character.h"
+#include "AchievementSubsystem.h"
 
 ALB_TargetPoint_HAS::ALB_TargetPoint_HAS()
 {
@@ -152,6 +153,16 @@ void ALB_TargetPoint_HAS::SpawnLogic(TSubclassOf<AActor> SpawnClass, bool bIsPla
 			SpawnedHideAndSeeker = GetWorld()->SpawnActor<ALB_MonsterHideAndSeeker>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (SpawnedHideAndSeeker)
 			{
+					if (UGameInstance* GameInstance = GetGameInstance())
+					{
+						UAchievementSubsystem* AchievementSub = GameInstance->GetSubsystem<UAchievementSubsystem>();
+						if (AchievementSub)
+						{
+							// 스팀웍스 대시보드에 등록된 API 이름을 인자로 전달합니다.
+							AchievementSub->UnlockAchievement(FName("Knoker_ACHIEVEMENT"));
+						}
+					}
+
 				SpawnedHideAndSeeker->SetOwner(this);
 
 				if (CheckNearbyDoorOpened())

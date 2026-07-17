@@ -7,6 +7,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BillboardComponent.h"
 #include "GameFramework/Character.h"
+#include "AchievementSubsystem.h"
 #include "LB_GM.h"
 
 ALB_TargetPoint_MusicBox::ALB_TargetPoint_MusicBox()
@@ -64,6 +65,10 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 			{
 				GM->SetMusicBoxRef(SpawnedMusicBox);
 			}
+
+			// 스팀 업적용
+			CurrentAchivementTime = 0;
+			GetWorldTimerManager().SetTimer(AchiveTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxAchivementTimer, 1.0f, true);
 
 			GetWorldTimerManager().SetTimer(MusicBoxTimerHandle, this, &ALB_TargetPoint_MusicBox::MusicBoxTimeup, TimeupTime, false);
 			GetWorldTimerManager().SetTimer(MusicBoxStopTimerHandle, this, &ALB_TargetPoint_MusicBox::StopMusicBoxTimer, DespawnTime, false);
@@ -137,4 +142,27 @@ void ALB_TargetPoint_MusicBox::TryMusicBoxDestroy()
 
 		SpawnedMusicBox->Destroy();
 	}
+}
+
+void ALB_TargetPoint_MusicBox::MusicBoxAchivementTimer()
+{
+	CurrentAchivementTime += 1;
+
+	if (AchivementTime <= CurrentAchivementTime)
+	{
+		if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			UAchievementSubsystem* AchievementSub = GameInstance->GetSubsystem<UAchievementSubsystem>();
+			if (AchievementSub)
+			{
+				// 스팀웍스 대시보드에 등록된 API 이름을 인자로 전달합니다.
+				AchievementSub->UnlockAchievement(FName("Chainsawman_ACHIEVEMENT"));
+			}
+		}
+	}
+}
+
+void ALB_TargetPoint_MusicBox::MusicBoxAchivement()
+{
+
 }
