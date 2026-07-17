@@ -5,14 +5,30 @@ using UnrealBuildTool;
 
 public class Lobotomy : ModuleRules
 {
-	public Lobotomy(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "EngineSettings","InputCore", "EnhancedInput", "AIModule", "NavigationSystem" , "MediaAssets" , "Slate", "SlateCore" });
+    public Lobotomy(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        // OnlineSubsystemSteam 활성화 및 Steamworks SDK 직접 참조 설정
-        PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "OnlineSubsystemSteam", "Steamworks" });
+        PublicDependencyModuleNames.AddRange(new string[] {
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "EngineSettings",
+            "InputCore",
+            "EnhancedInput",
+            "AIModule",
+            "NavigationSystem",
+            "MediaAssets",
+            "Slate",
+            "SlateCore",
+            "OnlineSubsystem",
+            "OnlineSubsystemUtils"
+        });
+
+        PrivateDependencyModuleNames.AddRange(new string[] {
+            "OnlineSubsystemSteam",
+            "Steamworks"
+        });
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
@@ -22,10 +38,12 @@ public class Lobotomy : ModuleRules
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
+        // ---------------------------------------------------------------------
+        // Stove PCSDK 설정
+        // ---------------------------------------------------------------------
         string ThirdPartyPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../ThirdParty"));
-
         string StovePCSDKPath = Path.Combine(ThirdPartyPath, "StovePCSDK");
-        
+
         // Include 경로는 루프 바깥에서 단 한 번만 등록합니다.
         PublicIncludePaths.Add(Path.Combine(StovePCSDKPath, "Include"));
 
@@ -36,7 +54,7 @@ public class Lobotomy : ModuleRules
 
         foreach (string SDKName in SDKNameList)
         {
-            // 실제 디스크 폴더인 소문자 'lib'와 'dll'을 사용하도록 수정했습니다.
+            // 실제 디스크 폴더인 소문자 'lib'와 'dll' 사용
             PublicAdditionalLibraries.Add(
                 Path.Combine(StovePCSDKPath, "lib", "x64", SDKName + ".lib")
             );
@@ -46,7 +64,7 @@ public class Lobotomy : ModuleRules
                 Path.Combine(StovePCSDKPath, "dll", "x64", SDKName + ".dll")
             );
 
-            // Webview2Loader의 실제 경로를 'Bin' 대신 'dll'로 수정했습니다.
+            // Webview2Loader의 실제 경로를 'dll'로 수정
             if ((SDKName == "IAPSDK") && !IsWebviewDependencyAdded)
             {
                 RuntimeDependencies.Add(
@@ -60,14 +78,16 @@ public class Lobotomy : ModuleRules
         // Stove Signature Verifier 보안 강화 정적 라이브러리 링크 추가
         PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory, "StoveSignatureVerifier.lib"));
 
-        // Steamworks SDK - Encrypted App Ticket 연동 설정 추가
+        // ---------------------------------------------------------------------
+        // Steamworks SDK - Encrypted App Ticket 연동 설정
+        // ---------------------------------------------------------------------
         string SteamworksSDKPath = Path.Combine(ThirdPartyPath, "steamworks_sdk_164");
         PublicIncludePaths.Add(Path.Combine(SteamworksSDKPath, "sdk", "public", "steam"));
 
         if (Target.Platform == UnrealTargetPlatform.Win64)
         {
             string SteamLibPath = Path.Combine(SteamworksSDKPath, "sdk", "public", "steam", "lib", "win64");
-            
+
             // sdkencryptedappticket64.lib 정적 라이브러리 링크
             PublicAdditionalLibraries.Add(Path.Combine(SteamLibPath, "sdkencryptedappticket64.lib"));
 
@@ -77,5 +97,5 @@ public class Lobotomy : ModuleRules
                 Path.Combine(SteamLibPath, "sdkencryptedappticket64.dll")
             );
         }
-	}
+    }
 }
