@@ -64,6 +64,8 @@ void UAchievementSubsystem::UnlockAchievement(FName AchievementID)
     FOnlineAchievementsWritePtr WriteObject = MakeShared<FOnlineAchievementsWrite>();
     WriteObject->SetFloatStat(AchievementString, 100.0f);
 
+    FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
+
     FOnAchievementsWrittenDelegate Delegate = FOnAchievementsWrittenDelegate::CreateLambda(
         [AchievementString](const FUniqueNetId& PlayerId, bool bSuccess)
         {
@@ -77,5 +79,5 @@ void UAchievementSubsystem::UnlockAchievement(FName AchievementID)
             }
         });
 
-    AchievementInterface->WriteAchievements(*UserId, WriteObject.ToSharedRef(), Delegate);
+    AchievementInterface->WriteAchievements(*UserId, WriteRef, Delegate);
 }
