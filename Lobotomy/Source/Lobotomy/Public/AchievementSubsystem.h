@@ -6,8 +6,6 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AchievementSubsystem.generated.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(LogAchievement, Log, All);
-
 UCLASS()
 class LOBOTOMY_API UAchievementSubsystem : public UGameInstanceSubsystem
 {

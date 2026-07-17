@@ -4,8 +4,6 @@
 #include "OnlineSubsystemUtils.h"
 #include "OnlineSubsystemTypes.h"
 
-DEFINE_LOG_CATEGORY(LogAchievement);
-
 void UAchievementSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
@@ -13,12 +11,12 @@ void UAchievementSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     IOnlineSubsystem* OSS = IOnlineSubsystem::Get();
     if (OSS)
     {
-        UE_LOG(LogAchievement, Log, TEXT("OnlineSubsystem Initialized: %s"),
+        UE_LOG(LogTemp, Log, TEXT("OnlineSubsystem Initialized: %s"),
             *OSS->GetSubsystemName().ToString());
     }
     else
     {
-        UE_LOG(LogAchievement, Error, TEXT("OnlineSubsystem Invalid!"));
+        UE_LOG(LogTemp, Error, TEXT("OnlineSubsystem Invalid!"));
     }
 }
 
@@ -36,28 +34,28 @@ void UAchievementSubsystem::UnlockAchievement(FName AchievementID)
     IOnlineSubsystem* OSS = IOnlineSubsystem::Get();
     if (!OSS)
     {
-        UE_LOG(LogAchievement, Error, TEXT("Unlock Failed: OnlineSubsystem Invalid"));
+        UE_LOG(LogTemp, Error, TEXT("Unlock Failed: OnlineSubsystem Invalid"));
         return;
     }
 
     IOnlineAchievementsPtr AchievementInterface = OSS->GetAchievementsInterface();
     if (!AchievementInterface.IsValid())
     {
-        UE_LOG(LogAchievement, Error, TEXT("Unlock Failed: Achievement Interface Invalid"));
+        UE_LOG(LogTemp, Error, TEXT("Unlock Failed: Achievement Interface Invalid"));
         return;
     }
 
     ULocalPlayer* LocalPlayer = GetGameInstance() ? GetGameInstance()->GetFirstGamePlayer() : nullptr;
     if (!LocalPlayer)
     {
-        UE_LOG(LogAchievement, Error, TEXT("Unlock Failed: LocalPlayer Invalid"));
+        UE_LOG(LogTemp, Error, TEXT("Unlock Failed: LocalPlayer Invalid"));
         return;
     }
 
     FUniqueNetIdPtr UserId = LocalPlayer->GetPreferredUniqueNetId().GetUniqueNetId();
     if (!UserId.IsValid())
     {
-        UE_LOG(LogAchievement, Error, TEXT("Unlock Failed: UniqueNetId Invalid (Player might not be logged into Steam)"));
+        UE_LOG(LogTemp, Error, TEXT("Unlock Failed: UniqueNetId Invalid (Player might not be logged into Steam)"));
         return;
     }
 
@@ -71,11 +69,11 @@ void UAchievementSubsystem::UnlockAchievement(FName AchievementID)
         {
             if (bSuccess)
             {
-                UE_LOG(LogAchievement, Log, TEXT("Successfully Unlocked Achievement: %s"), *AchievementString);
+                UE_LOG(LogTemp, Log, TEXT("Successfully Unlocked Achievement: %s"), *AchievementString);
             }
             else
             {
-                UE_LOG(LogAchievement, Error, TEXT("Failed to Unlock Achievement on Steam: %s"), *AchievementString);
+                UE_LOG(LogTemp, Error, TEXT("Failed to Unlock Achievement on Steam: %s"), *AchievementString);
             }
         });
 
