@@ -48,7 +48,7 @@ void UAchievementSubsystem::UnlockAchievement(FName AchievementID)
 
 	// 2. 테스트 편의를 위해 매번 실행할 때마다 기존 업적을 잠금(초기화)합니다.
 	// (실서비스 출시 시점에는 이 줄을 주석 처리하거나 제거하셔야 유저의 업적이 매번 초기화되지 않습니다.)
-	SteamUserStats()->ClearAchievement(TCHAR_TO_ANSI(*AchievementString));
+	//SteamUserStats()->ClearAchievement(TCHAR_TO_ANSI(*AchievementString));
 	SteamUserStats()->StoreStats();
 	UE_LOG(LogTemp, Log, TEXT("[AchievementSubsystem] Cleared achievement for testing: %s"), *AchievementString);
 

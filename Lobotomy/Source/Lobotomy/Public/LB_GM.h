@@ -61,6 +61,10 @@ protected:
 	// 숨바꼭질 장인의 다음 스폰에 플레이어를 공격해야 하는가?
 	bool ShouldHASAttackMode = false;
 
+	// 노커 스팀 업적
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SteamAchievement")
+	bool SteamAchivement_HAS = true;
+
 	// 금고 실패시 경보가 해당 횟수 이상 울리면 전기톱 스폰.
 	int32 SafeBoxAlertLimit = 2;
 	// 금고 실패시 경보가 울린 횟수.

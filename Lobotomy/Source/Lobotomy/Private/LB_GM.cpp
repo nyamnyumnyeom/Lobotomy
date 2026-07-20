@@ -100,6 +100,11 @@ void ALB_GM::AddKnockCount()
 	{
 		ShouldOpenDoor = true;
 	}
+
+	if (SteamAchivement_HAS == true)
+	{
+		SteamAchivement_HAS = false;
+	}
 }
 
 float ALB_GM::CalculateSpawnDelay(int32 Min, int32 Max)

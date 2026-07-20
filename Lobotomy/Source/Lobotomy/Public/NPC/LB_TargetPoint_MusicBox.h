@@ -44,7 +44,7 @@ public:
 
 	// 스팀 업적용. 이만큼 대기한 뒤 오르골을 끄면 업적 달성.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
-	float AchivementTime = 18.0f;
+	float AchivementTime = 14.0f;
 
 	int32 CurrentAchivementTime;
 
