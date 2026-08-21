@@ -50,6 +50,10 @@ private:
     UPROPERTY()
     class UMediaSoundComponent* MediaSoundComp;
 
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsStoped = false;
+
 private:
     void LoadSubtitleTable();
     void SetupMediaSound();
@@ -63,4 +67,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void StopVideo();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnVideoStarted();
 };
