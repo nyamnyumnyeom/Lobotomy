@@ -158,6 +158,8 @@ void ULB_VideoSubtitleWidget::PlayVideo()
     {
         MediaSoundComp->Activate(true);
     }
+
+	OnVideoStarted();
 }
 
 
@@ -175,6 +177,8 @@ void ULB_VideoSubtitleWidget::PauseVideo()
 
 void ULB_VideoSubtitleWidget::StopVideo()
 {
+	bIsStoped = true;
+
     if (!MediaPlayer) return;
 
     MediaPlayer->Close();
