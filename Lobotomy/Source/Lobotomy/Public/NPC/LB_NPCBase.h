@@ -12,6 +12,10 @@ class LOBOTOMY_API ALB_NPCBase : public ACharacter
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName HintNumber;
+
+public:
 	ALB_NPCBase();
 
 protected:
