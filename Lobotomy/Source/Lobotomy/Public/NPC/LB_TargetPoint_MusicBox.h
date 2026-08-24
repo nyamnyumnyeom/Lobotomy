@@ -46,6 +46,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	float AchivementTime = 14.0f;
 
+	bool bCanAchivement = false;
+
 	int32 CurrentAchivementTime;
 
 protected:
