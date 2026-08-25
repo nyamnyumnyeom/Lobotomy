@@ -78,12 +78,24 @@ void ALB_TargetPoint_MusicBox::MusicBoxSystemActivate()
 
 void ALB_TargetPoint_MusicBox::StopMusicBoxTimer()
 {
+	if (bCanAchivement)
+	{
+		if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			UAchievementSubsystem* AchievementSub = GameInstance->GetSubsystem<UAchievementSubsystem>();
+			if (AchievementSub)
+			{
+				// 스팀웍스 대시보드에 등록된 API 이름을 인자로 전달합니다.
+				AchievementSub->UnlockAchievement(FName("Chainsawman_ACHIEVEMENT"));
+			}
+		}
+	}
+
 	GetWorld()->GetTimerManager().ClearTimer(MusicBoxTimerHandle);
 
 	GetWorld()->GetTimerManager().ClearTimer(MusicBoxDestroyTimerHandle);
 
 	GetWorldTimerManager().SetTimer(MusicBoxDestroyTimerHandle, this, &ALB_TargetPoint_MusicBox::TryMusicBoxDestroy, 0.7f, true);
-
 }
 
 void ALB_TargetPoint_MusicBox::MusicBoxTimeup()
@@ -150,15 +162,7 @@ void ALB_TargetPoint_MusicBox::MusicBoxAchivementTimer()
 
 	if (AchivementTime <= CurrentAchivementTime)
 	{
-		if (UGameInstance* GameInstance = GetGameInstance())
-		{
-			UAchievementSubsystem* AchievementSub = GameInstance->GetSubsystem<UAchievementSubsystem>();
-			if (AchievementSub)
-			{
-				// 스팀웍스 대시보드에 등록된 API 이름을 인자로 전달합니다.
-				AchievementSub->UnlockAchievement(FName("Chainsawman_ACHIEVEMENT"));
-			}
-		}
+		bCanAchivement = true;
 	}
 }
 
