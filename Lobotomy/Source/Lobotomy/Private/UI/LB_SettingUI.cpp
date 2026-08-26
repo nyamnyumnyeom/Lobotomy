@@ -6,9 +6,43 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 
+namespace LB_SettingText
+{
+	static const FText Quality_Low = NSLOCTEXT("LB_SettingText", "LB_Quality_Low", "Low");
+	static const FText Quality_Medium = NSLOCTEXT("LB_SettingText", "LB_Quality_Medium", "Medium");
+	static const FText Quality_High = NSLOCTEXT("LB_SettingText", "LB_Quality_High", "High");
+	static const FText Quality_Epic = NSLOCTEXT("LB_SettingText", "LB_Quality_Epic", "Epic");
+	static const FText Quality_Cinematic = NSLOCTEXT("LB_SettingText", "LB_Quality_Cinematic", "Cinematic");
+
+	static const FText WindowMode_Full = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Full", "Fullscreen");
+	static const FText WindowMode_Windowed = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Full", "Windowed");
+	static const FText WindowMode_WindowedFullscreen = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Full", "WindowedFullscreen");
+
+	static const FText Resolution_SD = NSLOCTEXT("LB_SettingText", "LB_Resolution_SD", "360p");
+	static const FText Resolution_HD = NSLOCTEXT("LB_SettingText", "LB_Resolution_HD", "720p");
+	static const FText Resolution_FHD = NSLOCTEXT("LB_SettingText", "LB_Resolution_FHD", "1080p");
+	static const FText Resolution_QHD = NSLOCTEXT("LB_SettingText", "LB_Resolution_QHD", "1440p");
+	static const FText Resolution_UHD = NSLOCTEXT("LB_SettingText", "LB_Resolution_UHD", "2160p");
+}
+
 void ULB_SettingUI::NativeConstruct()
 {
     Super::NativeConstruct();
+
+	QualityTextMap = {
+		{ TEXT("Low"),				LB_SettingText::Quality_Low},
+		{ TEXT("Medium"),		LB_SettingText::Quality_Medium},
+		{ TEXT("High"),			LB_SettingText::Quality_High},
+		{ TEXT("Epic"),			LB_SettingText::Quality_Epic},
+		{ TEXT("Cinematic"),	LB_SettingText::Quality_Cinematic}
+	};
+
+	WindowModeTextMap = {
+		{ TEXT("Full"),								LB_SettingText::WindowMode_Full},
+		{ TEXT("Windowed"),					LB_SettingText::WindowMode_Windowed},
+		{ TEXT("WindowedFullscreen"),	LB_SettingText::WindowMode_WindowedFullscreen}
+	};
+
     UE_LOG(LogTemp, Warning, TEXT("ULB_SettingUI::NativeConstruct on!"));
 
     if (!ComboAA) UE_LOG(LogTemp, Error, TEXT("ComboAA is nullptr"));
@@ -44,12 +78,13 @@ void ULB_SettingUI::NativeConstruct()
     auto FillQuality = [](UComboBoxString* Combo)
         {
             if (!Combo) return;
+
             Combo->ClearOptions();
-            Combo->AddOption("Low");
-            Combo->AddOption("Medium");
-            Combo->AddOption("High");
-            Combo->AddOption("Epic");
-            Combo->AddOption("Cinematic");
+            Combo->AddOption(LB_SettingText::Quality_Low.ToString());
+            Combo->AddOption(LB_SettingText::Quality_Medium.ToString());
+            Combo->AddOption(LB_SettingText::Quality_High.ToString());
+            Combo->AddOption(LB_SettingText::Quality_Epic.ToString());
+            Combo->AddOption(LB_SettingText::Quality_Cinematic.ToString());
             Combo->RefreshOptions();
         };
 
@@ -61,9 +96,9 @@ void ULB_SettingUI::NativeConstruct()
     if (ComboWindowMode)
     {
         ComboWindowMode->ClearOptions();
-        ComboWindowMode->AddOption("Fullscreen");
-        ComboWindowMode->AddOption("Windowed");
-        ComboWindowMode->AddOption("WindowedFullscreen");
+        ComboWindowMode->AddOption(LB_SettingText::WindowMode_Full.ToString());
+        ComboWindowMode->AddOption(LB_SettingText::WindowMode_Windowed.ToString());
+        ComboWindowMode->AddOption(LB_SettingText::WindowMode_WindowedFullscreen.ToString());
         ComboWindowMode->RefreshOptions();
     }
 
@@ -87,9 +122,9 @@ void ULB_SettingUI::NativeConstruct()
     {
         switch (S->GetFullscreenMode())
         {
-        case EWindowMode::Fullscreen:         ComboWindowMode->SetSelectedOption("Fullscreen"); break;
-        case EWindowMode::Windowed:           ComboWindowMode->SetSelectedOption("Windowed"); break;
-        case EWindowMode::WindowedFullscreen: ComboWindowMode->SetSelectedOption("WindowedFullscreen"); break;
+        case EWindowMode::Fullscreen:         ComboWindowMode->SetSelectedOption(LB_SettingText::WindowMode_Full.ToString()); break;
+        case EWindowMode::Windowed:           ComboWindowMode->SetSelectedOption(LB_SettingText::WindowMode_Windowed.ToString()); break;
+        case EWindowMode::WindowedFullscreen: ComboWindowMode->SetSelectedOption(LB_SettingText::WindowMode_WindowedFullscreen.ToString()); break;
         }
     }
 
@@ -109,11 +144,11 @@ void ULB_SettingUI::NativeConstruct()
 	{
 		switch (S->GetAntiAliasingQuality())
 		{
-		case 0:			     ComboAA->SetSelectedOption("Low"); break;
-		case 1:			     ComboAA->SetSelectedOption("Medium"); break;
-		case 2:				 ComboAA->SetSelectedOption("High"); break;
-		case 3:				 ComboAA->SetSelectedOption("Epic"); break;
-		case 4:				 ComboAA->SetSelectedOption("Cinematic"); break;
+		case 0:			     ComboAA->SetSelectedOption(LB_SettingText::Quality_Low.ToString()); break;
+		case 1:			     ComboAA->SetSelectedOption(LB_SettingText::Quality_Medium.ToString()); break;
+		case 2:				 ComboAA->SetSelectedOption(LB_SettingText::Quality_High.ToString()); break;
+		case 3:				 ComboAA->SetSelectedOption(LB_SettingText::Quality_Epic.ToString()); break;
+		case 4:				 ComboAA->SetSelectedOption(LB_SettingText::Quality_Cinematic.ToString()); break;
 		}
 	}
 
@@ -121,11 +156,11 @@ void ULB_SettingUI::NativeConstruct()
 	{
 		switch (S->GetPostProcessingQuality())
 		{
-		case 0:			     ComboPost->SetSelectedOption("Low"); break;
-		case 1:			     ComboPost->SetSelectedOption("Medium"); break;
-		case 2:				 ComboPost->SetSelectedOption("High"); break;
-		case 3:				 ComboPost->SetSelectedOption("Epic"); break;
-		case 4:				 ComboPost->SetSelectedOption("Cinematic"); break;
+		case 0:			     ComboPost->SetSelectedOption(LB_SettingText::Quality_Low.ToString()); break;
+		case 1:			     ComboPost->SetSelectedOption(LB_SettingText::Quality_Medium.ToString()); break;
+		case 2:				 ComboPost->SetSelectedOption(LB_SettingText::Quality_High.ToString()); break;
+		case 3:				 ComboPost->SetSelectedOption(LB_SettingText::Quality_Epic.ToString()); break;
+		case 4:				 ComboPost->SetSelectedOption(LB_SettingText::Quality_Cinematic.ToString()); break;
 		}
 	}
 
@@ -133,11 +168,11 @@ void ULB_SettingUI::NativeConstruct()
 	{
 		switch (S->GetShadowQuality())
 		{
-		case 0:			     ComboShadow->SetSelectedOption("Low"); break;
-		case 1:			     ComboShadow->SetSelectedOption("Medium"); break;
-		case 2:				 ComboShadow->SetSelectedOption("High"); break;
-		case 3:				 ComboShadow->SetSelectedOption("Epic"); break;
-		case 4:				 ComboShadow->SetSelectedOption("Cinematic"); break;
+		case 0:			     ComboShadow->SetSelectedOption(LB_SettingText::Quality_Low.ToString()); break;
+		case 1:			     ComboShadow->SetSelectedOption(LB_SettingText::Quality_Medium.ToString()); break;
+		case 2:				 ComboShadow->SetSelectedOption(LB_SettingText::Quality_High.ToString()); break;
+		case 3:				 ComboShadow->SetSelectedOption(LB_SettingText::Quality_Epic.ToString()); break;
+		case 4:				 ComboShadow->SetSelectedOption(LB_SettingText::Quality_Cinematic.ToString()); break;
 		}
 	}
 
@@ -145,11 +180,11 @@ void ULB_SettingUI::NativeConstruct()
 	{
 		switch (S->GetTextureQuality())
 		{
-		case 0:			     ComboTexture->SetSelectedOption("Low"); break;
-		case 1:			     ComboTexture->SetSelectedOption("Medium"); break;
-		case 2:				 ComboTexture->SetSelectedOption("High"); break;
-		case 3:				 ComboTexture->SetSelectedOption("Epic"); break;
-		case 4:				 ComboTexture->SetSelectedOption("Cinematic"); break;
+		case 0:			     ComboTexture->SetSelectedOption(LB_SettingText::Quality_Low.ToString()); break;
+		case 1:			     ComboTexture->SetSelectedOption(LB_SettingText::Quality_Medium.ToString()); break;
+		case 2:				 ComboTexture->SetSelectedOption(LB_SettingText::Quality_High.ToString()); break;
+		case 3:				 ComboTexture->SetSelectedOption(LB_SettingText::Quality_Epic.ToString()); break;
+		case 4:				 ComboTexture->SetSelectedOption(LB_SettingText::Quality_Cinematic.ToString()); break;
 		}
 	}
 
@@ -223,9 +258,31 @@ void ULB_SettingUI::OnResolutionChanged(FString Item, ESelectInfo::Type)
 
 void ULB_SettingUI::OnWindowModeChanged(FString Item, ESelectInfo::Type)
 {
-    if (Item == "Fullscreen")         ULB_Setting::Get()->SetFullscreenMode(EWindowMode::Fullscreen);
-    else if (Item == "Windowed")      ULB_Setting::Get()->SetFullscreenMode(EWindowMode::Windowed);
-    else if (Item == "WindowedFullscreen") ULB_Setting::Get()->SetFullscreenMode(EWindowMode::WindowedFullscreen);
+	int32 SelectedIndex = ComboResolution->FindOptionIndex(Item);
+	if (SelectedIndex != INDEX_NONE)
+	{
+		switch (SelectedIndex)
+		{
+		case 0:
+			Item = "Fullscreen";
+			break;
+
+		case 1:
+			Item = "Windowed";
+			break;
+
+		case 2:
+			Item = "WindowedFullscreen";
+			break;
+
+		default:
+			break;
+		}
+
+		if (Item == "Fullscreen")         ULB_Setting::Get()->SetFullscreenMode(EWindowMode::Fullscreen);
+		else if (Item == "Windowed")      ULB_Setting::Get()->SetFullscreenMode(EWindowMode::Windowed);
+		else if (Item == "WindowedFullscreen") ULB_Setting::Get()->SetFullscreenMode(EWindowMode::WindowedFullscreen);
+	}
 }
 
 void ULB_SettingUI::OnAAChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetAntiAliasingQuality(ParseQuality(Item)); }
@@ -260,14 +317,40 @@ void ULB_SettingUI::OnResetClicked()
     }
 }
 
-int32 ULB_SettingUI::ParseQuality(const FString& Item) const
+int32 ULB_SettingUI::ParseQuality(FString& Item)
 {
-    if (Item.Contains("Low"))       return 0;
-    if (Item.Contains("Medium"))    return 1;
-    if (Item.Contains("High"))      return 2;
-    if (Item.Contains("Epic"))      return 3;
-    if (Item.Contains("Cinematic")) return 4;
-    return 2;
+	int32 SelectedIndex = ComboResolution->FindOptionIndex(Item);
+	if (SelectedIndex != INDEX_NONE)
+	{
+		switch (SelectedIndex)
+		{
+		case 0:
+			return 0;
+
+		case 1:
+			return 1;
+
+		case 2:
+			return 2;
+
+		case 3:
+			return 3;
+
+		case 4:
+			return 4;
+
+		default:
+			break;
+		}
+
+		//if (Item.Contains("Low"))       return 0;
+		//if (Item.Contains("Medium"))    return 1;
+		//if (Item.Contains("High"))      return 2;
+		//if (Item.Contains("Epic"))      return 3;
+		//if (Item.Contains("Cinematic")) return 4;
+	}
+
+	return 2;
 }
 
 void ULB_SettingUI::SynchronizeProperties()

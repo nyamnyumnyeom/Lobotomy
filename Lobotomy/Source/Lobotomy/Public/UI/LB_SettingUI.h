@@ -15,6 +15,10 @@ class LOBOTOMY_API ULB_SettingUI : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	TMap<FString, FText> QualityTextMap;
+	TMap<FString, FText> WindowModeTextMap;
+
 public:
     virtual void NativeConstruct() override;
     virtual void SynchronizeProperties() override;
@@ -58,5 +62,5 @@ private:
     UFUNCTION() void OnApplyClicked();
     UFUNCTION() void OnResetClicked();
 
-    int32 ParseQuality(const FString& Item) const;
+    int32 ParseQuality(FString& Item);
 };
