@@ -15,8 +15,8 @@ namespace LB_SettingText
 	static const FText Quality_Cinematic = NSLOCTEXT("LB_SettingText", "LB_Quality_Cinematic", "Cinematic");
 
 	static const FText WindowMode_Full = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Full", "Fullscreen");
-	static const FText WindowMode_Windowed = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Full", "Windowed");
-	static const FText WindowMode_WindowedFullscreen = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Full", "WindowedFullscreen");
+	static const FText WindowMode_Windowed = NSLOCTEXT("LB_SettingText", "LB_WindowMode_Windowed", "Windowed");
+	static const FText WindowMode_WindowedFullscreen = NSLOCTEXT("LB_SettingText", "LB_WindowMode_WindowedFullscreen", "WindowedFullscreen");
 
 	static const FText Resolution_SD = NSLOCTEXT("LB_SettingText", "LB_Resolution_SD", "360p");
 	static const FText Resolution_HD = NSLOCTEXT("LB_SettingText", "LB_Resolution_HD", "720p");
