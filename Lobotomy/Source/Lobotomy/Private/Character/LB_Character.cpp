@@ -36,8 +36,8 @@ ALB_Character::ALB_Character()
     bUseControllerRotationPitch = false;
     bUseControllerRotationRoll = false;
 
-    WalkSpeed = 300.0f;
-    SprintSpeed = 450.0f;
+    WalkSpeed = 250.f;
+    SprintSpeed = 500.f;
 
     GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
     GetCharacterMovement()->bOrientRotationToMovement = false;
