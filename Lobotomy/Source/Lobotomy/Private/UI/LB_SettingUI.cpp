@@ -20,6 +20,8 @@ void ULB_SettingUI::NativeConstruct()
     if (SliderVolume)      SliderVolume->SetValue(S->MasterVolume);
     if (SliderSensitivity) SliderSensitivity->SetValue(S->MouseSensitivite);
     if (SliderBrightness)  SliderBrightness->SetValue(S->Brightness);
+    if (SliderSFXVolume)   SliderSFXVolume->SetValue(S->SFXVolume);
+    if (SliderBGMVolume)   SliderBGMVolume->SetValue(S->BGMVolume);
 
 	FText NewVolumeText = FText::AsNumber(S->MasterVolume);
 	if (TextVolume)      TextVolume->SetText(NewVolumeText);
@@ -27,11 +29,17 @@ void ULB_SettingUI::NativeConstruct()
 	if (TextBrightness)  TextBrightness->SetText(NewBrightnessText);
 	FText NewSensitivityText = FText::AsNumber(S->MouseSensitivite);
 	if (TextSensitivity) TextSensitivity->SetText(NewSensitivityText);
+	FText NewSFXVolumeText = FText::AsNumber(S->SFXVolume);
+	if (TextSFXVolume)   TextSFXVolume->SetText(NewSFXVolumeText);
+	FText NewBGMVolumeText = FText::AsNumber(S->BGMVolume);
+	if (TextBGMVolume)   TextBGMVolume->SetText(NewBGMVolumeText);
 
 
     SliderVolume->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnVolumeChanged);
     SliderSensitivity->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnSensitivityChanged);
     SliderBrightness->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnBrightnessChanged);
+    SliderSFXVolume->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnSFXVolumeChanged);
+    SliderBGMVolume->OnValueChanged.AddDynamic(this, &ULB_SettingUI::OnBGMVolumeChanged);
 
     auto FillQuality = [](UComboBoxString* Combo)
         {
@@ -167,6 +175,24 @@ void ULB_SettingUI::OnVolumeChanged(float Value)
 	if (TextVolume)      TextVolume->SetText(NewText);
 }
 
+void ULB_SettingUI::OnSFXVolumeChanged(float Value)
+{
+    ULB_Setting::Get()->SFXVolume = Value;
+    ULB_Setting::Get()->ApplyCustomSettings();
+
+	FText NewText = FText::AsNumber(Value);
+	if (TextSFXVolume)   TextSFXVolume->SetText(NewText);
+}
+
+void ULB_SettingUI::OnBGMVolumeChanged(float Value)
+{
+    ULB_Setting::Get()->BGMVolume = Value;
+    ULB_Setting::Get()->ApplyCustomSettings();
+
+	FText NewText = FText::AsNumber(Value);
+	if (TextBGMVolume)   TextBGMVolume->SetText(NewText);
+}
+
 void ULB_SettingUI::OnSensitivityChanged(float Value)
 {
     ULB_Setting::Get()->MouseSensitivite = Value;
@@ -222,6 +248,8 @@ void ULB_SettingUI::OnResetClicked()
     {
         if (SliderVolume)      SliderVolume->SetValue(S->MasterVolume);
         if (SliderSensitivity) SliderSensitivity->SetValue(S->MouseSensitivite);
+        if (SliderSFXVolume)   SliderSFXVolume->SetValue(S->SFXVolume);
+        if (SliderBGMVolume)   SliderBGMVolume->SetValue(S->BGMVolume);
 
         if (SliderBrightness)  SliderBrightness->SetValue(S->Brightness);
 

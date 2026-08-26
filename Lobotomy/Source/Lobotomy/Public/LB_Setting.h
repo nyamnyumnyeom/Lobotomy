@@ -20,11 +20,23 @@ public:
     float MasterVolume = 1.0f;     // 0.0 ~ 1.0
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+    float SFXVolume = 1.0f;        // 0.0 ~ 1.0, 효과음(SFX) 볼륨
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+    float BGMVolume = 1.0f;        // 0.0 ~ 1.0, 배경음(BGM) 볼륨
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
     float Brightness = 0.25f;       // 
 
     /** Reference to Master SoundClass (에디터에서 할당 가능) */
     //UPROPERTY(EditDefaultsOnly, Category = "Audio")
     TSoftObjectPtr<USoundClass> MasterSoundClass;
+
+    /** Reference to SFX SoundClass (ALB_PlayerController에서 할당) */
+    TSoftObjectPtr<USoundClass> SFXSoundClass;
+
+    /** Reference to BGM SoundClass (ALB_PlayerController에서 할당) */
+    TSoftObjectPtr<USoundClass> BGMSoundClass;
 
     /** Custom settings 적용 */
     UFUNCTION(BlueprintCallable)

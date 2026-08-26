@@ -29,12 +29,20 @@ void ALB_PlayerController::BeginPlay()
 	}
 	if (ULB_Setting* Setting = ULB_Setting::Get())
 	{
-		Setting->ApplyCustomSettings();
-
 		if (MasterSoundClass)
 		{
 			Setting->MasterSoundClass = MasterSoundClass;
 		}
+		if (SFXSoundClass)
+		{
+			Setting->SFXSoundClass = SFXSoundClass;
+		}
+		if (BGMSoundClass)
+		{
+			Setting->BGMSoundClass = BGMSoundClass;
+		}
+
+		Setting->ApplyCustomSettings();
 	}
 }
 

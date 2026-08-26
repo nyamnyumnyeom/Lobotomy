@@ -16,6 +16,17 @@ void ULB_Setting::ApplyCustomSettings()
         SC->Properties.Volume = FMath::Clamp(MasterVolume, 0.f, 2.f);
     }
 
+    // 1-1. 효과음(SFX) / 배경음(BGM) 개별 볼륨
+    if (USoundClass* SFXSC = SFXSoundClass.LoadSynchronous())
+    {
+        SFXSC->Properties.Volume = FMath::Clamp(SFXVolume, 0.f, 2.f);
+    }
+
+    if (USoundClass* BGMSC = BGMSoundClass.LoadSynchronous())
+    {
+        BGMSC->Properties.Volume = FMath::Clamp(BGMVolume, 0.f, 2.f);
+    }
+
     // -------------------
     // 2. 밝기 (UGameUserSettings가 관리 안 함 -> 직접 구현)
     // r.Color.Mid는 감마/중간톤 조절이므로 계속 사용 가능
@@ -95,6 +106,8 @@ void ULB_Setting::LoadSettings(bool bForceReload)
     // (TextureQuality 등은 Super::LoadSettings가 이미 로드했으므로 중복 로드 삭제)
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivite, GGameUserSettingsIni);
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
+    GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("SFXVolume"), SFXVolume, GGameUserSettingsIni);
+    GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("BGMVolume"), BGMVolume, GGameUserSettingsIni);
     GConfig->GetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("Brightness"), Brightness, GGameUserSettingsIni);
 
     // 3. 로드된 커스텀 값 즉시 적용
@@ -106,6 +119,8 @@ void ULB_Setting::SaveSettings()
     // 1. 커스텀 값 저장
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MouseSensitivity"), MouseSensitivite, GGameUserSettingsIni);
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
+    GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("SFXVolume"), SFXVolume, GGameUserSettingsIni);
+    GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("BGMVolume"), BGMVolume, GGameUserSettingsIni);
     GConfig->SetFloat(TEXT("/Script/Lobotomy.LB_Setting"), TEXT("Brightness"), Brightness, GGameUserSettingsIni);
 
     // 2. 엔진 기본 설정 저장 (TextureQuality, Resolution 등은 Super가 알아서 저장함)
@@ -121,6 +136,8 @@ void ULB_Setting::ResetToDefaults()
 
     MouseSensitivite = 1.0f;
     MasterVolume = 1.0f;
+    SFXVolume = 1.0f;
+    BGMVolume = 1.0f;
     Brightness = 0.5f;
 
     ApplySettings(false);
