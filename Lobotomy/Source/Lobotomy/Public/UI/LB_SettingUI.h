@@ -22,10 +22,14 @@ public:
     UPROPERTY(meta = (BindWidget)) USlider* SliderVolume;
     UPROPERTY(meta = (BindWidget)) USlider* SliderSensitivity;
     UPROPERTY(meta = (BindWidget)) USlider* SliderBrightness;
+    UPROPERTY(meta = (BindWidget)) USlider* SliderSFXVolume;
+    UPROPERTY(meta = (BindWidget)) USlider* SliderBGMVolume;
 
 	UPROPERTY(meta = (BindWidget)) UTextBlock* TextVolume;
 	UPROPERTY(meta = (BindWidget)) UTextBlock* TextSensitivity;
 	UPROPERTY(meta = (BindWidget)) UTextBlock* TextBrightness;
+	UPROPERTY(meta = (BindWidget)) UTextBlock* TextSFXVolume;
+	UPROPERTY(meta = (BindWidget)) UTextBlock* TextBGMVolume;
 
     UPROPERTY(meta = (BindWidget)) UComboBoxString* ComboResolution;
     UPROPERTY(meta = (BindWidget)) UComboBoxString* ComboWindowMode;
@@ -41,6 +45,8 @@ private:
     UFUNCTION() void OnVolumeChanged(float Value);
     UFUNCTION() void OnSensitivityChanged(float Value);
     UFUNCTION() void OnBrightnessChanged(float Value);
+    UFUNCTION() void OnSFXVolumeChanged(float Value);
+    UFUNCTION() void OnBGMVolumeChanged(float Value);
 
     UFUNCTION() void OnResolutionChanged(FString SelectedItem, ESelectInfo::Type Type);
     UFUNCTION() void OnWindowModeChanged(FString SelectedItem, ESelectInfo::Type Type);
