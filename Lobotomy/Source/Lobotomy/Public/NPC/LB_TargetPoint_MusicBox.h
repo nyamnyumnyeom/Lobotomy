@@ -62,7 +62,7 @@ protected:
 	UPROPERTY()
 	class ALB_MusicBox* SpawnedMusicBox;
 
-public:
+public: 
 	ALB_TargetPoint_MusicBox();
 
 protected:
