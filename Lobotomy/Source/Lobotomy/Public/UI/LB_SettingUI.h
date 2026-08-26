@@ -62,5 +62,5 @@ private:
     UFUNCTION() void OnApplyClicked();
     UFUNCTION() void OnResetClicked();
 
-    int32 ParseQuality(FString& Item);
+    int32 ParseQuality(FString& Item, UComboBoxString* Combo);
 };

@@ -258,7 +258,7 @@ void ULB_SettingUI::OnResolutionChanged(FString Item, ESelectInfo::Type)
 
 void ULB_SettingUI::OnWindowModeChanged(FString Item, ESelectInfo::Type)
 {
-	int32 SelectedIndex = ComboResolution->FindOptionIndex(Item);
+	int32 SelectedIndex = ComboWindowMode->FindOptionIndex(Item);
 	if (SelectedIndex != INDEX_NONE)
 	{
 		switch (SelectedIndex)
@@ -285,10 +285,10 @@ void ULB_SettingUI::OnWindowModeChanged(FString Item, ESelectInfo::Type)
 	}
 }
 
-void ULB_SettingUI::OnAAChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetAntiAliasingQuality(ParseQuality(Item)); }
-void ULB_SettingUI::OnPostChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetPostProcessingQuality(ParseQuality(Item)); }
-void ULB_SettingUI::OnShadowChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetShadowQuality(ParseQuality(Item)); }
-void ULB_SettingUI::OnTextureChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetTextureQuality(ParseQuality(Item)); }
+void ULB_SettingUI::OnAAChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetAntiAliasingQuality(ParseQuality(Item, ComboAA)); }
+void ULB_SettingUI::OnPostChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetPostProcessingQuality(ParseQuality(Item, ComboPost)); }
+void ULB_SettingUI::OnShadowChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetShadowQuality(ParseQuality(Item, ComboShadow)); }
+void ULB_SettingUI::OnTextureChanged(FString Item, ESelectInfo::Type) { ULB_Setting::Get()->SetTextureQuality(ParseQuality(Item, ComboTexture)); }
 
 void ULB_SettingUI::OnApplyClicked()
 {
@@ -317,9 +317,9 @@ void ULB_SettingUI::OnResetClicked()
     }
 }
 
-int32 ULB_SettingUI::ParseQuality(FString& Item)
+int32 ULB_SettingUI::ParseQuality(FString& Item, UComboBoxString* Combo)
 {
-	int32 SelectedIndex = ComboResolution->FindOptionIndex(Item);
+	int32 SelectedIndex = Combo->FindOptionIndex(Item);
 	if (SelectedIndex != INDEX_NONE)
 	{
 		switch (SelectedIndex)
