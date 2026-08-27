@@ -34,7 +34,7 @@ class LOBOTOMY_API ULB_StoveSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
-	ULB_StoveSubsystem();
+	//ULB_StoveSubsystem();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
