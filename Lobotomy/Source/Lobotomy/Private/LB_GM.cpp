@@ -38,6 +38,8 @@ void ALB_GM::PlayerDeathLogic(FVector TargetLocation, int32 Num)
 	ALB_Character* LB_Character = Cast<ALB_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!LB_Character) return;
 
+	StopTimeCount();
+
 	switch (Num)
 	{
 	case 0:
