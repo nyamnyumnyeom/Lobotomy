@@ -660,55 +660,141 @@ AActor* ALB_Character::SpawnCurrentItem()
     }
 
     UWorld* World = GetWorld();
-    if (!World) return nullptr;
+    if (!World)
+    {
+        return nullptr;
+    }
+
+    FVector Forward = GetActorForwardVector();
+
+    FVector TraceStart = GetActorLocation() + Forward * 80.0f;
+
+    TraceStart.Z += 100.0f;
+
+    FVector TraceEnd = TraceStart;
+    TraceEnd.Z -= 300.0f;
+
+    FHitResult FloorHit;
+
+    FCollisionQueryParams TraceParams;
+    TraceParams.AddIgnoredActor(this);
+
+    bool bFoundFloor = World->LineTraceSingleByChannel(
+        FloorHit,
+        TraceStart,
+        TraceEnd,
+        ECC_Visibility,
+        TraceParams
+    );
+
+    FVector SpawnLocation;
+
+    if (bFoundFloor)
+    {
+        SpawnLocation = FloorHit.Location;
+        SpawnLocation.Z += 40.0f;
+    }
+    else
+    {
+        SpawnLocation = GetActorLocation() + Forward * 80.0f;
+        SpawnLocation.Z += 100.0f;
+    }
 
     FActorSpawnParameters SpawnParams;
+
     SpawnParams.Owner = this;
     SpawnParams.Instigator = GetInstigator();
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-    FVector SpawnLocation = GetActorLocation();
-    SpawnLocation.Z += 20.0f;
-    FRotator SpawnRotation = GetActorRotation();
+    SpawnParams.SpawnCollisionHandlingOverride =
+        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-    AActor* SpawnedActor = World->SpawnActor<AActor>(ItemClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+    AActor* SpawnedActor = World->SpawnActor<AActor>(
+        ItemClassToSpawn,
+        SpawnLocation,
+        GetActorRotation(),
+        SpawnParams
+    );
 
-    if (SpawnedActor)
+    if (!SpawnedActor)
     {
-        if (CurrentRow && CurrentRow->ItemCode == FName("Battery"))
-        {
-            SpawnedActor->SetActorScale3D(FVector(5.f));
-        }
-        else if (CurrentRow && CurrentRow->ItemCode == FName("Key_Storage01"))
-        {
-            SpawnedActor->SetActorScale3D(FVector(2.f));
-        }
-        else if (CurrentRow && CurrentRow->ItemCode == FName("Key_Medi01"))
-        {
-            SpawnedActor->SetActorScale3D(FVector(2.f));
-        }
-        UPrimitiveComponent* MeshComp = nullptr;
-
-        if (UStaticMeshComponent* StaticMesh = SpawnedActor->FindComponentByClass<UStaticMeshComponent>())
-        {
-            MeshComp = StaticMesh;
-        }
-        else if (USkeletalMeshComponent* SkeletalMesh = SpawnedActor->FindComponentByClass<USkeletalMeshComponent>())
-        {
-            MeshComp = SkeletalMesh;
-        }
-
-        if (MeshComp)
-        {
-            MeshComp->SetMobility(EComponentMobility::Movable);
-            MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-            MeshComp->SetSimulatePhysics(true);
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("SpawnedActor has no mesh component! %s"), *SpawnedActor->GetName());
-        }
+        UE_LOG(LogTemp, Warning, TEXT("SpawnCurrentItem: Failed to spawn item."));
+        return nullptr;
     }
+
+    if (CurrentRow && CurrentRow->ItemCode == FName("Battery"))
+    {
+        SpawnedActor->SetActorScale3D(FVector(5.f));
+    }
+    else if (CurrentRow && CurrentRow->ItemCode == FName("Key_Storage01"))
+    {
+        SpawnedActor->SetActorScale3D(FVector(2.f));
+    }
+    else if (CurrentRow && CurrentRow->ItemCode == FName("Key_Medi01"))
+    {
+        SpawnedActor->SetActorScale3D(FVector(2.f));
+    }
+
+    UPrimitiveComponent* MeshComp = nullptr;
+
+    if (UStaticMeshComponent* StaticMesh =
+        SpawnedActor->FindComponentByClass<UStaticMeshComponent>())
+    {
+        MeshComp = StaticMesh;
+    }
+    else if (USkeletalMeshComponent* SkeletalMesh =
+        SpawnedActor->FindComponentByClass<USkeletalMeshComponent>())
+    {
+        MeshComp = SkeletalMesh;
+    }
+
+    if (!MeshComp)
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("SpawnedActor has no mesh component! %s"),
+            *SpawnedActor->GetName()
+        );
+
+        return SpawnedActor;
+    }
+
+    MeshComp->SetMobility(EComponentMobility::Movable);
+
+    MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+    MeshComp->SetSimulatePhysics(false);
+
+    FBoxSphereBounds Bounds = MeshComp->Bounds;
+
+    float HalfHeight = Bounds.BoxExtent.Z;
+
+    if (bFoundFloor)
+    {
+        FVector SafeLocation = FloorHit.Location;
+
+        SafeLocation.Z += HalfHeight + 5.0f;
+
+        SpawnedActor->SetActorLocation(
+            SafeLocation,
+            false,
+            nullptr,
+            ETeleportType::TeleportPhysics
+        );
+    }
+
+    MeshComp->SetSimulatePhysics(true);
+
+    MeshComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+    MeshComp->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
+    UE_LOG(
+        LogTemp,
+        Log,
+        TEXT("Item dropped safely: %s at %s"),
+        *SpawnedActor->GetName(),
+        *SpawnedActor->GetActorLocation().ToString()
+    );
 
     return SpawnedActor;
 }
